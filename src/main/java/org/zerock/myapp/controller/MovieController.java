@@ -5,11 +5,14 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.zerock.myapp.domain.*;
+import org.zerock.myapp.service.MovieJsonService;
 import org.zerock.myapp.service.MovieService;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +27,30 @@ public class MovieController {
     // http://localhost:8080/movie/movies
 
     private final MovieService movieService;
+    private final MovieJsonService movieJsonService;
+
+    // 영화 데이터 가져오기
+    @GetMapping("/movieData")
+    public String moviesDataView(Model model) {
+        log.trace("moviesDataView() invoked.");
+
+        return "movie/movieData";
+    } // moviesData
+
+    // 영화 데이터 가져오기
+    @PutMapping("/movieData")
+    public String moviesData(Model model, Long startNum, Long endNum) throws IOException {
+        log.trace("moviesData({}, {}) invoked.", startNum, endNum);
+
+        movieJsonService.jsonToGenres();
+        movieJsonService.jsonToMovies(startNum, endNum);
+        movieJsonService.jsonToMovieCredits(startNum, endNum);
+        movieJsonService.jsonToCertification(startNum, endNum);
+
+        model.addAttribute("updateSuccess", true);
+
+        return "movie/movieData";
+    } // moviesData
 
     // 영화 전체 목록
     @GetMapping("/movies")

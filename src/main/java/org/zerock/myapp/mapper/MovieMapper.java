@@ -2,13 +2,13 @@ package org.zerock.myapp.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.zerock.myapp.domain.*;
 import org.zerock.myapp.domain.json.Cast;
 import org.zerock.myapp.domain.json.Crew;
 import org.zerock.myapp.domain.json.GenreInfo;
 import org.zerock.myapp.domain.json.Movies;
-import org.zerock.myapp.domain.*;
+
 import java.util.List;
-import java.util.Map;
 
 @Mapper
 public interface MovieMapper {
