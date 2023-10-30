@@ -7,14 +7,128 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>boards</title>
     <style>
+        #notice{
+          width:1200px;
+          margin:auto;
+          padding:10px 20px;
+          box-sizing:border-box;
+        }
 
+        .arrow{
+          width:20px;
+          height:20px;
+          background-color:#000;
+          border-radius: 50%;/*요소를 둥글게 변경*/
+          text-align: center;
+          float:left;
+          margin-right:5px;
+          transform:rotate(90deg);
+        }
+        #notice > h1{
+          font-size:36px;
+          margin-bottom:40px;
+        }
+
+        table{
+          width:100%;
+          border-collapse:collapse;/*셀 사이의 여백을 제거*/
+        }
+        th{
+          border-top:2px solid #000;
+          border-bottom:1px solid #000;
+          font-size:16px;
+          height:60px;
+        }
+        td{
+          border-bottom:1px dotted #999;
+          font-size:14px;
+        }
+        td:first-child{/*첫번째 td요소들을 선택*/
+          padding:20px 0 20px 44px;
+          position:relative;/*pos:abs적용할 자식요소의 기준이 됨*/
+        }
+        td:first-child::after{/*첫번째 td요소의 자식요소로 가상요소 생성*/
+          content:"";
+          position:absolute;
+          width:4px; height:4px;
+          background-color:#000;
+          border-radius: 50%;
+          left:20px;
+          top:50%; margin-top:-2px;
+        }
+
+
+        td:last-child{/*마지막 td요소들은 가운데 정렬*/
+          text-align: center;
+        }
+
+        /*pagination*/
+        #notice > .wrap{
+          text-align: center;
+          margin-top:20px;
+        }
+        .pagination{
+          display:inline-block;
+        }
+        .pagination > a{
+          float:left;
+          padding:8px 16px;
+          transition:all 0.3s;/*변환효과 적용*/
+        }
+        .pagination > .active{/*active클래스가 적용된 a요소의 스타일 변경(하이라이트)*/
+          background-color:#4caf50;
+          color:#fff;
+        }
+        /*active클래스가 적용된 a태그를 제외한 요소에 마우스를 올려놨을때 배경색 변경*/
+        .pagination > a:hover:not(.active){
+          background-color:#ddd;
+        }
     </style>
 </head>
 <body>
 <header th:replace="nav.html" />
 <main>
-    <h3>/templates/board/boards.html</h3>
-    <hr>
+    <section id="notice">
+        <h1>게시판</h1>
+        <table>
+            <tr>
+                <th>제목</th>
+                <th>등록일</th>
+            </tr>
+            <tr>
+                <td>서비스 종료에 따른 구매 이용약관 개정 안내</td>
+                <td>23/06/12</td>
+            </tr>
+            <tr>
+                <td>서비스 종료 안내</td>
+                <td>23/06/10</td>
+            </tr>
+            <tr>
+                <td>이용약관 개정 안내</td>
+                <td>23/06/10</td>
+            </tr>
+            <tr>
+                <td>해리 포터와 아즈카반의 죄수</td>
+                <td>23/06/8</td>
+            </tr>
+            <tr>
+                <td>해리 포터와 불사조 기사단</td>
+                <td>23/06/2</td>
+            </tr>
+        </table>
+        <div class="wrap">
+            <div class="pagination">
+                <a href="#">&laquo;</a>
+                <a href="#">1</a>
+                <a href="#">2</a>
+                <a class="active" href="#">3</a>
+                <a href="#">4</a>
+                <a href="#">5</a>
+                <a href="#">6</a>
+                <a href="#">&raquo;</a>
+            </div>
+        </div>
+    </section>
 </main>
 <footer th:replace="footer.html" />
 </body>
