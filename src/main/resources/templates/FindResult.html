@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>MOVIE MOA</title>
+<style>
+    main {
+        display: flex;
+        flex-direction: column;
+        /* 방향을 수직으로 변경 */
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+</style>
+</head>
+<body>
+<header th:replace="nav.html" />
+<main class="main-content">
+    <h2>이메일 찾기</h2>
+    <p>찾은 아이디: <span th:text="${userEmail}"></span></p>
+</main>
+<footer th:replace="footer.html" />
+</body>
+</html>

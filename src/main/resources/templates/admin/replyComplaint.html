@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>ADMIN | MOVIE MOA</title>
+<style>
+    .admin-container{
+        grid-area: main;
+    }
+
+    /* 페이지 헤더 스타일 */
+    h1, h2 {
+        text-align: center;
+        margin-top: 30px;
+        color: #333; /* 글자색 */
+    }
+
+    /* 검색 폼 스타일 */
+    form {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    select, input[type="text"], #search > input[type="submit"] {
+        padding: 10px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        margin-right: 10px;
+    }
+
+    input[type="submit"], input[type="button"]{
+        background-color: #007BFF; /* 버튼 배경색 */
+        color: #fff; /* 버튼 글자색 */
+        cursor: pointer;
+    }
+
+    /* 테이블 스타일 */
+    table {
+        width: 70em;
+        border-collapse: collapse;
+        margin: 20px auto;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: center;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    #inquiry > input[type="submit"]{
+        padding: 10px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        margin-right: 10px;
+    }
+
+    .main-content h1, .main-content h2 {
+    text-align: center;
+    margin-top: 30px;
+    color: #333;
+}
+
+.main-content form {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.main-content select,
+.main-content input[type="text"],
+.main-content #search > input[type="submit"] {
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.main-content input[type="submit"],
+.main-content input[type="button"] {
+    background-color: #007BFF;
+    color: #fff;
+    cursor: pointer;
+}
+
+.main-content table {
+    width: 70em;
+    border-collapse: collapse;
+    margin: 20px auto;
+}
+
+.main-content th, .main-content td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+}
+
+.main-content th {
+    background-color: #f2f2f2;
+}
+
+.main-content #inquiry > input[type="submit"] {
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.main-content ul {
+    list-style: none;
+    justify-content: center;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.main-content .flex {
+    display: flex;
+    justify-content: center;
+}
+
+.main-content li {
+    padding: 10px;
+    display: inline-block;
+}
+
+.main-content a {
+    text-decoration: none;
+    color: #007BFF;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.main-content a:hover {
+    background-color: #007BFF;
+    color: #fff;
+}
+
+</style>
+</head>
+
+<body>
+<header th:replace="nav.html" />
+<main class="main-content">
+    <aside th:replace="adminSide.html" />
+        <div class="admin-container">
+
+
+            <div class="container">
+                <div class="content">
+                    <h1><a th:href="@{/admin/inquiry/1}">MOVIE MOA</a></h1>
+                    <h2>신고 댓글 페이지</h2>
+
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>번호</th>
+                            <th>카테고리</th>
+                            <th>제목</th>
+                            <th>신고사유</th>
+                            <th>신고자</th>
+                            <th>신고날짜</th>
+                            <th>처분</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- 예시 데이터 -->
+                        <tr th:each="reportReply : ${reportReplys}">
+                            <td th:text="${reportReply.reportedReplyId}">번호</td>
+                            <td th:text="${reportReply.reportMenu}">카테고리</td>
+                            <td th:text="${reportReply.title}">제목</td>
+                            <td th:text="${reportReply.reportReason != null ? (#strings.length(reportReply.reportReason) > 8 ? #strings.substring(reportReply.reportReason, 0, 8) + '...' : reportReply.reportReason) : ''}">
+                                    신고사유</td>
+                            <td th:text="${reportReply.uname}">신고자</td>
+                            <td th:text="${reportReply.receivedDate}">신고날짜</td>
+                            <td>
+                                처분
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <ul class="right mm10 flex">
+                        <!-- 이전 버튼 -->
+                        <li th:if="${currentPage > 1}">
+                            <!-- 현재 페이지가 1보다 크면 이전 페이지로 이동하는 링크를 표시합니다 -->
+                            <a th:if="${searchOption == null && searchValue == null}"
+                               th:href="@{|${currentPage - 1}|}" th:text="이전">이전</a>
+                            <a th:if="${searchOption != null && searchValue != null}"
+                               th:href="@{|${currentPage - 1}?searchOption=${searchOption}&searchValue=${searchValue}|}"
+                               th:text="이전">이전</a>
+                        </li>
+
+                        <!-- 페이지 번호 그룹 -->
+                        <th:block th:with="startPageNum=${(currentPage - 1) / 5 * 5 + 1}">
+                            <th:block
+                                    th:with="endPageNum=${(startPageNum + 4) > totalPages ? totalPages : (startPageNum + 4)}">
+                                <!-- 페이지 번호 그룹을 계산합니다. 최대 페이지 번호를 초과하지 않도록 합니다 -->
+                                <th:block th:each="pageNumber : ${#numbers.sequence(startPageNum, endPageNum)}">
+                                    <!-- 결과 값이 없을 때, 페이지 번호를 출력하지 않도록 조건문을 사용합니다 -->
+                                    <!-- 각 페이지 번호를 나타내는 링크를 표시합니다 -->
+                                    <li th:if="${totalPages > 1}"
+                                        th:class="${pageNumber == currentPage} ? 'active' : ''">
+                                        <!-- 현재 페이지는 강조 표시됩니다 -->
+                                        <a th:if="${searchOption == null && searchValue == null}"
+                                           th:href="@{|${pageNumber}|}" th:text="${pageNumber}">1</a>
+                                        <a th:if="${searchOption != null && searchValue != null}"
+                                           th:href="@{|${pageNumber}?searchOption=${searchOption}&searchValue=${searchValue}|}"
+                                           th:text="${pageNumber}">1</a>
+                                    </li>
+                                </th:block>
+                            </th:block>
+                        </th:block>
+
+                        <!-- 다음 버튼 -->
+                        <li th:if="${currentPage < totalPages}">
+                            <!-- 현재 페이지가 총 페이지 수 미만이면 다음 페이지로 이동하는 링크를 표시합니다 -->
+                            <a th:if="${searchOption == null && searchValue == null}"
+                               th:href="@{|${currentPage + 1}|}" th:text="다음">다음</a>
+                            <a th:if="${searchOption != null && searchValue != null}"
+                               th:href="@{|${currentPage + 1}?searchOption=${searchOption}&searchValue=${searchValue}|}"
+                               th:text="다음">다음</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+</main>
+<footer th:replace="footer.html" />
+</body>
+</html>

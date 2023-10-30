@@ -1,0 +1,119 @@
+<!--<?xml version="1.0" encoding="UTF-8" ?>-->
+<!--<!DOCTYPE mapper-->
+<!--        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"-->
+<!--        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">-->
+
+<!--<mapper namespace="org.zerock.myapp.mapper.AdminMapper">-->
+
+<!--    &lt;!&ndash; 전체 회원 조회: 페이징 처리를 포함 &ndash;&gt;-->
+<!--    <select id="selectAllMember" resultType="org.zerock.myapp.domain.MemberVO">-->
+<!--        SELECT *-->
+<!--        FROM member-->
+<!--        ORDER BY id DESC-->
+<!--        OFFSET #{offset} row fetch next #{perPage} row only-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash; 이름 또는 이메일 또는 닉네임으로 회원 검색: 옵션에 따라 검색 .페이징 처리 포함. &ndash;&gt;-->
+<!--    <select id="selectMemberNameOrEmail" resultType="org.zerock.myapp.domain.MemberVO">-->
+<!--        SELECT * FROM member-->
+<!--        WHERE-->
+<!--        <if test="params.searchOption == 'name'">-->
+<!--            uname LIKE '%'||#{params.searchValue}||'%'-->
+<!--        </if>-->
+<!--        <if test="params.searchOption == 'email'">-->
+<!--            email LIKE '%'||#{params.searchValue}||'%'-->
+<!--        </if>-->
+<!--        <if test="params.searchOption == 'nickname'">-->
+<!--            nickname LIKE '%'||#{params.searchValue}||'%'-->
+<!--        </if>-->
+<!--        ORDER BY id DESC-->
+<!--        OFFSET #{offset} row fetch next #{perPage} row only-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash; 특정 회원 상세 정보 조회: ID를 기반으로 특정 회원의 상세 정보를 조회합니다. &ndash;&gt;-->
+<!--    <select id="selectDetailMember" resultType="org.zerock.myapp.domain.MemberVO">-->
+<!--        SELECT *-->
+<!--        FROM member-->
+<!--        WHERE id = #{dto.id}-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash; 회원 등록: 새로운 회원 정보를 데이터베이스에 등록 &ndash;&gt;-->
+<!--    <insert id="selectDetailMember">-->
+<!--        INSERT INTO MEMBER (-->
+<!--        name,-->
+<!--        email,-->
+<!--        nickname,-->
+<!--        password,-->
+<!--        phone_num-->
+<!--        )-->
+<!--        VALUES(-->
+<!--        #{dto.name},-->
+<!--        #{dto.email},-->
+<!--        #{dto.nickname},-->
+<!--        #{dto.password},-->
+<!--        #{dto.phoneNum}-->
+<!--        )-->
+<!--    </insert>-->
+
+<!--    &lt;!&ndash; 특정 회원정보 변경 &ndash;&gt;-->
+<!--    <update id="updateMypageMember">-->
+<!--        UPDATE member-->
+<!--        <set>-->
+<!--            <if test="changePW != null and changePW != ''">-->
+<!--                password = #{changePW},-->
+<!--            </if>-->
+<!--            <if test="nickname != null and nickname != ''">-->
+<!--                nickname = #{nickname},-->
+<!--            </if>-->
+<!--            <if test="address != null and address != ''">-->
+<!--                address = #{address},-->
+<!--            </if>-->
+<!--            <if test="phoneNum != null and phoneNum != ''">-->
+<!--                phone_num = #{phoneNum},-->
+<!--            </if>-->
+<!--            <if test="birthday != null and birthday != ''">-->
+<!--                birthday = #{birthday},-->
+<!--            </if>-->
+<!--        </set>-->
+<!--        WHERE id = #{id}-->
+<!--    </update>-->
+
+<!--    &lt;!&ndash; 회원 정보 수정: 특정 회원의 정보(닉네임, 주소, 전화번호, 역할)를 수정 &ndash;&gt;-->
+<!--    <update id="updateMember">-->
+<!--        UPDATE member SET-->
+<!--        nickname = #{dto.nickname},-->
+<!--        address = #{dto.address},-->
+<!--        phone_num = #{dto.phoneNum},-->
+<!--        role = #{dto.role}-->
+<!--        WHERE-->
+<!--        id = #{dto.id}-->
+<!--    </update>-->
+
+<!--    &lt;!&ndash; 회원 삭제: ID를 기반으로 특정 회원 정보를 삭제 &ndash;&gt;-->
+<!--    <delete id="deleteMember">-->
+<!--        delete from member-->
+<!--        where id = #{dto.id}-->
+<!--    </delete>-->
+
+<!--    &lt;!&ndash; 전체 회원 수 조회: 데이터베이스에 등록된 전체 회원 수를 조회 &ndash;&gt;-->
+<!--    <select id="totalMemberCount" resultType="Integer">-->
+<!--        SELECT count(id)-->
+<!--        FROM member-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash; 검색된 회원 수 조회: 검색 옵션에 따라 검색된 회원의 수를 조회 &ndash;&gt;-->
+<!--    <select id="selectTotalSearchCount" resultType="Integer">-->
+<!--        SELECT count(id) FROM member-->
+<!--        WHERE-->
+<!--        <if test="params.searchOption == 'name'">-->
+<!--            uname LIKE '%'||#{params.searchValue}||'%'-->
+<!--        </if>-->
+<!--        <if test="params.searchOption == 'email'">-->
+<!--            email LIKE '%'||#{params.searchValue}||'%'-->
+<!--        </if>-->
+<!--        <if test="params.searchOption == 'nickname'">-->
+<!--            nickname LIKE '%'||#{params.searchValue}||'%'-->
+<!--        </if>-->
+<!--    </select>-->
+
+<!--</mapper>-->

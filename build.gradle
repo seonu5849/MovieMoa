@@ -1,0 +1,72 @@
+plugins {
+	id 'java'
+	id 'war'
+	id 'org.springframework.boot' version '3.1.4'
+	id 'io.spring.dependency-management' version '1.1.3'
+}
+
+group = 'org.zerock'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+	targetCompatibility = '17'
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+	testCompileOnly {
+		extendsFrom testAnnotationProcessor
+	}
+}
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+}
+
+dependencies {
+	// 1. Essentially Fundamental Dependencies for Web
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	// 2. Mybatis Dependencies for Spring Boot v3.x
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.2'
+	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.2'
+
+	// 3. lombok
+	annotationProcessor 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+
+	// 4. JDBC Drivers for H2, Oracle MySQL & Oracle OCID
+	runtimeOnly 'com.h2database:h2'
+//	runtimeOnly 'com.mysql:mysql-connector-j'
+	runtimeOnly('com.oracle.database.jdbc:ojdbc8-production:'){
+		exclude group: 'com.oracle.database.ha', module: 'ons'
+		exclude group: 'com.oracle.database.ha', module: 'simplefan'
+		exclude group: 'com.oracle.database.jdbc', module: 'rsi'
+		exclude group: 'com.oracle.database.xml', module: 'xdb'
+		exclude group: 'com.oracle.database.xml', module: 'xmlparserv2'
+	}
+
+	// 5. Spring-Security
+	implementation 'org.springframework.security:spring-security-taglibs'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:'
+	testImplementation 'org.springframework.security:spring-security-test'
+
+	// 6. Etc
+	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+}
+
+test{
+//tasks.named('test') {
+	useJUnitPlatform()
+}

@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>detailProduct</title>
+    <style>
+    #modal.modal-overlay {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.6);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        -webkit-backdrop-filter: blur(1.5px);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    #modal .modal-window {
+        background: rgb(255 255 255);
+        box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+        backdrop-filter: blur( 13.5px );
+        -webkit-backdrop-filter: blur( 13.5px );
+        border-radius: 10px;
+        border: 1px solid rgba( 255, 255, 255, 0.18 );
+        width: 400px;
+        height: 500px;
+        position: relative;
+        top: -100px;
+        padding: 10px;
+    }
+    #modal .header {
+        border-bottom: 1px solid #bdbdbd;
+    }
+    #modal .title {
+        padding-left: 10px;
+        display: inline;
+        color: #414141;
+    }
+    #modal .title h2 {
+        display: inline;
+    }
+    #modal .close-area {
+        display: inline;
+        float: right;
+        padding-right: 10px;
+        cursor: pointer;
+        text-shadow: 1px 1px 2px gray;
+        color: white;
+    }
+
+    #modal .content {
+        margin-top: 10px;
+        padding: 0px 10px;
+        color: #414141;
+    }
+
+    .main-content {
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .product-thumbnail {
+        width: 740px;
+        height: 300px;
+    }
+
+    .product-details {
+        margin-left: 40px;
+    }
+
+    .product-detail {
+        margin: 0px 0px 15px 0px;
+    }
+
+    .first-detail {
+        margin: 100px 0px 15px 0px;
+    }
+
+    .review-button-area {
+        text-align: -webkit-right;
+    }
+
+    .review-textarea {
+        width: 100%;
+        margin-top: 10px;
+    }
+    </style>
+</head>
+<body>
+<header th:replace="nav.html" />
+<main>
+    <aside th:replace="storeSide.html" />
+    <div class="main-content">
+        <img th:src="${product.thumbnail_path}" class="product-thumbnail" />
+        <div class="product-details">
+            <div class="product-detail first-detail" th:text="'상품명 | ' + ${product.product_name}"></div>
+            <div class="product-detail" th:text="'상품 구성 | ' + ${product.product_content}"></div>
+            <div class="product-detail" th:text="'가격 | ' + ${product.price}"></div>
+            <div class="product-detail" th:text="'상품 분류 | ' + ${product.kategorie_name}"></div>
+            <button id="btn-modal">포토후기</button>
+        </div>
+    </div>
+
+    <div id="modal" class="modal-overlay">
+        <div class="modal-window">
+            <!-- Existing modal content -->
+            <div class="content">
+                <div class="review-button-area">
+                    <button id="regBtn">등록</button>
+                </div>
+                <textarea class="review-textarea"></textarea>
+            </div>
+        </div>
+    </div>
+</main>
+<footer th:replace="footer.html" />
+<script>
+
+    const regBtn = document.getElementById("regBtn");
+        regBtn.addEventListener("click", e => {
+            alert("등록버튼 클릭");
+    });
+
+    const modal = document.getElementById("modal");
+    const btnModal = document.getElementById("btn-modal");
+    btnModal.addEventListener("click", e => {
+        modal.style.display = "flex";
+    });
+    const closeBtn = modal.querySelector(".close-area")
+        closeBtn.addEventListener("click", e => {
+            modal.style.display = "none"
+    })
+    modal.addEventListener("click", e => {
+        const evTarget = e.target;
+        if(evTarget.classList.contains("modal-overlay")) {
+            modal.style.display = "none";
+        }
+    })
+</script>
+</body>
+</html>

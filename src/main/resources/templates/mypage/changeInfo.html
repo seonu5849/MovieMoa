@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<meta charset="UTF-8">
+<meta name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>MOVIE MOA</title>
+<style>
+    .main{
+        grid-area: main;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .profile-section {
+        width: 400px;
+        margin: 20px auto;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        background-color: #f6f6f6;
+    }
+
+    .content {
+        margin-top: 20px;
+    }
+
+    .content label {
+        display: block;
+        margin-top: 20px;
+        margin-bottom: 5px;
+        font-size: 1em;
+        font-weight: normal;
+    }
+
+    .content input[type="text"],
+    .content input[type="password"],
+    .content input[type="tel"],
+    .content input[type="date"] {
+        width: 95%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1em;
+    }
+
+    .alert {
+        color: red;
+        margin-bottom: 15px;
+    }
+
+    .buttons{
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .button-link{
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        background-color: #007BFF;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .button-link:hover {
+        background-color: #0056b3;
+    }
+
+    button {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        background-color: #007BFF;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-size: 1.0em;
+        font-weight: bold;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+</style>
+</head>
+
+<body>
+<header th:replace="nav.html" />
+<main>
+    <aside th:replace="mypageSide.html" />
+    <div class="main">
+    <form class="profile-section" action="/mypage/changeInfo" method="POST" id="changeInfoForm">
+        <input type="hidden" name="_method" value="PUT">
+        <div class="content">
+            <h2>회원정보 수정</h2>
+            <label for="password">비밀번호 변경</label>
+            <input type="password" id="password" name="passwordInput">
+
+            <label for="confirmPassword">비밀번호 확인</label>
+            <input type="password" id="confirmPassword" name="confirmPassword">
+            <div th:if="${error}">
+                <div class="alert alert-danger">
+                    비밀번호를 확인해 주세요.
+                </div>
+            </div>
+            <label for="nickname">닉네임</label>
+            <input type="text" id="nickname" name="nickname" th:placeholder="${member.nickname}">
+
+            <label for="phoneNum">휴대폰 번호</label>
+            <input type="tel" id="phoneNum" name="phoneNum" th:placeholder="${member.phoneNum}" minlength="13" maxlength="13" pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}">
+
+            <label for="address">주소</label>
+            <input type="text" id="address" name="address" th:placeholder="${member.address}">
+
+            <label for="birthday">생년월일</label>
+            <input type="date" id="birthday" name="birthday" th:placeholder="${member.birthday}">
+
+            <div class="buttons">
+                <button type="submit">수정하기</button>
+                <a th:href="@{/mypage/menu/myInfo}" class="button-link">취소</a>
+            </div>
+        </div>
+    </form>
+</div>
+</main>
+<footer th:replace="footer.html" />
+<script th:inline="javascript">
+    document.getElementById('changeInfoForm').addEventListener('submit', function(e) {
+
+        // 닉네임 필드가 비어 있으면 타임리프 변수를 사용하여 기본값 설정
+        if (!document.getElementById('nickname').value) {
+            document.getElementById('nickname').value = /*[[${member.nickname}]]*/;
+        }
+
+        // 주소 필드가 비어 있으면 타임리프 변수를 사용하여 기본값 설정
+        if (!document.getElementById('address').value) {
+            document.getElementById('address').value = /*[[${member.address}]]*/;
+        }
+
+        // 생년월일 필드가 비어 있으면 타임리프 변수를 사용하여 기본값 설정
+        if (!document.getElementById('birthday').value) {
+            document.getElementById('birthday').value = /*[[${member.birthday}]]*/;
+        }
+
+        // 휴대폰 번호 필드가 비어 있으면 타임리프 변수를 사용하여 기본값 설정
+        if (!document.getElementById('phoneNum').value) {
+            document.getElementById('phoneNum').value = /*[[${member.phoneNum}]]*/;
+        }
+        return true;
+    });
+    /*<![CDATA[*/
+        function showConfirmationAndRedirect() {
+            alert('회원정보가 수정되었습니다.');
+            window.location.href = /*[[@{/mypage/menu/myInfo}]]*/ '/mypage/menu/myInfo'; // 리다이렉트할 URL
+        }
+
+        // 페이지 로딩 시 `updateSuccess` 속성을 확인하여 함수 호출
+        if ([[${updateSuccess}]]) {
+            showConfirmationAndRedirect();
+        }
+        /*]]>*/
+</script>
+
+</body>
+
+</html>

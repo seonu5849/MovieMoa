@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.zerock.myapp.mapper.ProductMapper">
+
+    <!-- 카테고리 목록 조회: 모든 카테고리의 목록을 조회 -->
+    <select id="findKategorieList" resultType="org.zerock.myapp.domain.StoreKategoriesVO">
+        SELECT
+        *
+        FROM
+        storekategories
+        ORDER BY id DESC
+    </select>
+
+    <!-- 특정 카테고리의 제품 목록 조회: 지정된 카테고리에 속하는 모든 제품의 목록을 조회 -->
+    <select id="findProductList" resultType="org.zerock.myapp.domain.StoreKategoriesVO">
+        SELECT
+        store.*,
+        storekategories.name
+        FROM
+        store
+        LEFT OUTER JOIN storekategories ON store.kategorie_id = storekategories.id
+        WHERE
+        store.kategorie_id = #{kategorieId}
+        ORDER BY store.id DESC
+    </select>
+
+    <!-- 특정 제품 상세 조회: 지정된 제품 ID에 해당하는 제품의 상세 정보를 조회 -->
+    <select id="findProduct" resultType="org.zerock.myapp.domain.StoreKategoriesVO">
+        SELECT
+        store.*,
+        storekategories.name
+        FROM
+        store
+        LEFT OUTER JOIN storekategories ON store.kategorie_id = storekategories.id
+        WHERE
+        store.id = #{id}
+    </select>
+
+    <!-- 제품 추가: 새로운 제품 정보를 store 테이블에 추가 -->
+    <insert id="insertProduct">
+        INSERT INTO store (
+        admin_id,
+        title,
+        content,
+        price,
+        kategorie_id,
+        usage_location
+        )
+        values (
+        #{product.adminId},
+        #{product.title},
+        #{product.content},
+        #{product.price},
+        #{product.kategorieId},
+        #{product.usageLocation}
+        )
+    </insert>
+
+    <!-- 제품 수정: 기존의 제품 정보를 store 테이블에서 업데이트 -->
+    <update id="updateProduct">
+        UPDATE store
+        <set>
+            admin_id = #{product.adminId},
+            title = #{product.title},
+            <if test="product.content != null and product.content != ''">
+                content = #{product.content},
+            </if>
+            <if test="product.price != null and product.price != ''">
+                price = #{product.price},
+            </if>
+            kategorie_id = #{product.kategorieId},
+            usage_location = #{product.usagelocation},
+            updated_at = CURRENT_TIMESTAMP
+        </set>
+        WHERE
+        id = #{product.id};
+    </update>
+
+    <!-- 제품 삭제: 지정된 제품 ID에 해당하는 제품을 store 테이블에서 삭제 -->
+    <delete id="deleteProduct">
+        DELETE FROM store WHERE id = #{id}
+    </delete>
+
+    <!-- 제품 상세 조회: 제품 ID에 해당하는 제품의 상세 정보를 조회 -->
+    <select id="selectProductById" resultType="org.zerock.myapp.domain.StoreVO">
+        SELECT
+        *
+        FROM
+        store
+        WHERE
+        id = #{id}
+    </select>
+
+    <!-- 모든 제품 조회: store 테이블의 모든 제품 정보를 조회 -->
+    <select id="selectAllProducts" resultType="org.zerock.myapp.domain.StoreVO">
+        SELECT
+        *
+        FROM
+        store
+    </select>
+
+</mapper>

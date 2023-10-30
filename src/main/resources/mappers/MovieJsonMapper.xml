@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.zerock.myapp.mapper.JsonMapper">
+
+    <!--JSON Data를 DB에 입력하는 Mapper-->
+
+    <!-- Movie 정보를 DB에 저장 -->
+    <insert id="insertMovie" parameterType="org.zerock.myapp.domain.json.Movies">
+        INSERT INTO movies (
+        id,
+        original_title,
+        title,
+        release_date,
+        runtime,
+        poster_path,
+        vote_average,
+        popularity,
+        backdrop_path,
+        overview,
+        status,
+        tagline,
+        homepage
+        )
+        VALUES (
+        #{id},
+        #{original_title},
+        #{title},
+        #{release_date},
+        #{runtime},
+        #{posterPath},
+        #{vote_average},
+        #{popularity},
+        #{backdrop_path},
+        #{overview},
+        #{status},
+        #{tagline},
+        #{homepage}
+        )
+    </insert>
+
+    <!-- MovieOfGenre 정보를 DB에 저장 -->
+    <insert id="insertMovieOfGenre" parameterType="org.zerock.myapp.domain.json.Movies">
+        insert into moviegenres  (movie_id, genre_id)
+        values (#{movieId}, #{id})
+    </insert>
+
+    <!-- Genre 정보를 DB에 저장 -->
+    <insert id="insertGenre" parameterType="org.zerock.myapp.domain.json.GenreAll">
+        insert into genres (id, name)
+        values (#{id}, #{name})
+    </insert>
+
+    <!-- Certification 정보를 DB에 저장 -->
+    <insert id="insertCertification" parameterType="map">
+        INSERT INTO certifications(movie_id, iso_3166_1, certification)
+        VALUES (#{movieId}, #{isoCode}, #{certification})
+    </insert>
+
+    <!-- Cast 정보를 DB에 저장 -->
+    <insert id="insertCast" parameterType="map">
+        INSERT INTO credits  (movie_id, id, name, department, character, profile_path, job)
+        VALUES (#{movieId}, #{cast.id}, #{cast.name}, NULL, #{cast.characterName},
+        #{cast.profilePath, jdbcType=VARCHAR}, 'Actor')
+    </insert>
+
+    <!-- Crew 정보를 DB에 저장 -->
+    <insert id="insertCrew" parameterType="map">
+        INSERT INTO credits  (movie_id, id, name, department, character, profile_path, job)
+        VALUES (#{movieId}, #{crew.id}, #{crew.name}, #{crew.department}, NULL,
+        #{crew.profilePath, jdbcType=VARCHAR}, #{crew.job})
+    </insert>
+
+</mapper>

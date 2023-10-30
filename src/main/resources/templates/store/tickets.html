@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>MOVIE MOA</title>
+    <style>
+        .nav-item {
+            width: 22%;
+            margin-right: 2%;
+            text-align: left;
+            display: inline-block;
+            color: #fff;
+            background-color: #007bff;
+        }
+
+        .product-container {
+            width: 30%;
+            margin-right: 2%;
+            display: inline-block;
+        }
+
+        .product-image {
+            width: 100%;
+        }
+
+        .button-link {
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+
+        .clear-both {
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+<header th:replace="nav.html" />
+<main>
+    <aside th:replace="storeSide.html" />
+    <div class="main-content">
+    <ul>
+        <th:block th:each="kategorie : ${kategorieList}">
+            <li class="nav-item">
+                <a class="button-link"
+                   th:href="@{'/store/tickets?kategorie=' + ${kategorie.kategorie_id}}"
+                   th:text="${kategorie.kategorie_name}">
+                </a>
+            </li>
+        </th:block>
+    </ul>
+    <ul>
+        <th:block th:each="product, stat : ${productList}">
+            <li class="product-container">
+                <div>
+                    <a class="button-link"
+                       th:href="@{'/store/detailProduct/' + ${product.product_id}}">
+                        <img class="product-image" th:src="${product.thumbnail_path}" />
+                    </a>
+                </div>
+                <div th:text="${product.product_name}"></div>
+                <div th:text="${product.price}"></div>
+                <!-- 3개씩 표시 -->
+                <th:if test="${stat.index % 3 == 2}">
+                    <div class="clear-both"></div>
+                </th:if>
+            </li>
+        </th:block>
+    </ul>
+    </div>
+</main>
+<footer th:replace="footer.html" />
+</body>
+</html>

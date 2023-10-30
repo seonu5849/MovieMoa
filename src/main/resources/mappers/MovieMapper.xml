@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.zerock.myapp.mapper.MovieMapper">
+
+    <!-- 전체영화목록 -->
+    <select id="findAllMovies" resultType="org.zerock.myapp.domain.MovieVO">
+        SELECT
+        *
+        FROM
+        movies
+        ORDER BY
+        release_date DESC
+    </select>
+
+    <!-- 제목, 감독명, 배우명으로 검색할 때 -->
+    <select id="searchMovies" resultType="org.zerock.myapp.domain.MovieVO">
+        SELECT DISTINCT m.*
+        FROM movies m
+        LEFT JOIN credits c ON m.id = c.movie_id
+        WHERE
+        <if test="searchCategory == 'title'">
+            (LOWER(m.title)  LIKE '%' || LOWER(#{searchInput}) || '%'
+            OR LOWER(m.original_title) LIKE '%' || LOWER(#{searchInput}) || '%')
+        </if>
+        <if test="searchCategory == 'credits'">
+            LOWER(c.name) LIKE '%' || LOWER(#{searchInput}) || '%'
+        </if>
+        ORDER BY
+        release_date DESC
+    </select>
+
+    <!-- 장르별 검색 -->
+    <select id="searchByGenre" resultType="org.zerock.myapp.domain.MovieVO">
+        SELECT
+        DISTINCT m.*
+        FROM
+        Movies m
+        JOIN
+        MovieGenres mg ON m.id = mg.movie_id
+        JOIN
+        genres g ON mg.genre_id = g.id
+        WHERE
+        g.name IN
+        <foreach item="genre" index="index" collection="genres" open="(" separator="," close=")">
+            #{genre}
+        </foreach>
+    </select>
+
+    <!-- 개봉일자 검색 -->
+    <select id="searchByDate" resultType="org.zerock.myapp.domain.MovieVO">
+        SELECT m.*
+        FROM movies m
+        WHERE release_date BETWEEN #{startDate} AND #{endDate}
+        ORDER BY release_date DESC
+    </select>
+
+    <!--========================================================================================-->
+
+    <!-- 특정 영화 조회 -->
+    <select id="findDetailMovie" resultType="org.zerock.myapp.domain.MovieVO">
+        SELECT
+        *
+        FROM
+        movies
+        WHERE
+        id = #{movieId}
+    </select>
+
+    <!-- 특정 영화 내 장르 조회 -->
+    <select id="genreOfMovies" resultType="org.zerock.myapp.domain.MovieGenreVO">
+        SELECT DISTINCT g.*
+        FROM genres g
+        JOIN MovieGenres mg ON g.id = mg.genre_id
+        WHERE mg.movie_id = #{movieId}
+    </select>
+
+    <!-- 특정 영화 내 제작참여자 중 배우만 조회 -->
+    <select id="castsOfMovies" resultType="org.zerock.myapp.domain.CreditsVO">
+        SELECT c.*
+        FROM (
+        SELECT *, ROW_NUMBER() OVER (PARTITION BY profile_path ORDER BY profile_path) AS rn
+        FROM Credits
+        WHERE movie_id = #{movieId}
+        AND job = 'Actor'
+        ) c
+        WHERE c.rn = 1
+    </select>
+
+    <!-- 특정 영화 내 제작참여자 중 스태프만 조회 -->
+    <select id="crewsOfMovies" resultType="org.zerock.myapp.domain.CreditsVO">
+        SELECT c.*
+        FROM (
+        SELECT *, ROW_NUMBER() OVER (PARTITION BY profile_path ORDER BY profile_path) AS rn
+        FROM Credits
+        WHERE movie_id = #{movieId}
+        AND job != 'Actor'
+        ) c
+        WHERE c.rn = 1
+    </select>
+
+    <!-- 특정 영화 내 관람등급 조회 -->
+    <select id="certificationsOfMovies" resultType="org.zerock.myapp.domain.CertificationVO">
+        SELECT * FROM Certifications WHERE movie_id = #{movieId}
+    </select>
+
+    <!-- 특정 영화의 게시글 조회 -->
+    <select id="findBoardByMovie" resultType="org.zerock.myapp.domain.authorOfBoardVO">
+        SELECT b.*, m.nickname
+        FROM Board b
+        JOIN member m ON b.member_id = m.id
+        WHERE b.movie_id = #{movieId}
+        ORDER BY b.created_at DESC
+    </select>
+
+    <!-- totalCount 쿼리 -->
+    <select id="totalCount" resultType="integer">
+        SELECT COUNT(*)
+        FROM movies
+    </select>
+
+    <!--DB에서 접근해서 뽑는 mapper-->
+</mapper>

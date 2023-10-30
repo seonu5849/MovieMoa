@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<meta charset="UTF-8">
+<meta name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>MOVIE MOA</title>
+<style>
+    main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    form {
+        width: 100%;
+        max-width: 400px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .alert {
+        color: red;
+        margin-bottom: 15px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .form-control {
+        width: 90%;
+        padding: 10px 15px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 10px 15px;
+        background-color: #007BFF;
+        border: none;
+        border-radius: 4px;
+        color: #ffffff;
+        cursor: pointer;
+    }
+    .email-check-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .email-check-group input {
+        flex: 1;
+        margin-right: 10px;
+    }
+
+    .email-check-group button {
+        white-space: nowrap;
+        padding: 10px 15px;
+        background-color: #007BFF;
+        border: none;
+        border-radius: 4px;
+        color: #ffffff;
+        cursor: pointer;
+    }
+
+    .email-check-group button:hover {
+        background-color: #0056b3;
+    }
+
+
+    .btn:hover {
+        background-color: #0056b3;
+    }
+</style>
+</head>
+<body>
+<header th:replace="nav.html" />
+<main>
+    <form th:action="@{/registration}" method="post">
+        <div th:if="${param.error}">
+            <div class="alert alert-danger">
+                *
+            </div>
+        </div>
+        <hr>
+        <label for="email" class="form-label">Email</label>
+        <div class="email-check-group">
+            <input type="email" class="form-control" name="email" id="email" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" size="30" required>
+            <button type="button" id="checkEmail">중복체크</button>
+        </div>
+        <div>
+            <label for="password" class="form-label">비밀번호</label>
+            <input type="password" name="password" id="password" class="form-control" required>
+        </div>
+        <div>
+            <label for="name" class="form-label">이름</label>
+            <input type="text" name="name" id="name" class="form-control" required>
+        </div>
+        <div>
+            <label for="nickname" class="form-label">닉네임</label>
+            <input type="text" name="nickname" id="nickname" class="form-control" required>
+        </div>
+        <div>
+            <label for="phoneNum" class="form-label">전화번호</label>
+            <input class="form-control" type="tel" id="phoneNum" name="phoneNum" minlength="13" maxlength="13"
+                placeholder="010-1234-5678" pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}" required>
+        </div>
+        <button type="submit" class="btn btn-primary">회원가입</button>
+    </form>
+</main>
+<footer th:replace="footer.html" />
+</body>
+<script>
+    document.getElementById('checkEmail').addEventListener('click', function() {
+        var email = document.getElementById('email').value;
+
+        fetch('/checkEmail', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: email })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.isEmailAvailable) {
+                alert("사용 가능한 이메일입니다.");
+            } else {
+                alert("이미 사용 중인 이메일입니다.");
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    });
+</script>
+</html>

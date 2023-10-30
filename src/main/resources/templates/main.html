@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>MOVIE MOA</title>
+<style>
+    main {
+        font-family: Arial, sans-serif;
+        background-color: #f1f1f1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+    .container {
+        display: flex;
+    }
+    .main-content {
+        flex: 3;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .reference-content {
+        flex: 1;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-right: 20px;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: white;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    input[type="text"] {
+        padding: 10px 15px;
+        font-size: 16px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        width: 300px;
+    }
+    input[type="submit"] {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #4285f4;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    input[type="submit"]:hover {
+        background-color: #357ab8;
+    }
+</style>
+</head>
+<body>
+<header th:replace="nav.html" />
+<main class="main-content">
+    <div class="container">
+        <div class="reference-content">
+            <p>사용자의 이름 : </p><p th:text="${username}">username</p>
+            <p>사용자가 가진 권한 : </p><p th:text="${authorities}">authorities</p>
+            <p>자격 증명 정보 : </p><p th:text="${credentials}">credentials</p>
+            <p>주요 정보를 나타내는 객체 : </p><p th:text="${principal}">principal</p>
+            <p>추가 세부 정보 : </p><p th:text="${details}">details</p>
+        </div>
+        <div class="main-content">
+            <form action="/movie/searchMovies" method="get" id="movieTitleForm">
+                <h2>MOVIE MOA</h2>
+                <label for="searchInput"></label>
+                <input type="text" id="searchInput" name="searchInput" placeholder="Search for movies...">
+                <input type="hidden" id="searchCategory" name="searchCategory" value="title">
+                <input type="submit" value="Search">
+            </form>
+        </div>
+    </div>
+</main>
+<footer th:replace="footer.html" />
+</body>
+</html>

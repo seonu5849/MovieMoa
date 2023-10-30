@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>MOVIE MOA</title>
+<style>
+    main {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        display: grid;
+        grid-template-columns: 1fr 4fr;
+        grid-template-areas:
+            'aside main';
+    }
+
+    aside {
+        grid-area: aside;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.2em;
+        font-weight: bold;
+        background-color: #007bff;
+        color: #fff;
+        padding: 10px;
+    }
+
+    .sidebar li {
+        padding: 10px 0;
+    }
+
+    /* 초기에 하위 메뉴를 숨김 */
+    li.mhover > ul {
+      display: none;
+      opacity: 0;
+      transition: opacity 1s; /* 투명도 변경을 부드럽게 애니메이션화 */
+    }
+
+    /* 마우스 호버 시 하위 메뉴 표시 */
+    li.mhover:hover > ul {
+        display: block;
+        opacity: 1;
+    }
+
+    .ml10{
+        margin-left: 30px;
+        font-size: 10px;
+    }
+
+</style>
+<body>
+<aside class="item" th:fragment="aside">
+    <div class="sidebar">
+        <ul>
+            <li class="line"><a th:href=@{/admin/memberList/1}>회원목록</a></li>
+            <li class="line"><a th:href=@{/admin/event/1}>이벤트</a></li>
+            <li class="line"><a th:href=@{/admin/product/1}>상품</a></li>
+            <li class="line"><a th:href=@{/admin/inquiry/1}>문의관리</a></li>
+            <li class="noline mhover">
+                신고관리
+                <ul>
+                    <li class="noline ml10"><a th:href=@{/admin/boardComplaint/1}>신고 게시글</a></li>
+                    <li class="noline ml10"><a th:href=@{/admin/replyComplaint/1}>신고 댓글</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</aside>
+</body>
+</html>
