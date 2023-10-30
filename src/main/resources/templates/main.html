@@ -85,7 +85,7 @@
 <header th:replace="nav.html" />
 <main class="main-content">
     <div class="container">
-        <div class="reference-content">
+        <div class="reference-content" sec:authorize="hasRole('ADMIN')">
             <p>사용자의 이름 : </p><p th:text="${username}">username</p>
             <p>사용자가 가진 권한 : </p><p th:text="${authorities}">authorities</p>
             <p>자격 증명 정보 : </p><p th:text="${credentials}">credentials</p>
