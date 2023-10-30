@@ -8,6 +8,9 @@
     <style>
         .outer-div {
             grid-area: main;
+            width: 100%;
+            height: 100%;
+            text-align: -webkit-center;
         }
         .nav-item {
             width: 22%;
@@ -18,11 +21,6 @@
         }
         .nav-link img {
             width: 100%;
-        }
-        .outer-div {
-            width: 100%;
-            height: 100%;
-            text-align: -webkit-center;
         }
         .main-container {
             width: 950px;
@@ -35,40 +33,44 @@
             position: absolute;
             margin: 8px 0px 0px -120px;
         }
+        .bottom-right {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+        }
     </style>
 </head>
 <body>
 <header th:replace="nav.html" />
 <main>
     <aside th:replace="eventSide.html" />
-<div class="outer-div">
-    <div class="main-container">
-        <div style="position: absolute; bottom: 20px; right: 20px;">
-            <a class="btn btn-primary register-button">등록</a>
-        </div>
-        <div>
-            <ul>
-                <th:block th:each="event : ${eventList}">
-                    <li class="nav-item">
-                        <a class="nav-link"
-                           th:href="@{'/event/detailEvent/'+${event.id}}">
-                            <img th:src="${event.thumbnailPath}" />
-                        </a>
-                    </li>
-                </th:block>
-            </ul>
-        </div>
-        <div>
-            <ul>
-                <th:block th:each="pageNumber : ${#numbers.sequence(1, totalPages)}">
-                    <li th:class="${pageNumber == currentPage} ? 'active' : ''">
-                        <a th:href="@{'/event/currentEvents?proceedingYn='+${proceedingYn}+'&pageNum='+${pageNumber}}" th:text="${pageNumber}"></a>
-                    </li>
-                </th:block>
-            </ul>
+    <div class="outer-div">
+        <div class="main-container">
+            <div class="bottom-right">
+                <a class="btn btn-primary register-button">등록</a>
+            </div>
+            <div>
+                <ul>
+                    <th:block th:each="event : ${eventList}">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{'/event/detailEvent/'+${event.id}}">
+                                <img th:src="${event.thumbnailPath}" />
+                            </a>
+                        </li>
+                    </th:block>
+                </ul>
+            </div>
+            <div>
+                <ul>
+                    <th:block th:each="pageNumber : ${#numbers.sequence(1, totalPages)}">
+                        <li th:class="${pageNumber == currentPage} ? 'active' : ''">
+                            <a th:href="@{'/event/currentEvents?proceedingYn='+${proceedingYn}+'&pageNum='+${pageNumber}}" th:text="${pageNumber}"></a>
+                        </li>
+                    </th:block>
+                </ul>
+            </div>
         </div>
     </div>
-</div>
 </main>
 <footer th:replace="footer.html" />
 </body>

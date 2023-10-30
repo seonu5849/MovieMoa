@@ -37,27 +37,30 @@
         .btn-delete {
             margin-left: 120px;
         }
+        .center-text {
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 <header th:replace="nav.html" />
 <main>
     <aside th:replace="eventSide.html" />
-<div class="outer-div">
-    <div class="main-container">
-        <div>
-            <h1 th:text="${event.title}" class="event-title"></h1>
-            <p th:text="'기간 | ' + ${#dates.format(event.start_at, 'yyyy-MM-dd (E)')} + ' ~ ' + ${#dates.format(event.end_at, 'yyyy-MM-dd (E)')}" class="event-period"></p>
-        </div>
-        <div>
-            <img th:src="${event.contents_path}" class="event-img" />
-        </div>
-        <div style="text-align: center;">
-            <a class="btn btn-primary">수정</a>
-            <a class="btn btn-primary btn-delete">삭제</a>
+    <div class="outer-div">
+        <div class="main-container">
+            <div>
+                <h1 th:text="${event.title}" class="event-title"></h1>
+                <p th:text="'기간 | ' + ${#dates.format(event.start_at, 'yyyy-MM-dd (E)')} + ' ~ ' + ${#dates.format(event.end_at, 'yyyy-MM-dd (E)')}" class="event-period"></p>
+            </div>
+            <div>
+                <img th:src="${event.contents_path}" class="event-img" />
+            </div>
+            <div class="center-text">
+                <a class="btn btn-primary">수정</a>
+                <a class="btn btn-primary btn-delete">삭제</a>
+            </div>
         </div>
     </div>
-</div>
 </main>
 <footer th:replace="footer.html" />
 </body>
