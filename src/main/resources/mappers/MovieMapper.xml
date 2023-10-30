@@ -15,6 +15,16 @@
         release_date DESC
     </select>
 
+    <!-- 전체영화목록 관리자 전용 -->
+    <select id="findAllMoviesmanagerOnly" resultType="org.zerock.myapp.domain.MovieVO">
+        SELECT
+        *
+        FROM
+        movies
+        ORDER BY
+        id ASC
+    </select>
+
     <!-- 제목, 감독명, 배우명으로 검색할 때 -->
     <select id="searchMovies" resultType="org.zerock.myapp.domain.MovieVO">
         SELECT DISTINCT m.*

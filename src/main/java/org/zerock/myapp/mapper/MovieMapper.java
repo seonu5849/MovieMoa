@@ -36,6 +36,9 @@ public interface MovieMapper {
     // DB 내 모든 영화 목록
     public abstract List<MovieVO> findAllMovies();
 
+    // 전체 영화 목록 관리자 전용
+    public abstract List<MovieVO> findAllMoviesmanagerOnly();
+
     // 제목, 감독명, 영화 제작 참여자 명으로 검색
     public abstract List<MovieVO> searchMovies(@Param("searchInput") String searchInput, @Param("searchCategory") String searchCategory);
 

@@ -9,6 +9,9 @@ public interface MovieService {
     // 전체 영화 목록
     public abstract List<MovieVO> findAllMovies();
 
+    // 전체 영화 목록 관리자 전용
+    public abstract List<MovieVO> findAllMoviesmanagerOnly();
+
     // 제목, 스태프명, 배우명으로 검색
     public abstract List<MovieVO> searchMovies(String searchInput, String searchCategory);
 

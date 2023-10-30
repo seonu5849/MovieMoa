@@ -52,11 +52,23 @@ public class MovieController {
         return "movie/movieData";
     } // moviesData
 
+    // 영화 전체 목록 관리자전용
+    @GetMapping("/movieDataList")
+    public String movieDataListView(Model model) {
+        log.trace("movieDataListView() invoked.");
+
+        List<MovieVO> allMovies = movieService.findAllMoviesmanagerOnly();
+        allMovies.forEach(log::info);
+
+        model.addAttribute("moviesList", allMovies);
+
+        return "movie/movieDataList";
+    } // movieDataListView
+
     // 영화 전체 목록
     @GetMapping("/movies")
     public String movieView(Model model) {
         log.trace("movieView() invoked.");
-
 
         List<MovieVO> allMovies = movieService.findAllMovies();
         allMovies.forEach(log::info);

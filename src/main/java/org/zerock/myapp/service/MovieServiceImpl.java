@@ -25,6 +25,12 @@ public class MovieServiceImpl implements MovieService {
     } // findAllMovies
 
     @Override
+    public List<MovieVO> findAllMoviesmanagerOnly() {
+        log.trace("findAllMoviesmanagerOnly({}) invoked.");
+        return movieMapper.findAllMoviesmanagerOnly();
+    } // findAllMoviesmanagerOnly
+
+    @Override
     public List<MovieVO> searchMovies(String searchInput, String searchCategory) {
         log.trace("searchMovies({}, {}) invoked.", searchInput, searchCategory);
         return movieMapper.searchMovies(searchInput, searchCategory);
