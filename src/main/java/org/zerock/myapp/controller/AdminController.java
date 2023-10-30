@@ -1,68 +1,84 @@
-//package org.zerock.myapp.controller;
-//
-//import lombok.RequiredArgsConstructor;
-//import lombok.extern.log4j.Log4j2;
-//import org.springframework.stereotype.Controller;
-//import org.springframework.ui.Model;
-//import org.springframework.web.bind.annotation.*;
-//import org.zerock.myapp.domain.MemberVO;
-//import org.zerock.myapp.service.AdminService;
-//
-//import java.util.Arrays;
-//import java.util.List;
-//
-//@Log4j2
-//@RequiredArgsConstructor
-//
-//@RequestMapping("/admin/*")
-//@Controller
-//public class AdminController {
-//
-//    private final AdminService adminService;
+package org.zerock.myapp.controller;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.zerock.myapp.domain.MemberVO;
+import org.zerock.myapp.domain.MovieVO;
+import org.zerock.myapp.service.AdminService;
+import org.zerock.myapp.service.MovieJsonService;
+import org.zerock.myapp.service.MovieService;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+@Log4j2
+@RequiredArgsConstructor
+
+@RequestMapping("/admin/*")
+@Controller
+public class AdminController {
+
+    private final AdminService adminService;
+    private final MovieService movieService;
+    private final MovieJsonService movieJsonService;
 //    private final EventService eventService;
 //    private final BoardService boardService;
 //    private final ProductService productService;
 //    private final InquiriesService inquiriesService;
 //    private final AReportedService reportedService;
-//
-//    @GetMapping("/memberList/{pageNum}") // 회원목록 & 검색
-//    public String memberListSearch(String searchValue, @PathVariable(value = "pageNum") Integer pageNum, String searchOption, Model model){
-//        log.trace("memberListSearch({}, {}, {}) invoked.", pageNum, searchOption, searchValue);
-//
-//        List<MemberVO> list = null;
-//        Integer totalPages = 0;
-//
-//        // 검색 옵션과 검색값이 모두 null일 경우, 즉 검색을 하지 않았을 때 실행되는 로직
-//        if(searchOption == null && searchValue == null){
-//            list = this.adminService.findAllMember(pageNum); // 전체 회원을 페이지에 따라 조회
-//            totalPages = this.adminService.totalPage(); // 전체 페이지 수 조회
-//        }
-//
-//        // 검색 옵션과 검색값이 모두 존재할 경우 실행되는 로직
-//        if(searchOption != null && searchValue != null){
-//            list  = this.adminService.searchMemberNameOrEmail(pageNum, searchOption, searchValue); // 검색 옵션과 값에 따라 회원을 조회
-//            totalPages = this.adminService.totalSearchPage(searchOption, searchValue); // 검색 결과에 따른 전체 페이지 수 조회
-//
-//            model.addAttribute("searchOption", searchOption);
-//            model.addAttribute("searchValue", searchValue);
-//        }
-//
-//        model.addAttribute("currentPage", pageNum);
-//        model.addAttribute("member",list);
-//        model.addAttribute("totalPages", totalPages);
-//
-//        return "admin/memberList";
-//    } // memberListSearch
-//
-//    @PostMapping("/memberList") // 회원 선택(일괄) 삭제
-//    public String memberListDelete(@RequestParam("selectedMembers") Long[] selectedMembers){
-//        log.trace("memberListDelete({}) invoked.", Arrays.toString(selectedMembers));
-//
-//        this.adminService.deleteMember(selectedMembers);
-//
-//        return "redirect:/admin/memberList/1";
-//    } // memberListSearch
-//
+
+    // 회원목록 및 검색을 위한 메소드
+    @GetMapping("/memberList/{pageNum}")
+    public String memberListSearch(String searchValue, @PathVariable(value = "pageNum") Integer pageNum, String searchOption, Model model){
+        log.trace("memberListSearch({}, {}, {}) invoked.", pageNum, searchOption, searchValue);
+
+        // 회원 정보를 담을 리스트와 전체 페이지 수를 저장할 변수 선언
+        List<MemberVO> list = null;
+        Integer totalPages = 0;
+
+        // 검색 옵션과 검색값이 모두 null인 경우 (검색하지 않았을 때)
+        if(searchOption == null && searchValue == null){
+            // 현재 페이지 번호에 따라 전체 회원 목록 조회
+            list = this.adminService.findAllMember(pageNum);
+            // 전체 페이지 수 조회
+            totalPages = this.adminService.totalPage();
+        }
+
+        // 검색 옵션과 검색값이 모두 존재하는 경우 (검색을 했을 때)
+        if(searchOption != null && searchValue != null){
+            // 검색 옵션과 값에 따라 회원 목록 조회
+            list  = this.adminService.searchMemberNameOrEmail(pageNum, searchOption, searchValue);
+            // 검색 결과에 따른 전체 페이지 수 조회
+            totalPages = this.adminService.totalSearchPage(searchOption, searchValue);
+
+            // 모델에 검색 옵션과 값 추가
+            model.addAttribute("searchOption", searchOption);
+            model.addAttribute("searchValue", searchValue);
+        }
+
+        // 모델에 현재 페이지 번호, 회원 목록, 전체 페이지 수 추가
+        model.addAttribute("currentPage", pageNum);
+        model.addAttribute("members", list);
+        model.addAttribute("totalPages", totalPages);
+
+        // "admin/memberList" 페이지로 이동
+        return "admin/memberList";
+    } // memberListSearch
+
+
+    @PostMapping("/memberList") // 회원 선택(일괄) 삭제
+    public String memberListDelete(@RequestParam("selectedMembers") Long[] selectedMembers){
+        log.trace("memberListDelete({}) invoked.", Arrays.toString(selectedMembers));
+
+        this.adminService.deleteMember(selectedMembers);
+
+        return "redirect:/admin/memberList/1";
+    } // memberListSearch
+
 //    @GetMapping("/detailMember/{id}") // 상세정보
 //    public String detailMemberView(@PathVariable("id") Long id, Model model){
 //        log.trace("detailMemberView() invoked.");
@@ -247,5 +263,41 @@
 //
 //        return "redirect:/admin/replyComplaint";
 //    } // replyComplaintTask
-//
-//} // end class
+
+    // 영화 데이터 가져오기
+    @GetMapping("/movieData")
+    public String moviesDataView(Model model) {
+        log.trace("moviesDataView() invoked.");
+
+        return "/admin/movieData";
+    } // moviesData
+
+    // 영화 데이터 가져오기
+    @PutMapping("/movieData")
+    public String moviesData(Model model, Long startNum, Long endNum) throws IOException {
+        log.trace("moviesData({}, {}) invoked.", startNum, endNum);
+
+        movieJsonService.jsonToGenres();
+        movieJsonService.jsonToMovies(startNum, endNum);
+        movieJsonService.jsonToMovieCredits(startNum, endNum);
+        movieJsonService.jsonToCertification(startNum, endNum);
+
+        model.addAttribute("updateSuccess", true);
+
+        return "/admin/movieData";
+    } // moviesData
+
+    // 영화 전체 목록 관리자전용
+    @GetMapping("/movieDataList")
+    public String movieDataListView(Model model) {
+        log.trace("movieDataListView() invoked.");
+
+        List<MovieVO> allMovies = movieService.findAllMoviesmanagerOnly();
+        allMovies.forEach(log::info);
+
+        model.addAttribute("moviesList", allMovies);
+
+        return "/admin/movieDataList";
+    } // movieDataListView
+
+} // end class

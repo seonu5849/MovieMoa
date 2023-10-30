@@ -83,6 +83,7 @@ public class MemberServiceImpl implements MemberService {
     public Integer updatePassword(Long id, String confirmPassword) {
         log.trace("updatePassword({}, {}) invoked.", id, confirmPassword);
 
+
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String changePW = passwordEncoder.encode(confirmPassword);
 

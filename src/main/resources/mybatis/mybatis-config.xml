@@ -11,7 +11,7 @@
         <mapper resource="mappers/MovieMapper.xml"/>
 
         <!--    admin 관련    -->
-<!--        <mapper resource="mappers/AdminMapper.xml"/>-->
+        <mapper resource="mappers/AdminMapper.xml"/>
 
         <!--    Event 관련    -->
         <mapper resource="mappers/EventMapper.xml"/>

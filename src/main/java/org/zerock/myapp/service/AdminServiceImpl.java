@@ -19,7 +19,7 @@ import java.util.Map;
 @Service
 public class AdminServiceImpl implements AdminService {
 
-    private final AdminMapper memberMapper;
+    private final AdminMapper adminMapper;
     private int perPage = 5;
 
     @Override
@@ -29,11 +29,12 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<MemberVO> findAllMember(Integer pageNum) { // 전체 회원 조회
-        log.info("\t+ findAllMember({}) invoked.", pageNum);
+        log.trace("findAllMember({}) invoked.", pageNum);
 
-        int offset = offset(pageNum);
+        Integer offset = offset(pageNum);
+        log.info("\t+ offset: {}, perPage: {}", offset, perPage);
 
-        return this.memberMapper.selectAllMember(offset, perPage);
+        return this.adminMapper.selectAllMember(offset, perPage);
     }
 
     @Override
@@ -46,7 +47,7 @@ public class AdminServiceImpl implements AdminService {
         parameters.put("searchOption", searchOption);
         parameters.put("searchValue", searchValue);
 
-        return this.memberMapper.selectMemberNameOrEmail(parameters, offset, perPage);
+        return this.adminMapper.selectMemberNameOrEmail(parameters, offset, perPage);
     }
 
     @Override
@@ -56,14 +57,14 @@ public class AdminServiceImpl implements AdminService {
         MemberDTO dto = new MemberDTO();
         dto.setId(id);
 
-        return this.memberMapper.selectDetailMember(dto);
+        return this.adminMapper.selectDetailMember(dto);
     }
 
     @Override
     public Integer joinMember(MemberDTO dto) { // 회원가입 서비스
         log.trace("joinMember({}) invoked", dto);
 
-        return this.memberMapper.insertMember(dto);
+        return this.adminMapper.insertMember(dto);
     }
 
     @Override
@@ -81,7 +82,7 @@ public class AdminServiceImpl implements AdminService {
             dto.setRole(Role.ROLE_MEMBER);
         }
 
-        return this.memberMapper.updateMember(dto);
+        return this.adminMapper.updateMember(dto);
     }
 
     @Override
@@ -93,14 +94,14 @@ public class AdminServiceImpl implements AdminService {
             log.info("\t+ selectedMember : {}", selectedMember);
             dto.setId(selectedMember);
         }
-        return this.memberMapper.deleteMember(dto);
+        return this.adminMapper.deleteMember(dto);
     }
 
     @Override
     public Integer totalPage() {
         log.trace("totalMemberCount() invoked");
-        int totalPage = this.memberMapper.totalMemberCount()/perPage;
-        if(this.memberMapper.totalMemberCount() % perPage != 0){
+        int totalPage = this.adminMapper.totalMemberCount()/perPage;
+        if(this.adminMapper.totalMemberCount() % perPage != 0){
             totalPage++;
         }
 
@@ -115,9 +116,9 @@ public class AdminServiceImpl implements AdminService {
         parameters.put("searchOption", searchOption);
         parameters.put("searchValue", searchValue);
 
-        Integer totalPage = this.memberMapper.selectTotalSearchCount(parameters)/perPage;
+        Integer totalPage = this.adminMapper.selectTotalSearchCount(parameters)/perPage;
 
-        if(this.memberMapper.selectTotalSearchCount(parameters) % perPage != 0){
+        if(this.adminMapper.selectTotalSearchCount(parameters) % perPage != 0){
             totalPage++;
         }
 
@@ -125,4 +126,4 @@ public class AdminServiceImpl implements AdminService {
     }
 
 
-}
+} // end class

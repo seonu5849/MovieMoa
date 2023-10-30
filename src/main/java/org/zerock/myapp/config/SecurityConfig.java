@@ -87,7 +87,7 @@ public class SecurityConfig {
                                  requestMatchers(antMatcher("/"), antMatcher("/main"), antMatcher("/registration"), antMatcher("/movie/movies"), antMatcher("/logout")).permitAll().
                                 // "/mypage/**" 경로는 인증된 사용자만 접근할 수 있음
                                  requestMatchers(antMatcher("/mypage/**")).authenticated().
-                                // "/admin/**" 경로는 'ADMIN' 역할을 가진 사용자만 접근할 수 있음
+                                // 'ADMIN' 역할을 가진 사용자만 접근할 수 있는 경로
                                  requestMatchers(antMatcher("/admin/**")).hasRole("ADMIN").
                                 // 위에서 정의되지 않은 나머지 모든 경로는 누구나 접근할 수 있음
                                  anyRequest().permitAll()

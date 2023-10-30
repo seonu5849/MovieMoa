@@ -30,6 +30,10 @@
     transition: background-color 0.3s;
 }
 
+.back:hover {
+    background-color: #0056b3;
+}
+
 #notice > h1{
     font-size:36px;
     margin-bottom:40px;
@@ -95,9 +99,9 @@ td:last-child{/*마지막 td요소들은 가운데 정렬*/
 <main class="item">
     <section id="notice">
         <div class="back">
-            <a th:href="@{/movie/movieData}">BACK</a>
+            <a th:href="@{/admin/movieData}">BACK</a>
         </div>
-        <h1>영화목록</h1>
+        <h1>영화목록(<span th:text="${#lists.size(moviesList)}">0</span>개)</h1>
         <table>
             <tr>
                 <th>제목</th>

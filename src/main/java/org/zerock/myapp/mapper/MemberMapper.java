@@ -36,6 +36,6 @@ public interface MemberMapper {
     public abstract MemberVO findUser(@Param("id") Long id);
 
     // 특정 회원정보 변경
-    public abstract Integer updateMypageMember(@Param("confirmPassword") String confirmPassword, @Param("nickname") String nickname, @Param("address") String address, @Param("phoneNum") String phoneNum,  @Param("birthday") String birthday, @Param("id") Long id);
+    public abstract Integer updateMypageMember(@Param("changePW") String changePW, @Param("nickname") String nickname, @Param("address") String address, @Param("phoneNum") String phoneNum,  @Param("birthday") String birthday, @Param("id") Long id);
 
 }// end interface

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <title>ADMIN | MOVIE MOA</title>
 <style>
-    .admin-container{
+    .admin-container {
         grid-area: main;
     }
 
@@ -54,20 +54,21 @@
       background-color: #f2f2f2;
   }
 
-  .main-content h1, .main-content h2 {
+  .admin-container h1,
+  .admin-container h2 {
   text-align: center;
   margin-top: 30px;
   color: #333;
 }
 
-.main-content form {
+.admin-container form {
     text-align: center;
     margin-top: 20px;
 }
 
-.main-content select,
-.main-content input[type="text"],
-.main-content #search > input[type="submit"] {
+.admin-container select,
+.admin-container input[type="text"],
+.admin-container #search > input[type="submit"] {
     padding: 10px;
     font-size: 16px;
     border: 1px solid black;
@@ -75,30 +76,30 @@
     margin-right: 10px;
 }
 
-.main-content input[type="submit"],
-.main-content input[type="button"] {
+.admin-container input[type="submit"],
+.admin-container input[type="button"] {
     background-color: #007BFF;
     color: #fff;
     cursor: pointer;
 }
 
-.main-content table {
+.admin-container table {
     width: 70em;
     border-collapse: collapse;
     margin: 20px auto;
 }
 
-.main-content th, .main-content td {
+.admin-container th, .main-content td {
     border: 1px solid #ddd;
     padding: 12px;
     text-align: center;
 }
 
-.main-content th {
+.admin-container th {
     background-color: #f2f2f2;
 }
 
-.main-content #inquiry > input[type="submit"] {
+.admin-container #inquiry > input[type="submit"] {
     padding: 10px;
     font-size: 16px;
     border: none;
@@ -106,31 +107,31 @@
     margin-right: 10px;
 }
 
-.main-content ul {
+.admin-container ul {
     list-style: none;
     justify-content: center;
     margin: 20px 0;
     text-align: center;
 }
 
-.main-content .flex {
+.admin-container .flex {
     display: flex;
     justify-content: center;
 }
 
-.main-content li {
+.admin-container li {
     padding: 10px;
     display: inline-block;
 }
 
-.main-content a {
+.admin-container a {
     text-decoration: none;
     color: #007BFF;
     padding: 5px 10px;
     border-radius: 5px;
 }
 
-.main-content a:hover {
+.admin-container a:hover {
     background-color: #007BFF;
     color: #fff;
 }
@@ -214,15 +215,15 @@
                       </thead>
                       <tbody>
                       <!-- 예시 데이터 -->
-                      <tr th:each="member : ${member} ">
-                          <td><input type="checkbox" class="selectedCheckbox" name="selectedMembers" th:value="${member.uuid}"></td>
-                          <td th:text="${member.uuid}">회원번호</td>
-                          <td th:text="${member.uname}">이름</td>
+                      <tr th:each="member : ${members} ">
+                          <td><input type="checkbox" class="selectedCheckbox" name="selectedMembers" th:value="${member.id}"></td>
+                          <td th:text="${member.id}">회원번호</td>
+                          <td th:text="${member.name}">이름</td>
                           <td th:text="${member.nickname}">닉네임</td>
                           <td th:text="${member.email}">아이디</td>
                           <td th:text="${member.status}">활동(?)상태</td>
                           <td th:text="${member.role}">권한</td>
-                          <td><a th:href="@{'/admin/detailMember/'+${member.uuid}}">상세정보</a></td>
+                          <td><a th:href="@{'/admin/detailMember/'+${member.id}}">상세정보</a></td>
                       </tr>
                       </tbody>
                   </table>

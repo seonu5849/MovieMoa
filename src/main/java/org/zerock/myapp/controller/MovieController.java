@@ -27,43 +27,6 @@ public class MovieController {
     // http://localhost:8080/movie/movies
 
     private final MovieService movieService;
-    private final MovieJsonService movieJsonService;
-
-    // 영화 데이터 가져오기
-    @GetMapping("/movieData")
-    public String moviesDataView(Model model) {
-        log.trace("moviesDataView() invoked.");
-
-        return "movie/movieData";
-    } // moviesData
-
-    // 영화 데이터 가져오기
-    @PutMapping("/movieData")
-    public String moviesData(Model model, Long startNum, Long endNum) throws IOException {
-        log.trace("moviesData({}, {}) invoked.", startNum, endNum);
-
-        movieJsonService.jsonToGenres();
-        movieJsonService.jsonToMovies(startNum, endNum);
-        movieJsonService.jsonToMovieCredits(startNum, endNum);
-        movieJsonService.jsonToCertification(startNum, endNum);
-
-        model.addAttribute("updateSuccess", true);
-
-        return "movie/movieData";
-    } // moviesData
-
-    // 영화 전체 목록 관리자전용
-    @GetMapping("/movieDataList")
-    public String movieDataListView(Model model) {
-        log.trace("movieDataListView() invoked.");
-
-        List<MovieVO> allMovies = movieService.findAllMoviesmanagerOnly();
-        allMovies.forEach(log::info);
-
-        model.addAttribute("moviesList", allMovies);
-
-        return "movie/movieDataList";
-    } // movieDataListView
 
     // 영화 전체 목록
     @GetMapping("/movies")
