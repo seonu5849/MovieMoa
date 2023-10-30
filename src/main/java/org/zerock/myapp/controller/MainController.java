@@ -102,9 +102,13 @@ public class MainController {
     public Map<String, Boolean> checkEmail(@RequestBody Map<String, String> request){
         log.trace("checkEmail({}) invoked.", request);
         String email = request.get("email");
-        Boolean dupleEmail = this.memberService.checkDupleEmail(email);
+        if(!email.equals("")){
+            Boolean dupleEmail = this.memberService.checkDupleEmail(email);
 
-        return Collections.singletonMap("isEmailAvailable", dupleEmail);
+            return Collections.singletonMap("isEmailAvailable", dupleEmail);
+        } else {
+            return Collections.singletonMap("isEmailAvailable", false);
+        }
 
     } // checkEmail
 
