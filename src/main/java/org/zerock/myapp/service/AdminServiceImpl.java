@@ -3,9 +3,7 @@ package org.zerock.myapp.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-import org.zerock.myapp.domain.MemberDTO;
-import org.zerock.myapp.domain.MemberVO;
-import org.zerock.myapp.domain.Role;
+import org.zerock.myapp.domain.*;
 import org.zerock.myapp.mapper.AdminMapper;
 
 import java.util.Arrays;
@@ -68,14 +66,14 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Integer editMember(Long id, String nickname, String address, String[] phoneNum, String role) { // 회원수정 서비스
-        log.trace("editMember({}, {}, {}, {}, {}) invoked", id, nickname, address, Arrays.toString(phoneNum), role);
+    public Integer editMember(Long id, String nickname, String address, String phoneNum, String role) { // 회원수정 서비스
+        log.trace("editMember({}, {}, {}, {}, {}) invoked", id, nickname, address, phoneNum, role);
 
         MemberDTO dto = new MemberDTO();
         dto.setId(id);
         dto.setNickname(nickname);
         dto.setAddress(address);
-        dto.setPhoneNum(phoneNum[0]+"-"+phoneNum[1]+"-"+phoneNum[2]);
+        dto.setPhoneNum(phoneNum);
         if(role.equals("ADMIN")) {
             dto.setRole(Role.ROLE_ADMIN);
         }else{
@@ -123,6 +121,191 @@ public class AdminServiceImpl implements AdminService {
         }
 
         return totalPage;
+    }
+
+    @Override
+    public Integer totalReportBoardCount() {
+        log.trace("totalReportBoardCount() invoked");
+
+        int totalPage = this.adminMapper.totalReportBoardCount() / perPage;
+
+        if(this.adminMapper.totalReportBoardCount() % perPage != 0){
+            totalPage++;
+        }
+
+        return totalPage;
+    }
+
+    @Override
+    public Integer totalReportReplyCount() {
+        log.trace("totalReportReplyCount() invoked");
+
+        Integer totalPage = this.adminMapper.totalReportReplyCount() / perPage;
+
+        if(this.adminMapper.totalReportReplyCount() % perPage != 0){
+            totalPage++;
+        }
+
+        return totalPage;
+    }
+
+    @Override
+    public List<ReportBoardsVO> findReportedBoards(Integer pageNum) {
+        log.trace("findReportedBoards({}) invoked.", pageNum);
+
+        Integer offset = offset(pageNum);
+        return this.adminMapper.selectReportedBoards(offset, perPage);
+    }
+
+    @Override
+    public List<ReportReplyVO> findReportedReply(Integer pageNum) {
+        log.trace("findReportedReply({}) invoked.", pageNum);
+
+        Integer offset = offset(pageNum);
+        return this.adminMapper.selectReportedReply(offset, perPage);
+    }
+
+    @Override
+    public List<BoardVO> findMemberByBoard(Long memberId, Integer pageNum) {
+        log.trace("findMemberByBoard({}) invoked.", pageNum);
+
+        Integer offset = offset(pageNum);
+        return this.adminMapper.selectMemberByBoard(memberId, offset, perPage);
+    }
+
+    @Override
+    public Integer deleteMemberByBoard(Long[] ids) {
+        log.trace("deleteMemberByBoard({}) invoked.", Arrays.toString(ids));
+
+        Integer affectedRows = 0;
+
+        for(Long id : ids){
+            affectedRows += this.adminMapper.deleteMemberByBoard(id);
+        }
+
+        return affectedRows;
+    }
+
+    @Override
+    public Integer totalMemberByBoardCount(Long memberId) {
+        log.trace("totalEventCount({}) invoked.", memberId);
+
+        Integer totalPages = this.adminMapper.totalMemberByBoardCount(memberId) / perPage;
+
+        if(this.adminMapper.totalMemberByBoardCount(memberId) % perPage != 0){
+            totalPages++;
+        }
+
+        return totalPages;
+    }
+
+    @Override
+    public List<EventsVO> findAllEvents(Integer pageNum) {
+        log.trace("findAllEvents({}) invoked.", pageNum);
+
+        Integer offset = offset(pageNum);
+        return this.adminMapper.selectAllEvents(offset, perPage);
+    }
+
+    @Override
+    public Integer deleteEvents(Long[] ids) {
+        log.trace("deleteEvents({}) invoked.", Arrays.toString(ids));
+        Integer affectedRows = 0;
+
+        for(Long id : ids) {
+            EventsDTO dto = new EventsDTO();
+            dto.setId(id);
+
+            affectedRows += this.adminMapper.deleteEvent(dto);
+        }
+
+        return affectedRows;
+    }
+
+    @Override
+    public Integer totalEventCount() {
+        log.trace("totalEventCount() invoked");
+        int totalPage = this.adminMapper.totalEventCount()/perPage;
+        if(this.adminMapper.totalEventCount() % perPage != 0){
+            totalPage++;
+        }
+
+        return totalPage;
+    }
+
+    @Override
+    public List<StoreVO> findAllProducts(Integer pageNum) {
+        log.trace("findAllProducts({}) invoked.", pageNum);
+
+        Integer offset = offset(pageNum);
+        return this.adminMapper.selectAllProduct(offset, perPage);
+    }
+
+    @Override
+    public Integer deleteProducts(Long[] ids) {
+        log.trace("deleteProducts({}) invoked.", Arrays.toString(ids));
+        Integer affectedRows = 0;
+
+        for(Long id : ids){
+            StoreDTO dto = new StoreDTO();
+            dto.setId(id);
+
+            affectedRows += this.adminMapper.deleteProduct(dto);
+        }
+
+        return affectedRows;
+    }
+
+    @Override
+    public Integer totalProductCount() {
+        log.trace("totalProductCount() invoked");
+
+        Integer totalPage = this.adminMapper.totalProductCount()/perPage;
+
+        if(this.adminMapper.totalProductCount() % perPage != 0){
+            totalPage++;
+        }
+
+        return totalPage;
+    }
+
+    @Override
+    public Integer totalInquiriesCount() {
+        log.trace("totalInquiriesCount() invoked");
+        Integer totalPage = this.adminMapper.totalInquiriesCount()/perPage;
+        if(this.adminMapper.totalInquiriesCount() % perPage != 0){
+            totalPage++;
+        }
+
+        return totalPage;
+    }
+
+    @Override
+    public List<InquiriesVO> findAllInquiries(Integer pageNum) {
+        log.trace("findAllEvents({}) invoked.", pageNum);
+
+        Integer offset = offset(pageNum);
+        return this.adminMapper.selectAllInquiries(offset, perPage);
+    }
+
+    @Override
+    public InquiriesVO findByMemberInquiries(Long id) {
+        log.trace("findByMemberInquiries({}) invoked.", id);
+
+        return this.adminMapper.selectMemberInquiries(id);
+    }
+
+    @Override
+    public Integer addInquiriesResponse(Long id, Long adminId, String inquiryResponsesContent) {
+        log.trace("addInquiriesResponse({}, {}, {}) invoked.", id, adminId, inquiryResponsesContent);
+
+
+        InquiryResponsesDTO dto = new InquiryResponsesDTO();
+        dto.setId(id);
+        dto.setAdminId(adminId);
+        dto.setResponsesContent(inquiryResponsesContent);
+
+        return this.adminMapper.insertInquiriesResponse(dto);
     }
 
 

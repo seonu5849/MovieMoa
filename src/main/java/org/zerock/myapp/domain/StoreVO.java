@@ -16,4 +16,5 @@ public class StoreVO {
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private Long kategorieId;
+    private String name;
 } // end class

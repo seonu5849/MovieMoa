@@ -60,20 +60,21 @@ th {
     margin-right: 10px;
 }
 
-.main-content h1, .main-content h2 {
+.admin-content h1,
+.admin-content h2 {
     text-align: center;
     margin-top: 30px;
     color: #333;
 }
 
-.main-content form {
+.admin-content form {
     text-align: center;
     margin-top: 20px;
 }
 
-.main-content select,
-.main-content input[type="text"],
-.main-content #search > input[type="submit"] {
+.admin-content select,
+.admin-content input[type="text"],
+.admin-content #search > input[type="submit"] {
     padding: 10px;
     font-size: 16px;
     border: none;
@@ -81,30 +82,31 @@ th {
     margin-right: 10px;
 }
 
-.main-content input[type="submit"],
-.main-content input[type="button"] {
+.admin-content input[type="submit"],
+.admin-content input[type="button"] {
     background-color: #007BFF;
     color: #fff;
     cursor: pointer;
 }
 
-.main-content table {
+.admin-content table {
     width: 70em;
     border-collapse: collapse;
     margin: 20px auto;
 }
 
-.main-content th, .main-content td {
+.admin-content th,
+.admin-content td {
     border: 1px solid #ddd;
     padding: 12px;
     text-align: center;
 }
 
-.main-content th {
+.admin-content th {
     background-color: #f2f2f2;
 }
 
-.main-content #inquiry > input[type="submit"] {
+.admin-content #inquiry > input[type="submit"] {
     padding: 10px;
     font-size: 16px;
     border: none;
@@ -112,31 +114,31 @@ th {
     margin-right: 10px;
 }
 
-.main-content ul {
+.admin-content ul {
     list-style: none;
     justify-content: center;
     margin: 20px 0;
     text-align: center;
 }
 
-.main-content .flex {
+.admin-content .flex {
     display: flex;
     justify-content: center;
 }
 
-.main-content li {
+.admin-content li {
     padding: 10px;
     display: inline-block;
 }
 
-.main-content a {
+.admin-content a {
     text-decoration: none;
     color: #007BFF;
     padding: 5px 10px;
     border-radius: 5px;
 }
 
-.main-content a:hover {
+.admin-content a:hover {
     background-color: #007BFF;
     color: #fff;
 }
@@ -168,13 +170,13 @@ th {
                     <tbody>
                     <!-- 예시 데이터 -->
                     <tr th:each="reportBoard : ${reportBoards} ">
-                        <td th:text="${reportBoard.reportedBoardsId}">번호</td>
-                        <td th:text="${reportBoard.reportMenu}">카테고리</td>
+                        <td th:text="${reportBoard.id}">번호</td>
+                        <td th:text="${reportBoard.menu}">카테고리</td>
                         <td th:text="${reportBoard.title}">제목</td>
-                        <td th:text="${reportBoard.reportReason != null ? (#strings.length(reportBoard.reportReason) > 8 ? #strings.substring(reportBoard.reportReason, 0, 8) + '...' : reportBoard.reportReason) : ''}">
+                        <td th:text="${reportBoard.content != null ? (#strings.length(reportBoard.content) > 8 ? #strings.substring(reportBoard.content, 0, 8) + '...' : reportBoard.content) : ''}">
                                 신고사유</td>
-                        <td th:text="${reportBoard.uname}">신고자</td>
-                        <td th:text="${reportBoard.receivedDate}">신고날짜</td>
+                        <td th:text="${reportBoard.name}">신고자</td>
+                        <td th:text="${reportBoard.reportDate}">신고날짜</td>
                         <td>
                             처분
                         </td>

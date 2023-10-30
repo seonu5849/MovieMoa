@@ -1,16 +1,21 @@
 package org.zerock.myapp.domain;
 
+import lombok.Data;
 import lombok.Value;
 
 import java.sql.Timestamp;
 
-@Value
-public class InquiriesVO {
+@Data
+public class StoreDTO {
     private Long id;
+    private Long adminId;
     private String title;
     private String content;
+    private String price;
+    private String usageLocation;
+    private String posterPath;
     private Timestamp createdAt;
-    private Long memberId;
-    private String responsesContent;
+    private Timestamp updatedAt;
+    private Long kategorieId;
     private String name;
 } // end class

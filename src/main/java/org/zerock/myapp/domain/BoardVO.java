@@ -16,4 +16,5 @@ public class BoardVO {
     private Long kategorieId;
     private Long movieId;
     private Long memberId;
+    private String name;
 } // end class

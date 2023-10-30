@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MOVIE MOA 관리자 페이지</title>
 <style>
-    .admin-container{
+    .admin-container {
         grid-area: main;
     }
   /* 페이지 헤더 스타일 */
@@ -54,21 +54,22 @@
       background-color: #f2f2f2;
   }
 
-  .main-content h1, .main-content h2 {
+  .admin-container h1,
+  .admin-content h2 {
   text-align: center;
   margin-top: 30px;
   color: #333;
 }
 
-.main-content form {
+.admin-container form {
     text-align: center;
     margin-top: 20px;
     margin-left: 80px;
 }
 
-.main-content select,
-.main-content input[type="text"],
-.main-content #search > input[type="submit"] {
+.admin-content select,
+.admin-content input[type="text"],
+.admin-content #search > input[type="submit"] {
     padding: 10px;
     font-size: 16px;
     border: none;
@@ -76,31 +77,32 @@
     margin-right: 10px;
 }
 
-.main-content input[type="submit"],
-.main-content input[type="button"] {
+.admin-content input[type="submit"],
+.admin-content input[type="button"] {
     background-color: #007BFF;
     color: #fff;
     cursor: pointer;
 }
 
-.main-content table {
+.admin-content table {
     width: 70em;
     border-collapse: collapse;
     margin: 20px auto;
 }
 
-.main-content th, .main-content td {
+.admin-content th,
+.admin-content td {
     border: 1px solid #ddd;
     padding: 12px;
     text-align: center;
     width: 100px;
 }
 
-.main-content th {
+.admin-content th {
     background-color: #f2f2f2;
 }
 
-.main-content #inquiry > input[type="submit"] {
+.admin-content #inquiry > input[type="submit"] {
     padding: 10px;
     font-size: 16px;
     border: none;
@@ -108,31 +110,31 @@
     margin-right: 10px;
 }
 
-.main-content ul {
+.admin-content ul {
     list-style: none;
     justify-content: center;
     margin: 20px 0;
     text-align: center;
 }
 
-.main-content .flex {
+.admin-content .flex {
     display: flex;
     justify-content: center;
 }
 
-.main-content li {
+.admin-content li {
     padding: 10px;
     display: inline-block;
 }
 
-.main-content a {
+.admin-content a {
     text-decoration: none;
     color: #007BFF;
     padding: 5px 10px;
     border-radius: 5px;
 }
 
-.main-content a:hover {
+.admin-content a:hover {
     background-color: #007BFF;
     color: #fff;
 }
@@ -212,17 +214,17 @@
                 <tbody>
                 <!-- 예시 데이터 -->
                 <tr th:each="evnet : ${evnets} ">
-                    <td><input type="checkbox" class="selectedCheckbox" name="selectedMembers" th:value="${evnet.event_id}"></td>
-                    <td th:text="${evnet.event_id}">번호</td>
+                    <td><input type="checkbox" class="selectedCheckbox" name="selectedMembers" th:value="${evnet.id}"></td>
+                    <td th:text="${evnet.id}">번호</td>
                     <td th:text="${evnet.title != null ? (#strings.length(evnet.title) > 8 ? #strings.substring(evnet.title, 0, 8) + '...' : evnet.title) : ''}">제목</td>
-                    <td th:text="${evnet.uname}">등록자</td>
-                    <td th:text="${evnet.start_at}">시작일자</td>
-                    <td th:text="${evnet.end_at}">종료일자</td>
-                    <td th:text="${evnet.created_at}">등록일자</td>
-                    <td th:text="${evnet.updated_at}">수정일자</td>
+                    <td th:text="${evnet.name}">등록자</td>
+                    <td th:text="${evnet.startAt}">시작일자</td>
+                    <td th:text="${evnet.endAt}">종료일자</td>
+                    <td th:text="${evnet.createdAt}">등록일자</td>
+                    <td th:text="${evnet.updatedAt}">수정일자</td>
                     <td>
-                        <a th:href="@{'/event/detailEvent?event_id='+${evnet.event_id}}">상세보기</a> |
-                        <a th:href="@{'/event/eventUpdate?event_id='+${evnet.event_id}}">수정</a>
+                        <a th:href="@{'/event/detailEvent?id='+${evnet.id}}">상세보기</a> |
+                        <a th:href="@{'/event/eventUpdate?id='+${evnet.id}}">수정</a>
                     </td>
                 </tr>
                 </tbody>

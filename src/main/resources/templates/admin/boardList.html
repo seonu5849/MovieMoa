@@ -54,20 +54,21 @@ th {
   background-color: #f2f2f2;
 }
 
-.main-content h1, .main-content h2 {
+.admin-content h1,
+.admin-content h2 {
     text-align: center;
     margin-top: 30px;
     color: #333;
 }
 
-.main-content form {
+.admin-content form {
     text-align: center;
     margin-top: 20px;
 }
 
-.main-content select,
-.main-content input[type="text"],
-.main-content #search > input[type="submit"] {
+.admin-content select,
+.admin-content input[type="text"],
+.admin-content #search > input[type="submit"] {
     padding: 10px;
     font-size: 16px;
     border: none;
@@ -75,30 +76,31 @@ th {
     margin-right: 10px;
 }
 
-.main-content input[type="submit"],
-.main-content input[type="button"] {
+.admin-content input[type="submit"],
+.admin-content input[type="button"] {
     background-color: #007BFF;
     color: #fff;
     cursor: pointer;
 }
 
-.main-content table {
+.admin-content table {
     width: 70em;
     border-collapse: collapse;
     margin: 20px auto;
 }
 
-.main-content th, .main-content td {
+.admin-content th,
+.admin-content td {
     border: 1px solid #ddd;
     padding: 12px;
     text-align: center;
 }
 
-.main-content th {
+.admin-content th {
     background-color: #f2f2f2;
 }
 
-.main-content #inquiry > input[type="submit"] {
+.admin-content #inquiry > input[type="submit"] {
     padding: 10px;
     font-size: 16px;
     border: none;
@@ -106,31 +108,31 @@ th {
     margin-right: 10px;
 }
 
-.main-content ul {
+.admin-content ul {
     list-style: none;
     justify-content: center;
     margin: 20px 0;
     text-align: center;
 }
 
-.main-content .flex {
+.admin-content .flex {
     display: flex;
     justify-content: center;
 }
 
-.main-content li {
+.admin-content li {
     padding: 10px;
     display: inline-block;
 }
 
-.main-content a {
+.admin-content a {
     text-decoration: none;
     color: #007BFF;
     padding: 5px 10px;
     border-radius: 5px;
 }
 
-.main-content a:hover {
+.admin-content a:hover {
     background-color: #007BFF;
     color: #fff;
 }
@@ -198,7 +200,7 @@ th {
                 <thead>
                   
                 <tr>
-                    <input type="hidden" name="uuid" th:value="${memberId}">
+                    <input type="hidden" name="id" th:value="${memberId}">
                     <th><input type="checkbox" id="selectAll"></th>
                     <th>번호</th>
                     <th>제목</th>
@@ -209,13 +211,13 @@ th {
                 </thead>
                 <tbody>
                 <!-- 예시 데이터 -->
-                <tr th:each="board : ${board}">
-                    <td><input type="checkbox" class="selectedCheckbox" name="selectedMembers" th:value="${board.boardId}"></td>
-                    <td th:text="${board.boardId}">번호</td>
+                <tr th:each="board : ${boards}">
+                    <td><input type="checkbox" class="selectedCheckbox" name="selectedMembers" th:value="${board.id}"></td>
+                    <td th:text="${board.id}">번호</td>
                     <td th:text="${board.title != null ? (#strings.length(board.title) > 8 ? #strings.substring(board.title, 0, 8) + '...' : board.title) : ''}">제목</td>
-                    <td th:text="${board.userRating}">평점</td>
-                    <td th:text="${board.viewCnt}">조회수</td>
-                    <td th:text="${board.createAt}">등록일</td>
+                    <td th:text="${board.favorites}">좋아요 수</td>
+                    <td th:text="${board.viewCount}">조회수</td>
+                    <td th:text="${board.createdAt}">등록일</td>
                 </tr>
                 </tbody>
             </table>

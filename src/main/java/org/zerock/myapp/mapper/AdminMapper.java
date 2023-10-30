@@ -2,8 +2,8 @@ package org.zerock.myapp.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.zerock.myapp.domain.MemberDTO;
-import org.zerock.myapp.domain.MemberVO;
+import org.zerock.myapp.domain.*;
+
 import java.util.List;
 import java.util.Map;
 
@@ -35,5 +35,72 @@ public interface AdminMapper {
 
     // 검색 조건에 따른 회원 수 조회: 이름, 이메일, 또는 닉네임으로 검색된 회원의 수를 조회
     public abstract Integer selectTotalSearchCount(@Param("params") Map<String, String> params);
+
+//    ============================================================================================
+
+    // 전체 신고된 게시글의 개수 조회
+    public abstract Integer totalReportBoardCount();
+
+    // 전체 신고된 댓글의 개수 조회
+    public abstract Integer totalReportReplyCount();
+
+    // 해당 페이지의 신고된 게시글 목록 조회
+    public abstract List<ReportBoardsVO> selectReportedBoards(@Param("offset") Integer offset, @Param("perPage") Integer perPage);
+
+    // 해당 페이지의 신고된 댓글 목록 조회
+    public abstract List<ReportReplyVO> selectReportedReply(@Param("offset") Integer offset, @Param("perPage") Integer perPage);
+
+//    ============================================================================================
+
+    // 페이징 처리된 멤버의 게시글 출력
+    public abstract List<BoardVO> selectMemberByBoard(@Param("memberId") Long memberId, @Param("offset") Integer offset, @Param("perPage") Integer perPage);
+
+    // 특정 게시글 ID의 배열에 해당하는 게시글 삭제
+    public abstract Integer deleteMemberByBoard(@Param("id") Long id);
+
+    // 페이징을 위한 특정 멤버의 게시글 총 레코드 수 조회
+    public abstract Integer totalMemberByBoardCount(@Param("memberId") Long memberId);
+
+//    ============================================================================================
+
+    // 해당 페이지의 이벤트 목록 조회
+    public abstract List<EventsVO> selectAllEvents(@Param("offset") Integer offset, @Param("perPage") Integer perPage);
+
+    // 이벤트 추가
+    public abstract Integer insertEvent(@Param("event") EventsVO event);
+
+    // 이벤트 수정
+    public abstract Integer updateEvent(@Param("event") EventsVO event);
+
+    // 지정된 이벤트들 삭제
+    public abstract Integer deleteEvent(@Param("event") EventsDTO event);
+
+    // 전체 이벤트 개수 조회
+    public abstract Integer totalEventCount();
+
+//    ============================================================================================
+
+    // 해당 페이지의 모든 제품 목록 조회
+    public abstract List<StoreVO> selectAllProduct(@Param("offset") Integer offset, @Param("perPage") Integer perPage);
+
+    // 특정 제품 ID의 배열에 해당하는 제품 삭제
+    public abstract Integer deleteProduct(@Param("dto") StoreDTO dto);
+
+    // 전체 제품의 개수 조회
+    public abstract Integer totalProductCount();
+
+//    ============================================================================================
+
+    // 전체 문의 개수 조회
+    public abstract Integer totalInquiriesCount();
+
+    // 해당 페이지의 문의 목록 조회
+    public abstract List<InquiriesVO> selectAllInquiries(@Param("offset") Integer offset, @Param("perPage") Integer perPage);
+
+    // 특정 회원의 문의 정보 문의 번호로 조회
+    public abstract InquiriesVO selectMemberInquiries(@Param("id") Long id);
+
+    // 문의에 대한 답변 추가
+    public abstract Integer insertInquiriesResponse(@Param("dto") InquiryResponsesDTO dto);
 
 } // end interface

@@ -1,11 +1,12 @@
 package org.zerock.myapp.domain;
 
+import lombok.Data;
 import lombok.Value;
 
 import java.sql.Timestamp;
 
-@Value
-public class EventsVO {
+@Data
+public class EventsDTO {
     private Long id;
     private String title;
     private Timestamp startAt;

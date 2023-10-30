@@ -54,20 +54,21 @@
           background-color: #f2f2f2;
       }
 
-      .main-content h1, .main-content h2 {
+      .admin-content h1,
+      .admin-content h2 {
       text-align: center;
       margin-top: 30px;
       color: #333;
     }
 
-    .main-content form {
+    .admin-content form {
         text-align: center;
         margin-top: 20px;
     }
 
-    .main-content select,
-    .main-content input[type="text"],
-    .main-content #search > input[type="submit"] {
+    .admin-content select,
+    .admin-content input[type="text"],
+    .admin-content #search > input[type="submit"] {
         padding: 10px;
         font-size: 16px;
         border: none;
@@ -75,30 +76,31 @@
         margin-right: 10px;
     }
 
-    .main-content input[type="submit"],
-    .main-content input[type="button"] {
+    .admin-content input[type="submit"],
+    .admin-content input[type="button"] {
         background-color: #007BFF;
         color: #fff;
         cursor: pointer;
     }
 
-    .main-content table {
+    .admin-content table {
         width: 70em;
         border-collapse: collapse;
         margin: 20px auto;
     }
 
-    .main-content th, .main-content td {
+    .admin-content th,
+    .admin-content td {
         border: 1px solid #ddd;
         padding: 12px;
         text-align: center;
     }
 
-    .main-content th {
+    .admin-content th {
         background-color: #f2f2f2;
     }
 
-    .main-content #inquiry > input[type="submit"] {
+    .admin-content #inquiry > input[type="submit"] {
         padding: 10px;
         font-size: 16px;
         border: none;
@@ -106,31 +108,31 @@
         margin-right: 10px;
     }
 
-    .main-content ul {
+    .admin-content ul {
         list-style: none;
         justify-content: center;
         margin: 20px 0;
         text-align: center;
     }
 
-    .main-content .flex {
+    .admin-content .flex {
         display: flex;
         justify-content: center;
     }
 
-    .main-content li {
+    .admin-content li {
         padding: 10px;
         display: inline-block;
     }
 
-    .main-content a {
+    .admin-content a {
         text-decoration: none;
         color: #007BFF;
         padding: 5px 10px;
         border-radius: 5px;
     }
 
-    .main-content a:hover {
+    .admin-content a:hover {
         background-color: #007BFF;
         color: #fff;
     }
@@ -208,15 +210,15 @@
                     <tbody>
                     <!-- 예시 데이터 -->
                     <tr th:each="product : ${products} ">
-                        <td><input type="checkbox" class="selectedCheckbox" name="selectedMembers" th:value="${product.productId}"></td>
-                        <td th:text="${product.kategorieName}">카테고리</td>
-                        <td th:text="${product.productId}">번호</td>
-                        <td th:text="${product.productName != null ? (#strings.length(product.productName) > 8 ? #strings.substring(product.productName, 0, 8) + '...' : product.productName) : ''}">상품명</td>
+                        <td><input type="checkbox" class="selectedCheckbox" name="selectedMembers" th:value="${product.id}"></td>
+                        <td th:text="${product.name}">카테고리</td>
+                        <td th:text="${product.id}">번호</td>
+                        <td th:text="${product.title != null ? (#strings.length(product.title) > 8 ? #strings.substring(product.title, 0, 8) + '...' : product.title) : ''}">상품명</td>
                         <td th:text="${product.usageLocation}">사용처</td>
                         <td th:text="${product.price}">가격</td>
                         <td>
-                            <a th:href="@{'/store/detailProduct?product_id='+${product.productId}}">상세보기</a> |
-                            <a th:href="@{'/store/updateProduct?product_id='+${product.productId}}">수정</a>
+                            <a th:href="@{'/store/detailProduct?id='+${product.id}}">상세보기</a> |
+                            <a th:href="@{'/store/updateProduct?id='+${product.id}}">수정</a>
                         </td>
                     </tr>
                     </tbody>

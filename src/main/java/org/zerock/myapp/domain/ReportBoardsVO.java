@@ -12,4 +12,6 @@ public class ReportBoardsVO {
     private Timestamp reportDate;
     private Long boardId;
     private Long reporterId;
+    private String title;
+    private String name;
 } // end class

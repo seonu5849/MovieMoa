@@ -7,9 +7,11 @@ import java.sql.Timestamp;
 @Value
 public class ReportReplyVO {
     private Long id;
-    private String content;
+    private String reportContent;
     private Timestamp reportDate;
     private Long reporterId;
     private Long replyId;
     private String menu;
+    private String content;
+    private String name;
 } // end class

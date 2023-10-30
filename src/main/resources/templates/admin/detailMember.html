@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title th:text="${foundMember.uname}+'님의 회원정보입니다.'">회원 상세 페이지</title>
+<title th:text="${foundMember.name}+'님의 회원정보입니다.'">회원 상세 페이지</title>
 <style>
 .admin-container{
     grid-area: main;
@@ -54,20 +54,21 @@ th {
     background-color: #f2f2f2;
 }
 
-.main-content h1, .main-content h2 {
+.admin-content h1,
+.admin-content h2 {
     text-align: center;
     margin-top: 30px;
     color: #333;
 }
 
-.main-content form {
+.admin-content form {
     text-align: center;
     margin-top: 20px;
 }
 
-.main-content select,
-.main-content input[type="text"],
-.main-content #search > input[type="submit"] {
+.admin-content select,
+.admin-content input[type="text"],
+.admin-content #search > input[type="submit"] {
     padding: 10px;
     font-size: 16px;
     border: none;
@@ -75,30 +76,30 @@ th {
     margin-right: 10px;
 }
 
-.main-content input[type="submit"],
-.main-content input[type="button"] {
+.admin-content input[type="submit"],
+.admin-content input[type="button"] {
     background-color: #007BFF;
     color: #fff;
     cursor: pointer;
 }
 
-.main-content table {
+.admin-content table {
     width: 70em;
     border-collapse: collapse;
     margin: 20px auto;
 }
 
-.main-content th, .main-content td {
+.admin-content th, .main-content td {
     border: 1px solid #ddd;
     padding: 12px;
     text-align: center;
 }
 
-.main-content th {
+.admin-content th {
     background-color: #f2f2f2;
 }
 
-.main-content #inquiry > input[type="submit"] {
+.admin-content #inquiry > input[type="submit"] {
     padding: 10px;
     font-size: 16px;
     border: none;
@@ -106,31 +107,31 @@ th {
     margin-right: 10px;
 }
 
-.main-content ul {
+.admin-content ul {
     list-style: none;
     justify-content: center;
     margin: 20px 0;
     text-align: center;
 }
 
-.main-content .flex {
+.admin-content .flex {
     display: flex;
     justify-content: center;
 }
 
-.main-content li {
+.admin-content li {
     padding: 10px;
     display: inline-block;
 }
 
-.main-content a {
+.admin-content a {
     text-decoration: none;
     color: #007BFF;
     padding: 5px 10px;
     border-radius: 5px;
 }
 
-.main-content a:hover {
+.admin-content a:hover {
     background-color: #007BFF;
     color: #fff;
 }
@@ -187,20 +188,20 @@ th {
 
       <div class="em-70">
         <button class="btn-small" th:onclick="|location.href='/admin/memberList/1'|">취소</button>
-        <button class="btn-small" th:onclick="|location.href='/admin/detailMember/modifyMember/'+${foundMember.uuid}|">수정</button>
-        <button class="btn-small" th:onclick="|checkIfMemberHasPostsAndRedirect('/admin/detailMember/boardList/' + ${foundMember.uuid} + '/1')|">게시물</button>
+        <button class="btn-small" th:onclick="|location.href='/admin/detailMember/modifyMember/'+${foundMember.id}|">수정</button>
+        <button class="btn-small" th:onclick="|checkIfMemberHasPostsAndRedirect('/admin/detailMember/boardList/' + ${foundMember.id} + '/1')|">게시물</button>
       </div>
 
-      <p class="em-70" th:text="${foundMember.uname}+'님의 회원정보입니다.'">해당 회원의 회원정보입니다.</p>
+      <p class="em-70" th:text="${foundMember.name}+'님의 회원정보입니다.'">해당 회원의 회원정보입니다.</p>
 
       <table>
           <tr>
               <th>회원번호</th>
-              <td th:text="${foundMember.uuid}">001</td>
+              <td th:text="${foundMember.id}">001</td>
           </tr>
           <tr>
               <th>회원이름</th>
-              <td th:text="${foundMember.uname}">홍길동</td>
+              <td th:text="${foundMember.name}">홍길동</td>
           </tr>
           <tr>
               <th>닉네임</th>
@@ -220,11 +221,11 @@ th {
           </tr>
           <tr>
               <th>연락처</th>
-              <td th:text="${foundMember.phone_num}">010-1234-5678</td>
+              <td th:text="${foundMember.phoneNum}">010-1234-5678</td>
           </tr>
           <tr>
               <th>가입일</th>
-              <td th:text="${foundMember.JOIN_DATE}">2023-00-00</td>
+              <td th:text="${foundMember.joinDate}">2023-00-00</td>
           </tr>
           <tr>
               <th>활동상태</th>
@@ -236,7 +237,7 @@ th {
           </tr>
           <tr>
               <th>최근로그인</th>
-              <td th:text="${foundMember.LAST_LOGIN_DATE}">2023-00-00</td>
+              <td th:text="${foundMember.lastLoginDate}">2023-00-00</td>
           </tr>
       </table>
   </div>

@@ -4,40 +4,63 @@
 <meta name="viewport"
       content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
-<title th:text="${foundMember.uname}+'님의 회원정보입니다.'">회원 상세 페이지</title>
+<title th:text="${foundMember.name}+'님의 회원정보입니다.'">회원 상세 페이지</title>
 <style>
     .admin-container{
         grid-area: main;
     }
 
-  /* 페이지 헤더 스타일 */
   h1, h2 {
       text-align: center;
       margin-top: 30px;
-      color: #333; /* 글자색 */
+      color: #333;
   }
 
-  /* 검색 폼 스타일 */
   form {
       text-align: center;
       margin-top: 20px;
   }
 
-  select, input[type="text"], #search > input[type="submit"] {
+  input[type="text"],
+  input[type="tel"] {
       padding: 10px;
-      font-size: 16px;
-      border: none;
+      font-size: 14px;
+      border: 1px solid black;
       border-radius: 5px;
       margin-right: 10px;
+      text-align: center;
   }
 
-  input[type="submit"], input[type="button"]{
-      background-color: #007BFF; /* 버튼 배경색 */
-      color: #fff; /* 버튼 글자색 */
+  input[type="submit"],
+  input[type="button"],
+  #search > input[type="submit"]{
+      background-color: #007BFF;
+      color: #fff;
       cursor: pointer;
   }
 
-  /* 테이블 스타일 */
+    /* 셀렉트 박스 디자인 */
+    select {
+        padding: 8px;
+        margin-left: 20px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: white;
+        cursor: pointer;
+    }
+
+    /* 셀렉트 박스의 화살표 부분 디자인 */
+    select::-ms-expand {
+        display: none;
+    }
+
+    /* 셀렉트 박스에 포커스 됐을 때의 스타일 */
+    select:focus {
+        outline: none;
+        border-color: #007bff;
+    }
+
   table {
       width: 70em;
       border-collapse: collapse;
@@ -54,243 +77,141 @@
       background-color: #f2f2f2;
   }
 
-  .main-content h1, .main-content h2 {
-  text-align: center;
-  margin-top: 30px;
-  color: #333;
-}
-
-.main-content form {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.main-content select,
-.main-content input[type="text"], .main-content input[type="tel"]
-.main-content #search > input[type="submit"] {
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid black;
-    border-radius: 5px;
-    margin-right: 10px;
-}
-
-.main-content input[type="submit"],
-.main-content input[type="button"] {
-    background-color: #007BFF;
-    color: #fff;
-    cursor: pointer;
-}
-
-.main-content table {
+  .em-70{
     width: 70em;
-    border-collapse: collapse;
     margin: 20px auto;
-}
+  }
 
-.main-content th, .main-content td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    text-align: center;
-}
-
-.main-content th {
-    background-color: #f2f2f2;
-}
-
-.main-content #inquiry > input[type="submit"] {
-    padding: 10px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    margin-right: 10px;
-}
-
-.main-content ul {
-    list-style: none;
-    justify-content: center;
-    margin: 20px 0;
-    text-align: center;
-}
-
-.main-content .flex {
-    display: flex;
-    justify-content: center;
-}
-
-.main-content li {
-    padding: 10px;
-    display: inline-block;
-}
-
-.main-content a {
-    text-decoration: none;
-    color: #007BFF;
-    padding: 5px 10px;
-    border-radius: 5px;
-}
-
-.main-content a:hover {
-    background-color: #007BFF;
+  .btnflex, .btn-small {
+    background-color: #3498db;
     color: #fff;
-}
+    border: none;
+    border-radius: 4px;
+    padding: 10px 10px;
+    font-size: 16px;
+    cursor: pointer;
+  }
 
-.em-70{
-  width: 70em;
-  margin: 20px auto;
-}
+  .btn-small{
+    font-size: 10px;
+  }
 
-.btnflex{
-  float: left;
-  margin-left: 20px;
-  background-color: #3498db; /* 배경 색상 */
-  color: #fff; /* 텍스트 색상 */
-  border: none; /* 경계선 없음 */
-  border-radius: 4px; /* 둥근 모서리 */
-  padding: 10px 10px; /* 내부 여백 */
-  font-size: 16px; /* 텍스트 크기 */
-  cursor: pointer; /* 마우스 커서를 포인터로 변경 */
-}
+  .button-container{
+    display: flex;
+  }
+  .button-container > button{
+    margin: 5px;
+    width: 50px;
+    height: 24px;
+  }
 
-.btn-small{
-  float: right;
-  margin-left: 20px;
-  background-color: #3498db; /* 배경 색상 */
-  color: #fff; /* 텍스트 색상 */
-  border: none; /* 경계선 없음 */
-  border-radius: 4px; /* 둥근 모서리 */
-  padding: 10px 10px; /* 내부 여백 */
-  font-size: 10px; /* 텍스트 크기 */
-  cursor: pointer; /* 마우스 커서를 포인터로 변경 */
-}
-.button-container{
-  display: flex;
-}
-.button-container > button{
-  margin: 5px;
-  width: 50px;
-  height: 24px;
-}
-
-.text-center {
-  display: inline-block;
-  vertical-align: middle;
-  line-height: normal;
-}
+  .text-center {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+  }
 </style>
 </head>
 <body>
 <header th:replace="nav.html" />
 <main class="main-content">
-<aside th:replace="adminSide.html" />
-  <div class="admin-container">
-    <div class="admin-panel">
-        <h1>ADMIN</h1>
-        <p class="em-70" th:text="${foundMember.uname}+'님의 회원정보입니다.'">해당 회원의 회원정보입니다.</p>
+    <aside th:replace="adminSide.html" />
+    <div class="admin-container">
+        <div class="admin-panel">
+            <h1>ADMIN</h1>
+            <p class="em-70" th:text="${foundMember.name}+'님의 회원정보입니다.'">해당 회원의 회원정보입니다.</p>
 
-        <form action="/admin/detailMember/modifyMember" method="POST" onsubmit="return showConfirmation()">
-          <table>
-              <tr>
-                  <input type="hidden" name="uuid" th:value="${foundMember.uuid}">
-                  <th>회원번호</th>
-                  <td th:text="${foundMember.uuid}">001</td>
-              </tr>
-              <tr>
-                  <th>회원이름</th>
-                  <td th:text="${foundMember.uname}">홍길동</td>
-              </tr>
-              <tr>
-                  <th>닉네임</th>
-                  <td><input type="text" name="nickname" th:value="${foundMember.nickname}"></td>
-              </tr>
-              <tr>
-                  <th>아이디</th>
-                  <td th:text="${foundMember.email}">gildong123</td>
-              </tr>
-              <tr>
-                  <th>주소</th>
-                  <td><input type="text" name="address" th:value="${foundMember.address}"></td>
-              </tr>
-              <tr>
-                  <th>생일</th>
-                  <td th:text="${foundMember.birthday}">1900-00-00</td>
-              </tr>
-              <tr>
-                  <th>연락처</th>
-                  <td>
-                    <input type="tel" name="phoneNum" id="phoneNum1" maxlength="3"> -
-                    <input type="tel" name="phoneNum" id="phoneNum2" maxlength="4"> -
-                    <input type="tel" name="phoneNum" id="phoneNum3" maxlength="4">
-                  </td>
-              </tr>
-              <tr>
-                  <th>가입일</th>
-                  <td th:text="${foundMember.JOIN_DATE}">2023-00-00</td>
-              </tr>
-              <tr>
-                  <th>활동상태</th>
-                  <td th:text="${foundMember.status}">일반</td>
-              </tr>
-              <tr>
-                  <th>권한</th>
-                  <td>
-                    <span th:text="${foundMember.role}"></span>
-                    <select name="role">
-                      <option value="ADMIN" th:selected="${foundMember.role == 'ROLE_ADMIN'}">관리자</option>
-                      <option value="MEMBER" th:selected="${foundMember.role == 'ROLE_MEMBER'}">일반</option>
-                    </select>
-                  </td>
-              </tr>
-              <tr>
-                  <th>최근로그인</th>
-                  <td th:text="${foundMember.LAST_LOGIN_DATE}">2023-00-00</td>
-              </tr>
-          </table>
+            <form action="/admin/detailMember/modifyMember" method="POST" onsubmit="return showConfirmation()">
+                <table>
+                    <tr>
+                        <input type="hidden" name="id" th:value="${foundMember.id}">
+                        <th>회원번호</th>
+                        <td th:text="${foundMember.id}">001</td>
+                    </tr>
+                    <tr>
+                        <th>회원이름</th>
+                        <td th:text="${foundMember.name}">홍길동</td>
+                    </tr>
+                    <tr>
+                        <th>닉네임</th>
+                        <td><input type="text" name="nickname" th:value="${foundMember.nickname}"></td>
+                    </tr>
+                    <tr>
+                        <th>아이디</th>
+                        <td th:text="${foundMember.email}">gildong123</td>
+                    </tr>
+                    <tr>
+                        <th>주소</th>
+                        <td><input type="text" name="address" th:value="${foundMember.address}"></td>
+                    </tr>
+                    <tr>
+                        <th>생일</th>
+                        <td th:text="${foundMember.birthday}">1900-00-00</td>
+                    </tr>
+                    <tr>
+                        <th>연락처</th>
+                        <td>
+                            <input type="tel" name="phoneNum" id="phoneNum1" minlength="13" maxlength="13" th:value="${foundMember.phoneNum}" pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>가입일</th>
+                        <td th:text="${foundMember.joinDate}">2023-00-00</td>
+                    </tr>
+                    <tr>
+                        <th>활동상태</th>
+                        <td th:text="${foundMember.status}">일반</td>
+                    </tr>
+                    <tr>
+                        <th>권한</th>
+                        <td>
+                            <span th:text="${foundMember.role}"></span>
+                            <select name="role">
+                                <option value="MEMBER" th:selected="${foundMember.role == 'ROLE_MEMBER'}">일반</option>
+                                <option value="ADMIN" th:selected="${foundMember.role == 'ROLE_ADMIN'}">관리자</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>최근로그인</th>
+                        <td th:text="${foundMember.lastLoginDate}">2023-00-00</td>
+                    </tr>
+                </table>
 
-        <div class="em-70">
-          <button class="btn-small" onclick="window.history.back()">취소</button>
-          <input class="btn-small" type="submit" value="수정">
+                <div class="em-70">
+                    <input class="btn-small" type="submit" value="수정">
+                    <button class="btn-small" onclick="window.history.back()">취소</button>
+                </div>
+            </form>
+
         </div>
-      </form>
     </div>
-  </div>
 </main>
-  <footer th:replace="footer.html" />
+<footer th:replace="footer.html" />
 <script th:inline="javascript">
-  var fullPhoneNumber = /*[[${foundMember.phone_num}]]*/ '';
 
-// 전화번호를 '-'로 분할
-var phoneNumbers = fullPhoneNumber.split('-');
+    function showConfirmation() {
+      // 사용자가 확인을 선택한 경우에 대한 처리
+      var isConfirmed = confirm('수정하시겠습니까?');
+      if (isConfirmed) {
+          // 사용자가 확인을 선택한 경우 폼 유효성 검사 수행
+          var nickname = document.getElementsByName('nickname')[0].value;
+          var address = document.getElementsByName('address')[0].value;
+          var phoneNum = document.getElementsByName('phoneNum')[0].value;
 
-if (phoneNumbers.length === 3) {
-    // 세 개의 부분으로 나눈 전화번호를 각각의 입력 필드에 설정
-    document.getElementById('phoneNum1').value = phoneNumbers[0];
-    document.getElementById('phoneNum2').value = phoneNumbers[1];
-    document.getElementById('phoneNum3').value = phoneNumbers[2];
-}
+          if (nickname.trim() === '' || address.trim() === '' || phoneNum.trim() === '') {
+              // 필수 입력 필드가 비어있는 경우 경고 표시
+              alert('모든 필수 필드를 입력하세요.');
+              return false; // 폼 제출 중지
+          }
 
-  function showConfirmation() {
-    // 사용자가 확인을 선택한 경우에 대한 처리
-    var isConfirmed = confirm('수정하시겠습니까?');
-    if (isConfirmed) {
-        // 사용자가 확인을 선택한 경우 폼 유효성 검사 수행
-        var nickname = document.getElementsByName('nickname')[0].value;
-        var address = document.getElementsByName('address')[0].value;
-        var phoneNum = document.getElementsByName('phoneNum')[0].value;
-
-        if (nickname.trim() === '' || address.trim() === '' || phoneNum.trim() === '') {
-            // 필수 입력 필드가 비어있는 경우 경고 표시
-            alert('모든 필수 필드를 입력하세요.');
-            return false; // 폼 제출 중지
-        }
-
-        // 모든 필수 입력 필드가 채워진 경우에만 폼 제출
-        return true;
-    } else {
-        // 사용자가 취소를 선택한 경우 폼 제출 중지
-        return false;
-    }
-}
+          // 모든 필수 입력 필드가 채워진 경우에만 폼 제출
+          return true;
+      } else {
+          // 사용자가 취소를 선택한 경우 폼 제출 중지
+          return false;
+      }
+  }
 </script>
 </body>
 </html>

@@ -62,20 +62,21 @@
         margin-right: 10px;
     }
 
-    .main-content h1, .main-content h2 {
+    .admin-content h1,
+    .admin-content h2 {
     text-align: center;
     margin-top: 30px;
     color: #333;
 }
 
-.main-content form {
+.admin-content form {
     text-align: center;
     margin-top: 20px;
 }
 
-.main-content select,
-.main-content input[type="text"],
-.main-content #search > input[type="submit"] {
+.admin-content select,
+.admin-content input[type="text"],
+.admin-content #search > input[type="submit"] {
     padding: 10px;
     font-size: 16px;
     border: none;
@@ -83,30 +84,31 @@
     margin-right: 10px;
 }
 
-.main-content input[type="submit"],
-.main-content input[type="button"] {
+.admin-content input[type="submit"],
+.admin-content input[type="button"] {
     background-color: #007BFF;
     color: #fff;
     cursor: pointer;
 }
 
-.main-content table {
+.admin-content table {
     width: 70em;
     border-collapse: collapse;
     margin: 20px auto;
 }
 
-.main-content th, .main-content td {
+.admin-content th,
+.admin-content td {
     border: 1px solid #ddd;
     padding: 12px;
     text-align: center;
 }
 
-.main-content th {
+.admin-content th {
     background-color: #f2f2f2;
 }
 
-.main-content #inquiry > input[type="submit"] {
+.admin-content #inquiry > input[type="submit"] {
     padding: 10px;
     font-size: 16px;
     border: none;
@@ -114,31 +116,31 @@
     margin-right: 10px;
 }
 
-.main-content ul {
+.admin-content ul {
     list-style: none;
     justify-content: center;
     margin: 20px 0;
     text-align: center;
 }
 
-.main-content .flex {
+.admin-content .flex {
     display: flex;
     justify-content: center;
 }
 
-.main-content li {
+.admin-content li {
     padding: 10px;
     display: inline-block;
 }
 
-.main-content a {
+.admin-content a {
     text-decoration: none;
     color: #007BFF;
     padding: 5px 10px;
     border-radius: 5px;
 }
 
-.main-content a:hover {
+.admin-content a:hover {
     background-color: #007BFF;
     color: #fff;
 }
@@ -194,8 +196,8 @@
             <div class="content">
                 <h1>ADMIN</h1>
                 <form action="/admin/inquiryAnswer" method="post" onsubmit="return saveButton()">
-                    <p class="em-70" th:text="${inquirie.uname}+'님의 문의입니다.'">• 특정회원의 문의입니다.</p>
-                    <input type="hidden" name="inquiryId" th:value="${inquirie.inquiriesId}">
+                    <p class="em-70" th:text="${inquirie.name}+'님의 문의입니다.'">• 특정회원의 문의입니다.</p>
+                    <input type="hidden" name="id" th:value="${inquirie.id}">
                     <input type="hidden" name="memberId" th:value="${inquirie.memberId}">
                     <div class="form-group">
                         <label for="questionDate">문의일자</label>
@@ -206,12 +208,12 @@
                         <input type="text" id="questionTitle" th:value="${inquirie.title}" disabled>
                     </div>
                     <div class="form-group">
-                        <label for="questionContent">문의내용</label>
-                        <textarea id="questionContent" th:field="${inquirie.inquiriesContent}" disabled></textarea>
+                        <label for="content">문의내용</label>
+                        <textarea id="content" th:field="${inquirie.content}" disabled></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="responseContent">답변내용</label>
-                        <textarea id="responseContent" name="responseContent" th:field="${inquirie.inquiryResponsesContent}"></textarea>
+                        <label for="responsesContent">답변내용</label>
+                        <textarea id="responsesContent" name="responsesContent" th:field="${inquirie.responsesContent}"></textarea>
                     </div>
                     <input type="submit" value="저장" class="btn-small">
                     <button th:onclick="|location.href='/admin/inquiry/1'|" class="btn-small">취소</button>

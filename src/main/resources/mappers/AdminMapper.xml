@@ -18,13 +18,13 @@
         SELECT * FROM member
         WHERE
         <if test="params.searchOption == 'name'">
-            uname LIKE '%'||#{params.searchValue}||'%'
+            LOWER(name) LIKE '%'||LOWER(#{params.searchValue})||'%'
         </if>
         <if test="params.searchOption == 'email'">
-            email LIKE '%'||#{params.searchValue}||'%'
+            LOWER(email) LIKE '%'||LOWER(#{params.searchValue})||'%'
         </if>
         <if test="params.searchOption == 'nickname'">
-            nickname LIKE '%'||#{params.searchValue}||'%'
+            LOWER(nickname) LIKE '%'||LOWER(#{params.searchValue})||'%'
         </if>
         ORDER BY id DESC
         OFFSET #{offset} row fetch next #{perPage} row only
@@ -58,23 +58,11 @@
     <!-- 회원 정보 업데이트: 기존 회원의 정보를 업데이트 -->
     <update id="updateMember">
         UPDATE member
-        <set>
-            <if test="nickname != null and nickname != ''">
-                nickname = #{dto.nickname},
-            </if>
-            <if test="address != null and address != ''">
-                address = #{dto.address},
-            </if>
-            <if test="phoneNum != null and phoneNum != ''">
-                phone_num = #{dto.phoneNum},
-            </if>
-            <if test="birthday != null and birthday != ''">
-                birthday = #{dto.birthday},
-            </if>
-            <if test="role != null and role != ''">
-                role = #{dto.role},
-            </if>
-        </set>
+        SET
+        nickname = #{dto.nickname},
+        address = #{dto.address},
+        phone_num = #{dto.phoneNum},
+        role = #{dto.role}
         WHERE id = #{dto.id}
     </update>
 
@@ -95,14 +83,216 @@
         SELECT count(id) FROM member
         WHERE
         <if test="params.searchOption == 'name'">
-            uname LIKE '%'||#{params.searchValue}||'%'
+            LOWER(name) LIKE '%'||LOWER(#{params.searchValue})||'%'
         </if>
         <if test="params.searchOption == 'email'">
-            email LIKE '%'||#{params.searchValue}||'%'
+            LOWER(email) LIKE '%'||LOWER(#{params.searchValue})||'%'
         </if>
         <if test="params.searchOption == 'nickname'">
-            nickname LIKE '%'||#{params.searchValue}||'%'
+            LOWER(nickname) LIKE '%'||LOWER(#{params.searchValue})||'%'
         </if>
     </select>
+
+<!--    =======================================================================================-->
+
+    <!-- 전체 신고된 게시판 글의 수를 반환 -->
+    <select id="totalReportBoardCount" resultType="Integer">
+        SELECT COUNT(id)
+        FROM reportboards
+    </select>
+
+    <!-- 전체 신고된 댓글의 수를 반환 -->
+    <select id="totalReportReplyCount" resultType="Integer">
+        SELECT COUNT(id)
+        FROM reportreply
+    </select>
+
+    <!-- 신고된 게시판 글을 조회하여 페이징 처리된 결과를 반환 -->
+    <select id="selectReportedBoards" resultType="org.zerock.myapp.domain.ReportBoardsVO">
+        SELECT
+        rb.*,
+        b.title,
+        m.name
+        FROM
+        reportboards rb, member m, board b
+        WHERE
+        rb.reporter_id = m.id
+        AND rb.board_id = b.id
+        OFFSET #{offset} ROW FETCH NEXT #{perPage} ROW ONLY
+    </select>
+
+    <!-- 신고된 댓글을 조회하여 페이징 처리된 결과를 반환 -->
+    <select id="selectReportedReply" resultType="org.zerock.myapp.domain.ReportReplyVO">
+        SELECT
+        br.*,
+        r.content,
+        m.name
+        FROM
+        reportreply br, member m, board_reply r
+        WHERE
+        br.reporter_id = m.id
+        AND br.reply_id = r.id
+        ORDER BY br.id DESC
+        OFFSET #{offset} ROW FETCH NEXT #{perPage} ROW ONLY
+    </select>
+    
+<!--    =======================================================================================-->
+    
+    <!-- 특정 멤버의 게시글을 조회하여 페이징 처리된 결과를 반환 -->
+    <select id="selectMemberByBoard" resultType="org.zerock.myapp.domain.BoardVO">
+        SELECT
+        b.*,
+        m.name
+        FROM
+        board b, member m
+        WHERE
+        b.member_id = m.id
+        AND b.member_id = #{memberId}
+        ORDER BY b.id DESC
+        OFFSET #{offset} ROW FETCH NEXT #{perPage} ROW ONLY
+    </select>
+
+    <!-- 특정 게시글 ID에 해당하는 게시글 삭제 -->
+    <delete id="deleteMemberByBoard">
+        DELETE FROM board WHERE id = #{id}
+    </delete>
+
+    <!-- 특정 멤버가 작성한 게시글의 총 수를 반환 -->
+    <select id="totalMemberByBoardCount" resultType="Integer">
+        SELECT COUNT(id)
+        FROM board
+        WHERE member_id = #{memberId}
+    </select>
+<!--    =======================================================================================-->
+    <!-- 모든 이벤트 조회: EVENT 테이블과 MEMBER 테이블을 조인하여 모든 이벤트의 상세 정보를 조회합니다. 페이징 처리가 포함되어 있습니다. -->
+    <select id="selectAllEvents" resultType="org.zerock.myapp.domain.EventsVO">
+        SELECT
+        e.*,
+        m.name
+        FROM
+        events e, member m
+        WHERE
+        e.admin_id = m.id
+        ORDER BY e.id DESC
+        OFFSET #{offset} row fetch next #{perPage} row only
+    </select>
+
+    <!-- 이벤트 추가: EVENT 테이블에 새로운 이벤트 정보를 추가합니다. -->
+    <insert id="insertEvent">
+        insert into events (
+        id,
+        title,
+        start_at,
+        end_at,
+        thumbnail_path,
+        contents_path,
+        member_id)
+        values (
+        #{event.id},
+        #{event.title},
+        #{event.startAt},
+        #{event.endAt},
+        #{event.thumbnailPath},
+        #{event.contentsPath},
+        #{event.memberId})
+    </insert>
+
+    <!-- 이벤트 정보 업데이트: EVENT 테이블에서 특정 이벤트의 정보를 업데이트합니다. -->
+    <update id="updateEvent">
+        update events set
+        title = #{event.title},
+        thumbnail_path = #{event.thumbnailpath},
+        contents_path = #{event.contentspath},
+        start_at = #{event.startAt},
+        end_at = #{event.endAt},
+        admin_id = #{event.adminId},
+        updated_at = CURRENT_TIMESTAMP
+        where
+        id = #{event.id}
+    </update>
+
+    <!-- 이벤트 삭제: EVENT 테이블에서 특정 이벤트를 삭제합니다. -->
+    <delete id="deleteEvent">
+        DELETE from events where id = #{event.id}
+    </delete>
+
+    <!-- 총 이벤트 수 조회: EVENT 테이블에서 총 이벤트 수를 조회합니다. -->
+    <select id="totalEventCount" resultType="Integer">
+        SELECT count(id)
+        FROM events
+    </select>
+
+<!--    =======================================================================================-->
+    <!-- 모든 상품을 선택하고, 카테고리 이름을 포함하여 조회. 페이지네이션을 위한 OFFSET과 FETCH 사용 -->
+    <select id="selectAllProduct" resultType="org.zerock.myapp.domain.StoreVO">
+        SELECT
+        p.*,
+        k.name
+        FROM
+        store p, store_kategories k
+        where
+        p.kategorie_id = k.id
+        ORDER BY p.id DESC
+        OFFSET #{offset} row fetch next #{perPage} row only
+    </select>
+
+    <!-- 특정 상품 ID에 해당하는 상품을 삭제 -->
+    <delete id="deleteProduct">
+        DELETE from store where id = #{dto.id}
+    </delete>
+
+    <!-- 전체 상품의 개수를 계산 -->
+    <select id="totalProductCount" resultType="Integer">
+        SELECT count(id)
+        FROM store
+    </select>
+
+    <!--    =======================================================================================-->
+
+    <!-- 전체 문의사항의 수를 반환 -->
+    <select id="totalInquiriesCount" resultType="Integer">
+        SELECT COUNT(id)
+        FROM Inquiries
+    </select>
+
+    <!-- 모든 문의사항을 조회하여 페이징 처리된 결과를 반환 -->
+    <select id="selectAllInquiries" resultType="org.zerock.myapp.domain.InquiriesVO">
+        SELECT
+        i.*,
+        ir.responses_content,
+        m.name
+        FROM
+        inquiries i
+        JOIN member m ON i.member_id = m.id
+        LEFT JOIN inquiry_responses ir ON i.id = ir.id
+        ORDER BY i.id DESC
+        OFFSET #{offset} ROW FETCH NEXT #{perPage} ROW ONLY
+    </select>
+
+    <!-- 특정 문의사항을 조회 -->
+    <select id="selectMemberInquiries" resultType="org.zerock.myapp.domain.InquiriesVO">
+        SELECT
+        i.*,
+        ir.responses_content,
+        m.name
+        FROM
+        inquiries i
+        JOIN member m ON i.member_id = m.id
+        LEFT JOIN inquiry_responses ir ON i.id = ir.id
+        WHERE
+        i.id = #{id}
+    </select>
+
+    <!-- 문의사항에 대한 응답을 추가하거나, 기존 응답을 업데이트 -->
+    <insert id="insertInquiriesResponse">
+        MERGE INTO inquiry_responses dest
+        USING (SELECT #{dto.id} AS id, #{dto.adminId} AS admin_id FROM DUAL) src
+        ON (dest.id = src.id AND dest.admin_id = src.admin_id)
+        WHEN MATCHED THEN
+        UPDATE SET dest.responses_content = #{dto.responsesContent}
+        WHEN NOT MATCHED THEN
+        INSERT (dest.id, dest.admin_id, dest.responses_content)
+        VALUES (src.id, src.admin_id, #{dto.responsesContent})
+    </insert>
 
 </mapper>

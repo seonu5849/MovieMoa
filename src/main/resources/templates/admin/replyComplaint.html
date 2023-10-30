@@ -62,20 +62,21 @@
         margin-right: 10px;
     }
 
-    .main-content h1, .main-content h2 {
+    .admin-content h1,
+    .admin-content h2 {
     text-align: center;
     margin-top: 30px;
     color: #333;
 }
 
-.main-content form {
+.admin-content form {
     text-align: center;
     margin-top: 20px;
 }
 
-.main-content select,
-.main-content input[type="text"],
-.main-content #search > input[type="submit"] {
+.admin-content select,
+.admin-content input[type="text"],
+.admin-content #search > input[type="submit"] {
     padding: 10px;
     font-size: 16px;
     border: none;
@@ -83,30 +84,31 @@
     margin-right: 10px;
 }
 
-.main-content input[type="submit"],
-.main-content input[type="button"] {
+.admin-content input[type="submit"],
+.admin-content input[type="button"] {
     background-color: #007BFF;
     color: #fff;
     cursor: pointer;
 }
 
-.main-content table {
+.admin-content table {
     width: 70em;
     border-collapse: collapse;
     margin: 20px auto;
 }
 
-.main-content th, .main-content td {
+.admin-content th,
+.admin-content td {
     border: 1px solid #ddd;
     padding: 12px;
     text-align: center;
 }
 
-.main-content th {
+.admin-content th {
     background-color: #f2f2f2;
 }
 
-.main-content #inquiry > input[type="submit"] {
+.admin-content #inquiry > input[type="submit"] {
     padding: 10px;
     font-size: 16px;
     border: none;
@@ -114,31 +116,31 @@
     margin-right: 10px;
 }
 
-.main-content ul {
+.admin-content ul {
     list-style: none;
     justify-content: center;
     margin: 20px 0;
     text-align: center;
 }
 
-.main-content .flex {
+.admin-content .flex {
     display: flex;
     justify-content: center;
 }
 
-.main-content li {
+.admin-content li {
     padding: 10px;
     display: inline-block;
 }
 
-.main-content a {
+.admin-content a {
     text-decoration: none;
     color: #007BFF;
     padding: 5px 10px;
     border-radius: 5px;
 }
 
-.main-content a:hover {
+.admin-content a:hover {
     background-color: #007BFF;
     color: #fff;
 }
@@ -163,7 +165,7 @@
                         <tr>
                             <th>번호</th>
                             <th>카테고리</th>
-                            <th>제목</th>
+                            <th>댓글내용</th>
                             <th>신고사유</th>
                             <th>신고자</th>
                             <th>신고날짜</th>
@@ -173,13 +175,13 @@
                         <tbody>
                         <!-- 예시 데이터 -->
                         <tr th:each="reportReply : ${reportReplys}">
-                            <td th:text="${reportReply.reportedReplyId}">번호</td>
-                            <td th:text="${reportReply.reportMenu}">카테고리</td>
-                            <td th:text="${reportReply.title}">제목</td>
-                            <td th:text="${reportReply.reportReason != null ? (#strings.length(reportReply.reportReason) > 8 ? #strings.substring(reportReply.reportReason, 0, 8) + '...' : reportReply.reportReason) : ''}">
+                            <td th:text="${reportReply.id}">번호</td>
+                            <td th:text="${reportReply.menu}">카테고리</td>
+                            <td th:text="${reportReply.content}">댓글내용</td>
+                            <td th:text="${reportReply.reportContent != null ? (#strings.length(reportReply.reportContent) > 8 ? #strings.substring(reportReply.reportContent, 0, 8) + '...' : reportReply.reportContent) : ''}">
                                     신고사유</td>
-                            <td th:text="${reportReply.uname}">신고자</td>
-                            <td th:text="${reportReply.receivedDate}">신고날짜</td>
+                            <td th:text="${reportReply.name}">신고자</td>
+                            <td th:text="${reportReply.reportDate}">신고날짜</td>
                             <td>
                                 처분
                             </td>
