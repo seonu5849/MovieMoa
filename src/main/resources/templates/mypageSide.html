@@ -42,7 +42,7 @@
             <li><a th:href="@{'/mypage/authentication'}">검색기록</a></li>
             <li><a th:href="@{'/mypage/authentication'}">위시리스트</a></li>
             <li><a th:href="@{'/mypage/authentication'}">문의내역</a></li>
-            <li sec:authorize="isAuthenticated()"><a th:href="@{'/admin/memberList/1'}">관리자 페이지</a></li>
+            <li sec:authorize="hasRole('ADMIN')"><a th:href="@{'/admin/memberList/1'}">관리자 페이지</a></li>
         </ul>
     </div>
 </aside>

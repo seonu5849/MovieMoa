@@ -103,7 +103,7 @@
         </div>
     </div>
 </main>
-<button id="movieButton" th:href="@{/movie/movieData}">영화추가</button>
+<a id="movieButton" th:href="@{/movie/movieData}" class="button-link" sec:authorize="hasRole('ADMIN')">영화추가</a>
 <footer th:replace="footer.html" />
 </body>
 </html>
