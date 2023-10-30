@@ -6,181 +6,183 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MOVIE MOA 관리자 페이지</title>
 <style>
-    .admin-container {
+    .admin-container{
         grid-area: main;
     }
-  /* 페이지 헤더 스타일 */
-  h1, h2 {
-      text-align: center;
-      margin-top: 30px;
-      color: #333; /* 글자색 */
-  }
 
-  /* 검색 폼 스타일 */
-  form {
-      text-align: center;
-      margin-top: 20px;
-  }
+    /* 페이지 헤더 스타일 */
+    h1, h2 {
+        text-align: center;
+        margin-top: 30px;
+        color: #333; /* 글자색 */
+    }
 
-  select, input[type="text"], #search > input[type="submit"] {
-      padding: 10px;
-      font-size: 16px;
-      border: none;
-      border-radius: 5px;
-      margin-right: 10px;
-  }
+    /* 검색 폼 스타일 */
+    form {
+        text-align: center;
+        margin-top: 20px;
+    }
 
-  input[type="submit"], input[type="button"]{
-      background-color: #007BFF; /* 버튼 배경색 */
-      color: #fff; /* 버튼 글자색 */
-      cursor: pointer;
-  }
+    select, input[type="text"],
+    #search > input[type="submit"] {
+        padding: 10px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        margin-right: 10px;
+    }
 
-  /* 테이블 스타일 */
-  table {
-      width: 70em;
-      border-collapse: collapse;
-      margin: 20px auto;
-  }
+    input[type="submit"],
+    input[type="button"]{
+        background-color: #007BFF; /* 버튼 배경색 */
+        color: #fff; /* 버튼 글자색 */
+        cursor: pointer;
+    }
 
-  th, td {
-      border: 1px solid #ddd;
-      padding: 12px;
-      text-align: center;
-      width: 500px;
-  }
+    /* 테이블 스타일 */
+    table {
+        width: 70em;
+        border-collapse: collapse;
+        margin: 20px auto;
+    }
 
-  th {
-      background-color: #f2f2f2;
-  }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: center;
+    }
 
-  .admin-container h1,
-  .admin-content h2 {
-  text-align: center;
-  margin-top: 30px;
-  color: #333;
-}
+    th {
+        background-color: #f2f2f2;
+    }
 
-.admin-container form {
-    text-align: center;
-    margin-top: 20px;
-    margin-left: 80px;
-}
+    .admin-container h1,
+    .admin-container h2 {
+        text-align: center;
+        margin-top: 30px;
+        color: #333;
+    }
 
-.admin-content select,
-.admin-content input[type="text"],
-.admin-content #search > input[type="submit"] {
-    padding: 10px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    margin-right: 10px;
-}
+    .admin-container form {
+        text-align: center;
+        margin-top: 20px;
+    }
 
-.admin-content input[type="submit"],
-.admin-content input[type="button"] {
-    background-color: #007BFF;
-    color: #fff;
-    cursor: pointer;
-}
+    .admin-container select,
+    .admin-container input[type="text"],
+    .admin-container #search > input[type="submit"] {
+        padding: 10px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        margin-right: 10px;
+    }
 
-.admin-content table {
-    width: 70em;
-    border-collapse: collapse;
-    margin: 20px auto;
-}
+    .admin-container input[type="submit"],
+    .admin-container input[type="button"] {
+        background-color: #007BFF;
+        color: #fff;
+        cursor: pointer;
+    }
 
-.admin-content th,
-.admin-content td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    text-align: center;
-    width: 100px;
-}
+    .admin-container table {
+        width: 70em;
+        border-collapse: collapse;
+        margin: 20px auto;
+    }
 
-.admin-content th {
-    background-color: #f2f2f2;
-}
+    .admin-container th,
+    .admin-container td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: center;
+    }
 
-.admin-content #inquiry > input[type="submit"] {
-    padding: 10px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    margin-right: 10px;
-}
+    .admin-container th {
+        background-color: #f2f2f2;
+    }
 
-.admin-content ul {
-    list-style: none;
-    justify-content: center;
-    margin: 20px 0;
-    text-align: center;
-}
+    .admin-container #inquiry > input[type="submit"] {
+        padding: 10px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        margin-right: 10px;
+    }
 
-.admin-content .flex {
-    display: flex;
-    justify-content: center;
-}
+    .admin-container ul {
+        list-style: none;
+        justify-content: center;
+        margin: 20px 0;
+        text-align: center;
+    }
 
-.admin-content li {
-    padding: 10px;
-    display: inline-block;
-}
+    .admin-container .flex {
+        display: flex;
+        justify-content: center;
+    }
 
-.admin-content a {
-    text-decoration: none;
-    color: #007BFF;
-    padding: 5px 10px;
-    border-radius: 5px;
-}
+    .admin-container li {
+        padding: 10px;
+        display: inline-block;
+    }
 
-.admin-content a:hover {
-    background-color: #007BFF;
-    color: #fff;
-}
+    .admin-container a {
+        text-decoration: none;
+        color: #007BFF;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
 
-.em-70{
-  width: 70em;
-  margin: 20px auto;
-}
-.btnflex{
-  float: left;
-  margin-left: 20px;
-  background-color: #3498db; /* 배경 색상 */
-  color: #fff; /* 텍스트 색상 */
-  border: none; /* 경계선 없음 */
-  border-radius: 4px; /* 둥근 모서리 */
-  padding: 10px 10px; /* 내부 여백 */
-  font-size: 16px; /* 텍스트 크기 */
-  cursor: pointer; /* 마우스 커서를 포인터로 변경 */
-}
+    .admin-container a:hover {
+        background-color: #007BFF;
+        color: #fff;
+    }
 
-.btn-small{
-  float: right;
-  margin-left: 20px;
-  margin-bottom: 10px;
-  background-color: #ffffff; /* 배경 색상 */
-  color: #fff; /* 텍스트 색상 */
-  border: none; /* 경계선 없음 */
-  border-radius: 4px; /* 둥근 모서리 */
-  padding: 10px 10px; /* 내부 여백 */
-  font-size: 15px; /* 텍스트 크기 */
-  cursor: pointer; /* 마우스 커서를 포인터로 변경 */
-}
-.button-container{
-  display: flex;
-}
-.button-container > button{
-  margin: 5px;
-  width: 50px;
-  height: 24px;
-}
+    .em-70{
+        width: 70em;
+        margin: 20px auto;
+    }
 
-.text-center {
-  display: inline-block;
-  vertical-align: middle;
-  line-height: normal;
-}
+    .btnflex{
+        float: left;
+        margin-left: 20px;
+        background-color: #3498db; /* 배경 색상 */
+        color: #fff; /* 텍스트 색상 */
+        border: none; /* 경계선 없음 */
+        border-radius: 4px; /* 둥근 모서리 */
+        padding: 10px 10px; /* 내부 여백 */
+        font-size: 16px; /* 텍스트 크기 */
+        cursor: pointer; /* 마우스 커서를 포인터로 변경 */
+    }
+
+    .btn-small{
+        float: right;
+        margin-left: 20px;
+        margin-bottom: 10px;
+        background-color: #ffffff; /* 배경 색상 */
+        color: #fff; /* 텍스트 색상 */
+        border: none; /* 경계선 없음 */
+        border-radius: 4px; /* 둥근 모서리 */
+        padding: 10px 10px; /* 내부 여백 */
+        font-size: 15px; /* 텍스트 크기 */
+        cursor: pointer; /* 마우스 커서를 포인터로 변경 */
+    }
+
+    .button-container{
+        display: flex;
+    }
+    .button-container > button{
+        margin: 5px;
+        width: 50px;
+        height: 24px;
+    }
+
+    .text-center {
+        display: inline-block;
+        vertical-align: middle;
+        line-height: normal;
+    }
     </style>
 </head>
 <body>

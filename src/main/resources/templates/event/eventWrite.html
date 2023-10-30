@@ -6,15 +6,19 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>MOVIE MOA</title>
     <style>
-
+        .main{
+            grid-area: main;
+        }
     </style>
 </head>
 <body>
 <header th:replace="nav.html" />
 <main>
     <aside th:replace="eventSide.html" />
-    <h3>/templates/event/eventWrite.html</h3>
-    <hr>
+    <article class="main">
+        <h3>/templates/event/eventWrite.html</h3>
+        <hr>
+    </article>
 </main>
 <footer th:replace="footer.html" />
 </body>

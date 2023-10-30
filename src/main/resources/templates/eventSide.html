@@ -37,6 +37,7 @@
         <ul>
             <li><a th:href="@{'/event/currentEvents'}">진행 이벤트</a></li>
             <li><a th:href="@{'/event/currentEvents?proceedingYn=N'}">종료 이벤트</a></li>
+            <li sec:authorize="hasRole('ADMIN')"><a th:href="@{'/admin/memberList/1'}">관리자 페이지</a></li>
         </ul>
     </div>
 </aside>
