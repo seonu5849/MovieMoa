@@ -11,6 +11,7 @@ import org.zerock.myapp.service.MovieJsonService;
 import org.zerock.myapp.service.MovieService;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -79,6 +80,12 @@ public class AdminController {
 
         MemberVO foundMember = this.adminService.findDetailMember(id);
         Integer totalPages = this.adminService.totalMemberByBoardCount(id);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        if(foundMember.getBirthday() != null){
+            String formattedDate = formatter.format(foundMember.getBirthday());
+            model.addAttribute("birthday", formattedDate);
+        }
 
         model.addAttribute("foundMember", foundMember);
         model.addAttribute("totalPages", totalPages);
