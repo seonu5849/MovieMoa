@@ -10,7 +10,7 @@
         SELECT
         *
         FROM
-        storekategories
+        store_kategories
         ORDER BY id DESC
     </select>
 
@@ -18,10 +18,10 @@
     <select id="findProductList" resultType="org.zerock.myapp.domain.StoreKategoriesVO">
         SELECT
         store.*,
-        storekategories.name
+        store_kategories.name
         FROM
         store
-        LEFT OUTER JOIN storekategories ON store.kategorie_id = storekategories.id
+        LEFT OUTER JOIN store_kategories ON store.kategorie_id = store_kategories.id
         WHERE
         store.kategorie_id = #{kategorieId}
         ORDER BY store.id DESC
@@ -31,10 +31,10 @@
     <select id="findProduct" resultType="org.zerock.myapp.domain.StoreKategoriesVO">
         SELECT
         store.*,
-        storekategories.name
+        store_kategories.name
         FROM
         store
-        LEFT OUTER JOIN storekategories ON store.kategorie_id = storekategories.id
+        LEFT OUTER JOIN store_kategories ON store.kategorie_id = store_kategories.id
         WHERE
         store.id = #{id}
     </select>
