@@ -101,7 +101,7 @@ public class AdminController {
         Integer totalPages = this.adminService.totalMemberByBoardCount(id);
 
         if(!list.isEmpty()) {
-            model.addAttribute("userName", list.get(0).getName());
+            model.addAttribute("userName", list.get(0).getNickname());
         }
         model.addAttribute("memberId", id);
         model.addAttribute("currentPage", pageNum);

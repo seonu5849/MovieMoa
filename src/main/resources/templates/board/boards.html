@@ -89,31 +89,15 @@
 <header th:replace="nav.html" />
 <main>
     <section id="notice">
-        <h1>게시판</h1>
+        <h1>게시판(<span th:text="${#lists.size(boards)}">0</span>개)</h1>
         <table>
             <tr>
                 <th>제목</th>
-                <th>등록일</th>
+                <th>작성자</th>
             </tr>
-            <tr>
-                <td>서비스 종료에 따른 구매 이용약관 개정 안내</td>
-                <td>23/06/12</td>
-            </tr>
-            <tr>
-                <td>서비스 종료 안내</td>
-                <td>23/06/10</td>
-            </tr>
-            <tr>
-                <td>이용약관 개정 안내</td>
-                <td>23/06/10</td>
-            </tr>
-            <tr>
-                <td>해리 포터와 아즈카반의 죄수</td>
-                <td>23/06/8</td>
-            </tr>
-            <tr>
-                <td>해리 포터와 불사조 기사단</td>
-                <td>23/06/2</td>
+            <tr th:each="board : ${boards}">
+                <td th:text="${board.title}">게시글 제목</td>
+                <td th:text="${board.nickname}">작성자</td>
             </tr>
         </table>
         <div class="wrap">

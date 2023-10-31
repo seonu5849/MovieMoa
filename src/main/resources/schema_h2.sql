@@ -247,19 +247,19 @@ VALUES
 
 INSERT INTO events (title, start_at, end_at, created_at, updated_at, thumbnail_path, contents_path, admin_id)
 VALUES
-('이벤트 1', '2023-11-01 09:00:00', '2023-11-02 17:00:00', CURRENT_TIMESTAMP, NULL, '/path/to/thumbnail1.jpg', '/path/to/content1.html', 3),
-('이벤트 2', '2023-11-03 10:00:00', '2023-11-05 18:00:00', CURRENT_TIMESTAMP, NULL, '/path/to/thumbnail2.jpg', '/path/to/content2.html', 3),
-('이벤트 3', '2023-11-06 11:00:00', '2023-11-08 19:00:00', CURRENT_TIMESTAMP, NULL, '/path/to/thumbnail3.jpg', '/path/to/content3.html', 3),
-('이벤트 4', '2023-11-10 12:00:00', '2023-11-12 20:00:00', CURRENT_TIMESTAMP, NULL, '/path/to/thumbnail4.jpg', '/path/to/content4.html', 3),
-('이벤트 5', '2023-11-15 13:00:00', '2023-11-17 21:00:00', CURRENT_TIMESTAMP, NULL, '/path/to/thumbnail5.jpg', '/path/to/content5.html', 3);
+('이벤트 1', '2023-11-01 09:00:00', '2023-11-02 17:00:00', CURRENT_TIMESTAMP, NULL, 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 3),
+('이벤트 2', '2023-11-03 10:00:00', '2023-11-05 18:00:00', CURRENT_TIMESTAMP, NULL, 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 3),
+('이벤트 3', '2023-11-06 11:00:00', '2023-11-08 19:00:00', CURRENT_TIMESTAMP, NULL, 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 3),
+('이벤트 4', '2023-11-10 12:00:00', '2023-11-12 20:00:00', CURRENT_TIMESTAMP, NULL, 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 3),
+('이벤트 5', '2023-11-15 13:00:00', '2023-11-17 21:00:00', CURRENT_TIMESTAMP, NULL, 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 3);
 
 INSERT INTO store (admin_id, title, content, price, usage_location, poster_path, kategorie_id)
 VALUES
-(3, '상품 1', '이것은 상품 1입니다.', '10000', '서울', '/path/to/poster1.jpg', 1),
-(3, '상품 2', '이것은 상품 2입니다.', '20000', '부산', '/path/to/poster2.jpg', 2),
-(3, '상품 3', '이것은 상품 3입니다.', '30000', '대구', '/path/to/poster3.jpg', 3),
-(3, '상품 4', '이것은 상품 4입니다.', '40000', '광주', '/path/to/poster4.jpg', 4),
-(3, '상품 5', '이것은 상품 5입니다.', '50000', '대전', '/path/to/poster5.jpg', 1);
+(3, '상품 1', '이것은 상품 1입니다.', '10000', '서울', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 1),
+(3, '상품 2', '이것은 상품 2입니다.', '20000', '부산', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 2),
+(3, '상품 3', '이것은 상품 3입니다.', '30000', '대구', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 3),
+(3, '상품 4', '이것은 상품 4입니다.', '40000', '광주', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 4),
+(3, '상품 5', '이것은 상품 5입니다.', '50000', '대전', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 1);
 
 INSERT INTO inquiries (title, content, member_id)
 VALUES

@@ -142,7 +142,7 @@
     <select id="selectMemberByBoard" resultType="org.zerock.myapp.domain.BoardVO">
         SELECT
         b.*,
-        m.name
+        m.nickname
         FROM
         board b, member m
         WHERE

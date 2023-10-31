@@ -17,5 +17,8 @@
         <mapper resource="mappers/EventMapper.xml"/>
         <mapper resource="mappers/ProductMapper.xml"/>
 
+        <!--    Board 관련    -->
+        <mapper resource="mappers/BoardMapper.xml"/>
+
     </mappers>
 </configuration>

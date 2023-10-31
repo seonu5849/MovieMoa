@@ -1,20 +1,31 @@
 package org.zerock.myapp.controller;
 
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.zerock.myapp.domain.BoardVO;
+import org.zerock.myapp.service.BoardService;
+
+import java.util.List;
 
 @Log4j2
-@NoArgsConstructor
+@RequiredArgsConstructor
 
 @RequestMapping("/board/*")
 @Controller
 public class BoardController {
 
+    private final BoardService boardService;
+
     @GetMapping("/boards")
-    public String boardView() {
+    public String boardView(Model model) {
         log.trace("boardView() invoked.");
+
+        List<BoardVO> boardList = this.boardService.findBoardList();
+
+        model.addAttribute("boards", boardList);
 
         return "/board/boards";
     } // boardView
