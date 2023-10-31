@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.zerock.myapp.domain.StoreKategoriesVO;
 import org.zerock.myapp.domain.StoreVO;
 import org.zerock.myapp.service.ProductService;
 
@@ -26,7 +27,7 @@ public class StoreController {
         log.trace("storeTicketsView({}) invoked.", kategorieId);
 
         // 카테고리 목록과 선택된 카테고리에 해당하는 제품 목록을 조회
-        List<StoreVO> kategorieList = this.productService.findKategorieList();
+        List<StoreKategoriesVO> kategorieList = this.productService.findKategorieList();
         List<StoreVO> productList = this.productService.findProductList(kategorieId);
 
         model.addAttribute("kategorieList", kategorieList);

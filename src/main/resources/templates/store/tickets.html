@@ -44,25 +44,15 @@
     <aside th:replace="storeSide.html" />
     <div class="main-content">
     <ul>
-        <th:block th:each="kategorie : ${kategorieList}">
-            <li class="nav-item">
-                <a class="button-link"
-                   th:href="@{'/store/tickets?kategorie=' + ${kategorie.kategorie_id}}"
-                   th:text="${kategorie.kategorie_name}">
-                </a>
-            </li>
-        </th:block>
-    </ul>
-    <ul>
         <th:block th:each="product, stat : ${productList}">
             <li class="product-container">
                 <div>
                     <a class="button-link"
-                       th:href="@{'/store/detailProduct/' + ${product.product_id}}">
-                        <img class="product-image" th:src="${product.thumbnail_path}" />
+                       th:href="@{'/store/detailProduct/' + ${product.id}}">
+                        <img class="product-image" th:src="${product.posterPath}" />
                     </a>
                 </div>
-                <div th:text="${product.product_name}"></div>
+                <div th:text="${product.name}"></div>
                 <div th:text="${product.price}"></div>
                 <!-- 3개씩 표시 -->
                 <th:if test="${stat.index % 3 == 2}">

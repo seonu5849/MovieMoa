@@ -2,6 +2,7 @@ package org.zerock.myapp.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.zerock.myapp.domain.StoreKategoriesVO;
 import org.zerock.myapp.domain.StoreVO;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
 public interface ProductMapper {
 
     // 카테고리 목록 조회
-    public abstract List<StoreVO> findKategorieList();
+    public abstract List<StoreKategoriesVO> findKategorieList();
 
     // 특정 카테고리에 속한 제품 목록 조회
     public abstract List<StoreVO> findProductList(@Param("kategorieId") Long kategorieId);

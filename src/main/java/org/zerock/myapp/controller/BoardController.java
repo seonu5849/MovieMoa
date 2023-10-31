@@ -88,8 +88,4 @@ public class BoardController {
         return "redirect:/board/detailBoard";
     } // reportReplyWrite
 
-
-
-
-
 } // end class

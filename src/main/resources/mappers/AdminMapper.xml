@@ -39,7 +39,7 @@
 
     <!-- 회원 등록: 새로운 회원 정보를 데이터베이스에 등록 -->
     <insert id="insertMember">
-        INSERT INTO MEMBER (
+        INSERT INTO member (
         name,
         email,
         nickname,
@@ -186,7 +186,8 @@
         end_at,
         thumbnail_path,
         contents_path,
-        member_id)
+        admin_id,
+        updated_at)
         values (
         #{event.id},
         #{event.title},
@@ -194,7 +195,8 @@
         #{event.endAt},
         #{event.thumbnailPath},
         #{event.contentsPath},
-        #{event.memberId})
+        #{event.adminId},
+        CURRENT_TIMESTAMP)
     </insert>
 
     <!-- 이벤트 정보 업데이트: EVENT 테이블에서 특정 이벤트의 정보를 업데이트합니다. -->

@@ -35,10 +35,7 @@
 <aside class="item" th:fragment="aside">
     <div class="sidebar">
         <ul>
-            <li><a th:href="@{'/store/tickets'}">티켓</a></li>
-            <li><a th:href="@{'/store/tickets'}">팝콘/음료</a></li>
-            <li><a th:href="@{'/store/tickets'}">상품권</a></li>
-            <li><a th:href="@{'/store/tickets'}">기프티콘</a></li>
+            <li th:each="kategorie : ${kategorieList}"><a th:href="@{'/store/tickets?kategorie=' + ${kategorie.id}}" th:text="${kategorie.name}">카테고리</a></li>
             <li sec:authorize="hasRole('ADMIN')"><a th:href="@{'/admin/memberList/1'}">관리자 페이지</a></li>
         </ul>
     </div>

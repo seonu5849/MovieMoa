@@ -86,7 +86,7 @@ CREATE TABLE Member (
 
 CREATE TABLE board_kategories (
 	id BIGINT AUTO_INCREMENT PRIMARY KEY,
-	name VARCHAR(20) DEFAULT '영화' NOT NULL
+	name VARCHAR(20) UNIQUE DEFAULT '영화' NOT NULL
 );
 
 CREATE TABLE Board (
@@ -114,13 +114,13 @@ CREATE TABLE events (
 	updated_at TIMESTAMP,
 	thumbnail_path VARCHAR(255) NOT NULL,
 	contents_path VARCHAR(255),
-	member_id BIGINT NOT NULL,
-	FOREIGN KEY (member_id) REFERENCES Member(id)
+	admin_id BIGINT NOT NULL,
+	FOREIGN KEY (admin_id) REFERENCES Member(id)
 );
 
 CREATE TABLE store_kategories (
 	id BIGINT AUTO_INCREMENT PRIMARY KEY,
-	name VARCHAR(20)
+	name VARCHAR(20) UNIQUE
 );
 
 CREATE TABLE store (
@@ -136,18 +136,6 @@ CREATE TABLE store (
 	kategorie_id BIGINT NOT NULL,
 	FOREIGN KEY (admin_id) REFERENCES Member(id),
 	FOREIGN KEY (kategorie_id) REFERENCES store_kategories(id)
-);
-
-CREATE TABLE events_backup (
-	id BIGINT AUTO_INCREMENT PRIMARY KEY,
-	title VARCHAR(50) NOT NULL,
-	event_path VARCHAR(255) NOT NULL,
-	start_at TIMESTAMP NOT NULL,
-	end_at TIMESTAMP NOT NULL,
-	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	updated_at TIMESTAMP,
-	member_id BIGINT NOT NULL,
-	FOREIGN KEY (member_id) REFERENCES Member(id)
 );
 
 CREATE TABLE inquiries (
@@ -212,7 +200,7 @@ CREATE TABLE reportBoard_response (
 
 CREATE TABLE reportReply (
 	id BIGINT AUTO_INCREMENT PRIMARY KEY,
-	content VARCHAR(255),
+	report_content VARCHAR(255),
 	report_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	reporter_id BIGINT NOT NULL,
 	reply_id BIGINT NOT NULL,
@@ -237,3 +225,75 @@ CREATE TABLE wishlist (
 	FOREIGN KEY (member_id) REFERENCES Member(id),
 	FOREIGN KEY (movie_id) REFERENCES Movies(id)
 );
+
+ALTER TABLE GENRES ADD UNIQUE (name);
+
+INSERT INTO board_kategories (name) VALUES('영화');
+INSERT INTO board_kategories (name) VALUES('공지');
+INSERT INTO board_kategories (name) VALUES('잡담');
+
+INSERT INTO STORE_KATEGORIES (name) VALUES('티켓');
+INSERT INTO STORE_KATEGORIES (name) VALUES('팝콘/음료');
+INSERT INTO STORE_KATEGORIES (name) VALUES('상품권');
+INSERT INTO STORE_KATEGORIES (name) VALUES('기프티콘');
+
+INSERT INTO Board (title, content, favorites, view_count, created_at, updated_at, kategorie_id, movie_id, member_id)
+VALUES
+('첫 번째 게시글', '이것은 첫 번째 게시글입니다.', 10, 100, CURRENT_TIMESTAMP, NULL, 1, 671, 2),
+('두 번째 게시글', '이것은 두 번째 게시글입니다.', 5, 50, CURRENT_TIMESTAMP, NULL, 2, 672, 2),
+('세 번째 게시글', '이것은 세 번째 게시글입니다.', 20, 200, CURRENT_TIMESTAMP, NULL, 2, 673, 3),
+('네 번째 게시글', '이것은 네 번째 게시글입니다.', 0, 10, CURRENT_TIMESTAMP, NULL, 3, 674, 5),
+('다섯 번째 게시글', '이것은 다섯 번째 게시글입니다.', 3, 30, CURRENT_TIMESTAMP, NULL, 3, 675, 3);
+
+INSERT INTO events (title, start_at, end_at, created_at, updated_at, thumbnail_path, contents_path, admin_id)
+VALUES
+('이벤트 1', '2023-11-01 09:00:00', '2023-11-02 17:00:00', CURRENT_TIMESTAMP, NULL, '/path/to/thumbnail1.jpg', '/path/to/content1.html', 3),
+('이벤트 2', '2023-11-03 10:00:00', '2023-11-05 18:00:00', CURRENT_TIMESTAMP, NULL, '/path/to/thumbnail2.jpg', '/path/to/content2.html', 3),
+('이벤트 3', '2023-11-06 11:00:00', '2023-11-08 19:00:00', CURRENT_TIMESTAMP, NULL, '/path/to/thumbnail3.jpg', '/path/to/content3.html', 3),
+('이벤트 4', '2023-11-10 12:00:00', '2023-11-12 20:00:00', CURRENT_TIMESTAMP, NULL, '/path/to/thumbnail4.jpg', '/path/to/content4.html', 3),
+('이벤트 5', '2023-11-15 13:00:00', '2023-11-17 21:00:00', CURRENT_TIMESTAMP, NULL, '/path/to/thumbnail5.jpg', '/path/to/content5.html', 3);
+
+INSERT INTO store (admin_id, title, content, price, usage_location, poster_path, kategorie_id)
+VALUES
+(3, '상품 1', '이것은 상품 1입니다.', '10000', '서울', '/path/to/poster1.jpg', 1),
+(3, '상품 2', '이것은 상품 2입니다.', '20000', '부산', '/path/to/poster2.jpg', 2),
+(3, '상품 3', '이것은 상품 3입니다.', '30000', '대구', '/path/to/poster3.jpg', 3),
+(3, '상품 4', '이것은 상품 4입니다.', '40000', '광주', '/path/to/poster4.jpg', 4),
+(3, '상품 5', '이것은 상품 5입니다.', '50000', '대전', '/path/to/poster5.jpg', 1);
+
+INSERT INTO inquiries (title, content, member_id)
+VALUES
+('문의 1', '이것은 문의 내용 1입니다.', 2),
+('문의 2', '이것은 문의 내용 2입니다.', 5),
+('문의 3', '이것은 문의 내용 3입니다.', 2),
+('문의 4', '이것은 문의 내용 4입니다.', 5),
+('문의 5', '이것은 문의 내용 5입니다.', 2);
+
+INSERT INTO reportBoards (content, menu, board_id, reporter_id)
+VALUES
+('이 글은 부적절한 내용을 포함하고 있습니다.', '신고 메뉴 1', 6, 2),
+('이 글은 광고를 포함하고 있습니다.', '신고 메뉴 2', 7, 5),
+('이 글은 허위 정보를 포함하고 있습니다.', '신고 메뉴 3', 8, 2),
+('이 글은 저작권을 침해하고 있습니다.', '신고 메뉴 4', 9, 5),
+('이 글은 개인정보를 무단으로 사용하고 있습니다.', '신고 메뉴 1', 10, 2);
+
+INSERT INTO Board_reply (content, member_id, board_id)
+VALUES
+('댓글 내용 1', 2, 6),
+('댓글 내용 2', 3, 6),
+('댓글 내용 3', 5, 6),
+('댓글 내용 4', 2, 7),
+('댓글 내용 5', 3, 7),
+('댓글 내용 6', 5, 7),
+('댓글 내용 7', 2, 8),
+('댓글 내용 8', 3, 8),
+('댓글 내용 9', 5, 8),
+('댓글 내용 10', 2, 9);
+
+INSERT INTO reportReply (report_content, reporter_id, reply_id, menu)
+VALUES
+('이 댓글은 부적절한 내용을 포함하고 있습니다.', 2, 1, '신고 메뉴 1'),
+('이 댓글은 광고를 포함하고 있습니다.', 5, 2, '신고 메뉴 2'),
+('이 댓글은 허위 정보를 포함하고 있습니다.', 2, 3, '신고 메뉴 3'),
+('이 댓글은 저작권을 침해하고 있습니다.', 5, 4, '신고 메뉴 4'),
+('이 댓글은 개인정보를 무단으로 사용하고 있습니다.', 2, 5, '신고 메뉴 1');
