@@ -74,7 +74,11 @@ public class BoardController {
 
     @PostMapping ("/comment")
     public String writereply(Model model, String content, Long memberId, Long id) {
-        log.trace("writereply() invoked.");
+        log.trace("writereply({}, {}, {}) invoked.", content, memberId, id);
+
+        Integer insertReply = this.boardService.insertReply(content, memberId, id);
+
+        log.info("\t+ insertReply: {}", insertReply);
 
         return "redirect:/board/detailBoard"; // /board/detailBoard?boardNum=***
     } // writereply
