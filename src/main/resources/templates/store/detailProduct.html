@@ -7,91 +7,90 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>detailProduct</title>
     <style>
-    #modal.modal-overlay {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        left: 0;
-        top: 0;
-        display: none;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background: rgba(0, 0, 0, 0.6);
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-        -webkit-backdrop-filter: blur(1.5px);
-        border-radius: 10px;
-        border: 1px solid rgba(255, 255, 255, 0.18);
-    }
-    #modal .modal-window {
-        background: rgb(255 255 255);
-        box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
-        backdrop-filter: blur( 13.5px );
-        -webkit-backdrop-filter: blur( 13.5px );
-        border-radius: 10px;
-        border: 1px solid rgba( 255, 255, 255, 0.18 );
-        width: 400px;
-        height: 500px;
-        position: relative;
-        top: -100px;
-        padding: 10px;
-    }
-    #modal .header {
-        border-bottom: 1px solid #bdbdbd;
-    }
-    #modal .title {
-        padding-left: 10px;
-        display: inline;
-        color: #414141;
-    }
-    #modal .title h2 {
-        display: inline;
-    }
-    #modal .close-area {
-        display: inline;
-        float: right;
-        padding-right: 10px;
-        cursor: pointer;
-        text-shadow: 1px 1px 2px gray;
-        color: white;
-    }
+        /* 상품 상세페이지 전용 스타일 */
+        .main-content {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column; /* 세로 방향으로 정렬 */
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-    #modal .content {
-        margin-top: 10px;
-        padding: 0px 10px;
-        color: #414141;
-    }
+        .product-thumbnail {
+            max-width: 300px;
+            height: auto;
+            margin-bottom: 20px; /* 이미지 아래의 여백 조정 */
+        }
 
-    .main-content {
-        display: flex;
-        align-items: flex-start;
-    }
+        .product-details {
+            width: 100%;
+        }
 
-    .product-thumbnail {
-        max-width: 100%;
-        height: auto;
-    }
+        .product-detail {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 10px;
+        }
 
-    .product-details {
-        margin-left: 40px;
-    }
+        .first-detail {
+            font-weight: bold;
+            margin-top: 0;
+        }
 
-    .product-detail {
-        margin: 0px 0px 15px 0px;
-    }
+        button#btn-modal {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-transform: uppercase;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
 
-    .first-detail {
-        margin: 100px 0px 15px 0px;
-    }
+        button#btn-modal:hover {
+            background-color: #0056b3;
+        }
 
-    .review-button-area {
-        text-align: -webkit-right;
-    }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
 
-    .review-textarea {
-        width: 100%;
-        margin-top: 10px;
-    }
+        .modal-window {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .review-textarea {
+            width: 100%;
+            height: 100px;
+            margin-top: 10px;
+        }
+
+        #regBtn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-transform: uppercase;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #regBtn:hover {
+            background-color: #218838;
+        }
     </style>
 </head>
 <body>
@@ -123,10 +122,9 @@
 </main>
 <footer th:replace="footer.html" />
 <script>
-
     const regBtn = document.getElementById("regBtn");
-        regBtn.addEventListener("click", e => {
-            alert("등록버튼 클릭");
+    regBtn.addEventListener("click", e => {
+        alert("등록버튼 클릭");
     });
 
     const modal = document.getElementById("modal");
@@ -134,16 +132,13 @@
     btnModal.addEventListener("click", e => {
         modal.style.display = "flex";
     });
-    const closeBtn = modal.querySelector(".close-area")
-        closeBtn.addEventListener("click", e => {
-            modal.style.display = "none"
-    })
+
     modal.addEventListener("click", e => {
-        const evTarget = e.target;
-        if(evTarget.classList.contains("modal-overlay")) {
+        if(e.target === modal) { // 클릭된 요소가 모달 배경인지 확인
             modal.style.display = "none";
         }
-    })
+    });
 </script>
+
 </body>
 </html>

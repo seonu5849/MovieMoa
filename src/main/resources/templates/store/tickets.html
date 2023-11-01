@@ -6,61 +6,124 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>MOVIE MOA</title>
     <style>
-        .nav-item {
-            width: 22%;
-            margin-right: 2%;
-            text-align: left;
-            display: inline-block;
+        /* 상품 목록 페이지 전용 스타일 */
+        .product-main-container {
+            width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .product-bottom-right {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+        }
+
+        .product-btn-primary,
+        .register-button {
+            background-color: #007BFF;
             color: #fff;
-            background-color: #007bff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .register-button:hover {
+            background-color: #0056b3;
+        }
+
+        .product-list,
+        .main-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 0;
+            margin: 0 auto;
         }
 
         .product-container {
-            width: 30%;
-            margin-right: 2%;
-            display: inline-block;
+            width: calc(25% - 20px);
+            margin: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            padding: 10px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        .product-container:hover {
+            transform: translateY(-5px);
         }
 
         .product-image {
             width: 100%;
+            height: auto;
+            display: block;
         }
 
         .button-link {
-            color: #fff;
-            padding: 10px 20px;
-            text-decoration: none;
             display: block;
             text-align: center;
+            margin-top: 10px;
         }
 
-        .clear-both {
-            clear: both;
+        .product-container div {
+            padding: 10px;
+        }
+
+        .bottom-right {
+            text-align: right;
+            margin: 10px 0;
+        }
+
+        @media screen and (max-width: 1024px) {
+            .product-container {
+                width: calc(33.333% - 20px);
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .product-container {
+                width: calc(50% - 20px);
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .product-container {
+                width: calc(100% - 20px);
+            }
         }
     </style>
+
 </head>
 <body>
 <header th:replace="nav.html" />
 <main>
     <aside th:replace="storeSide.html" />
-    <div class="main-content">
-    <ul>
-        <th:block th:each="product, stat : ${productList}">
-            <li class="product-container">
-                <div>
-                    <a class="button-link"
-                       th:href="@{'/store/detailProduct/' + ${product.id}}">
-                        <img class="product-image" th:src="${product.posterPath}" />
-                    </a>
-                </div>
-                <div th:text="${product.name}"></div>
-                <div th:text="${product.price}"></div>
-                <!-- 3개씩 표시 -->
-                <th:if test="${stat.index % 3 == 2}">
-                    <div class="clear-both"></div>
-                </th:if>
-            </li>
-        </th:block>
-    </ul>
+    <div class="product-main-container">
+        <div class="bottom-right">
+            <a class="register-button" th:href="@{/store/writeProduct}">등록</a>
+        </div>
+        <ul class="product-list">
+            <th:block th:each="product, stat : ${productList}">
+                <li class="product-container">
+                    <div>
+                        <a th:href="@{'/store/detailProduct/' + ${product.id}}">
+                            <img class="product-image" th:src="${product.posterPath}" />
+                        </a>
+                    </div>
+                    <div th:text="${product.name}"></div>
+                    <div th:text="${product.price}"></div>
+                </li>
+            </th:block>
+        </ul>
     </div>
 </main>
 <footer th:replace="footer.html" />
