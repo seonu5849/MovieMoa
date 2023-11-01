@@ -7,14 +7,102 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>boards</title>
     <style>
-
+        .board-details, .comments-section {
+            width: 80%;
+            margin: 30px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .board-header {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .board-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .board-info {
+            color: #888;
+            font-size: 14px;
+        }
+        .board-content {
+            white-space: pre-wrap;
+            margin-bottom: 20px;
+        }
+        .board-meta, .comment-meta {
+            font-size: 14px;
+            color: #666;
+        }
+        .board-meta span, .comment-meta span {
+            margin-right: 10px;
+        }
+        .comment-form {
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+        .comment-form textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .comment-form button {
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .comment-item {
+            padding: 10px 0;
+            border-bottom: 1px dashed #ddd;
+        }
+        .comment-content {
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
 <header th:replace="nav.html" />
 <main>
-    <h3>/templates/board/detailBoard.html</h3>
-    <hr>
+    <div class="board-details">
+        <div class="board-header">
+            <div class="board-title" th:text="${board.title}">게시글 제목</div>
+            <div class="board-info">작성자: <span th:text="${board.nickname}">작성자 닉네임</span></div>
+        </div>
+        <div class="board-content" th:text="${board.content}">게시글 내용</div>
+        <div class="board-meta">
+            <span>즐겨찾기: <span th:text="${board.favorites}">0</span></span>
+            <span>조회수: <span th:text="${board.viewCount}">0</span></span>
+            <span>생성 시간: <span th:text="${#dates.format(board.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2023-01-01 12:00:00</span></span>
+            <span>수정 시간: <span th:text="${#dates.format(board.updatedAt, 'yyyy-MM-dd HH:mm:ss')}">2023-01-01 12:00:00</span></span>
+            <span>카테고리 ID: <span th:text="${board.kategorieId}">1</span></span>
+            <span>영화 ID: <span th:text="${board.movieId}">1</span></span>
+            <span>회원 ID: <span th:text="${board.memberId}">1</span></span>
+        </div>
+    </div>
+
+    <div class="comments-section">
+        <h3>댓글</h3>
+        <div class="comment-form">
+            <textarea placeholder="댓글을 입력하세요" required></textarea>
+            <button type="submit">댓글 작성</button>
+        </div>
+
+        <div class="comment-list">
+            <div class="comment-item" th:each="reply : ${replies}">
+                <div class="comment-content" th:text="${reply.content}">댓글 내용</div>
+                <div class="comment-meta">
+                    <span th:text="${#dates.format(reply.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2023-01-01 12:00:00</span>
+                    <span th:text="${reply.memberId}">회원 ID</span>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 <footer th:replace="footer.html" />
 </body>
