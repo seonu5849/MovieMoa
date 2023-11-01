@@ -9,7 +9,7 @@
     <select id="findEventList" resultType="org.zerock.myapp.domain.EventsVO">
         SELECT
         events.*,
-        Member.name AS admin_name
+        Member.nickname AS admin_nickname
         FROM
         events
         INNER JOIN Member ON events.admin_id = Member.id
@@ -75,11 +75,13 @@
     <!-- 특정 이벤트 상세 조회: 이벤트 ID에 해당하는 이벤트의 상세 정보를 조회 -->
     <select id="findEventById" resultType="org.zerock.myapp.domain.EventsVO">
         SELECT
-        *
+        e.*,
+        m.nickname
         FROM
-        events
+        events e
+        INNER JOIN member m ON e.admin_id = m.id
         WHERE
-        id = #{event.id}
+        e.id = #{id}
     </select>
 
 </mapper>

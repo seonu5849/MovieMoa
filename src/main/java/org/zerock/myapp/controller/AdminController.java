@@ -147,7 +147,7 @@ public class AdminController {
         List<EventsVO> list = this.adminService.findAllEvents(pageNum);
         Integer totalPages = this.adminService.totalEventCount();
 
-        model.addAttribute("evnets", list);
+        model.addAttribute("events", list);
         model.addAttribute("currentPage", pageNum);
         model.addAttribute("totalPages", totalPages);
 

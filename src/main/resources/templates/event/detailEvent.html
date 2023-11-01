@@ -6,11 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>MOVIE MOA</title>
     <style>
-        html, body {
-           margin: 0;
-           height: 100%;
-           padding: 0;
-        }
         .outer-div {
             width: 100%;
             height: 100%;
@@ -19,7 +14,6 @@
         .main-container {
             width: 950px;
             top: 100px;
-            position: relative;
         }
         .event-title {
             text-align: left;
@@ -28,7 +22,11 @@
             text-align: right;
         }
         .event-img {
-            width: 100%;
+            max-width: 100%;
+            height: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .btn {
             width: 100px;
@@ -50,10 +48,10 @@
         <div class="main-container">
             <div>
                 <h1 th:text="${event.title}" class="event-title"></h1>
-                <p th:text="'기간 | ' + ${#dates.format(event.start_at, 'yyyy-MM-dd (E)')} + ' ~ ' + ${#dates.format(event.end_at, 'yyyy-MM-dd (E)')}" class="event-period"></p>
+                <p th:text="'기간 | ' + ${event.startAt} + ' ~ ' + ${event.endAt}" class="event-period"></p>
             </div>
             <div>
-                <img th:src="${event.contents_path}" class="event-img" />
+                <img th:src="${event.contentsPath}" class="event-img" />
             </div>
             <div class="center-text">
                 <a class="btn btn-primary">수정</a>

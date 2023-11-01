@@ -127,14 +127,25 @@
         display: inline-block;
     }
 
-    .admin-container a {
+    .modify {
         text-decoration: none;
         color: #007BFF;
         padding: 5px 10px;
         border-radius: 5px;
     }
 
-    .admin-container a:hover {
+    .detailEvent {
+        color: #007BFF;
+        font-weight: bold;
+    }
+
+    .detailEvent:hover {
+        background-color: #007BFF;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    .modify:hover {
         background-color: #007BFF;
         color: #fff;
     }
@@ -215,18 +226,21 @@
                 </thead>
                 <tbody>
                 <!-- 예시 데이터 -->
-                <tr th:each="evnet : ${evnets} ">
-                    <td><input type="checkbox" class="selectedCheckbox" name="selectedMembers" th:value="${evnet.id}"></td>
-                    <td th:text="${evnet.id}">번호</td>
-                    <td th:text="${evnet.title != null ? (#strings.length(evnet.title) > 8 ? #strings.substring(evnet.title, 0, 8) + '...' : evnet.title) : ''}">제목</td>
-                    <td th:text="${evnet.name}">등록자</td>
-                    <td th:text="${evnet.startAt}">시작일자</td>
-                    <td th:text="${evnet.endAt}">종료일자</td>
-                    <td th:text="${evnet.createdAt}">등록일자</td>
-                    <td th:text="${evnet.updatedAt}">수정일자</td>
+                <tr  th:each="event : ${events} ">
+                    <td><input type="checkbox" class="selectedCheckbox" name="selectedMembers" th:value="${event.id}"></td>
+                    <td th:text="${event.id}">번호</td>
+                    <td class="detailEvent">
+                    <a th:href="@{'/event/detailEvent/' + ${event.id}}">
+                        <span th:text="${event.title != null ? (#strings.length(event.title) > 8 ? #strings.substring(event.title, 0, 8) + '...' : event.title) : ''}">제목</span>
+                    </a>
+                    </td>
+                    <td th:text="${event.nickname}">등록자</td>
+                    <td th:text="${event.startAt}">시작일자</td>
+                    <td th:text="${event.endAt}">종료일자</td>
+                    <td th:text="${event.createdAt}">등록일자</td>
+                    <td th:text="${event.updatedAt}">수정일자</td>
                     <td>
-                        <a th:href="@{'/event/detailEvent?id='+${evnet.id}}">상세보기</a> |
-                        <a th:href="@{'/event/eventUpdate?id='+${evnet.id}}">수정</a>
+                        <a th:href="@{'/event/eventUpdate?id='+${event.id}}" class="modify">수정</a>
                     </td>
                 </tr>
                 </tbody>

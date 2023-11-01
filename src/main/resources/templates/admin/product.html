@@ -125,14 +125,25 @@
         display: inline-block;
     }
 
-    .admin-container a {
+    .detailEvent {
+        color: #007BFF;
+        font-weight: bold;
+    }
+
+    .detailEvent:hover {
+        background-color: #007BFF;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    .modify {
         text-decoration: none;
         color: #007BFF;
         padding: 5px 10px;
         border-radius: 5px;
     }
 
-    .admin-container a:hover {
+    .modify:hover {
         background-color: #007BFF;
         color: #fff;
     }
@@ -213,12 +224,15 @@
                         <td><input type="checkbox" class="selectedCheckbox" name="selectedMembers" th:value="${product.id}"></td>
                         <td th:text="${product.name}">카테고리</td>
                         <td th:text="${product.id}">번호</td>
-                        <td th:text="${product.title != null ? (#strings.length(product.title) > 8 ? #strings.substring(product.title, 0, 8) + '...' : product.title) : ''}">상품명</td>
+                        <td class="detailEvent">
+                            <a th:href="@{'/store/detailProduct/' + ${product.id}}">
+                                <span th:text="${product.title != null ? (#strings.length(product.title) > 8 ? #strings.substring(product.title, 0, 8) + '...' : product.title) : ''}">상품명</span>
+                            </a>
+                        </td>
                         <td th:text="${product.usageLocation}">사용처</td>
                         <td th:text="${product.price}">가격</td>
                         <td>
-                            <a th:href="@{'/store/detailProduct?id='+${product.id}}">상세보기</a> |
-                            <a th:href="@{'/store/updateProduct?id='+${product.id}}">수정</a>
+                            <a th:href="@{'/store/updateProduct?id='+${product.id}}" class="modify">수정</a>
                         </td>
                     </tr>
                     </tbody>

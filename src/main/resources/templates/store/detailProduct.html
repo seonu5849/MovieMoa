@@ -68,8 +68,8 @@
     }
 
     .product-thumbnail {
-        width: 740px;
-        height: 300px;
+        max-width: 100%;
+        height: auto;
     }
 
     .product-details {
@@ -99,12 +99,12 @@
 <main>
     <aside th:replace="storeSide.html" />
     <div class="main-content">
-        <img th:src="${product.thumbnail_path}" class="product-thumbnail" />
+        <img th:src="${product.posterPath}" class="product-thumbnail" />
         <div class="product-details">
-            <div class="product-detail first-detail" th:text="'상품명 | ' + ${product.product_name}"></div>
-            <div class="product-detail" th:text="'상품 구성 | ' + ${product.product_content}"></div>
+            <div class="product-detail first-detail" th:text="'상품명 | ' + ${product.title}"></div>
+            <div class="product-detail" th:text="'상품 구성 | ' + ${product.content}"></div>
             <div class="product-detail" th:text="'가격 | ' + ${product.price}"></div>
-            <div class="product-detail" th:text="'상품 분류 | ' + ${product.kategorie_name}"></div>
+            <div class="product-detail" th:text="'상품 분류 | ' + ${product.name}"></div>
             <button id="btn-modal">포토후기</button>
         </div>
     </div>

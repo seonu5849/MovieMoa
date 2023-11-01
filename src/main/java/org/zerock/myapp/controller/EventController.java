@@ -85,7 +85,7 @@ public class EventController {
     public String eventUpdateView() {
         log.trace("eventUpdateView() invoked.");
 
-        return "/event/detailEvent";
+        return "/event/eventUpdate";
     } // eventUpdateView
 
     @PutMapping("/eventUpdate")

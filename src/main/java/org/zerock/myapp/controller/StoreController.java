@@ -37,8 +37,8 @@ public class StoreController {
         return "/store/tickets";
     } // storeTicketsView
 
-// "product_id" 경로 변수를 통해 조회할 제품의 ID를 받음
-    @GetMapping("/detailProduct/{product_id}")
+// "id" 경로 변수를 통해 조회할 제품의 ID를 받음
+    @GetMapping("/detailProduct/{id}")
     public String detailProductView(@PathVariable(value = "id") Long id,Model model) {
         log.trace("detailProductView() invoked.");
 

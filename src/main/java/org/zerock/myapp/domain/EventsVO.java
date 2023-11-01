@@ -15,5 +15,5 @@ public class EventsVO {
     private String thumbnailPath;
     private String contentsPath;
     private Long adminId;
-    private String name;
+    private String nickname;
 } // end class

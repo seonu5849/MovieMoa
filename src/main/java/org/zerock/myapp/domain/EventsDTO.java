@@ -16,5 +16,5 @@ public class EventsDTO {
     private String thumbnailPath;
     private String contentsPath;
     private Long adminId;
-    private String name;
+    private String nickname;
 } // end class

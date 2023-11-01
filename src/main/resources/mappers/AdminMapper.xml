@@ -168,13 +168,12 @@
     <select id="selectAllEvents" resultType="org.zerock.myapp.domain.EventsVO">
         SELECT
         e.*,
-        m.name
+        m.nickname
         FROM
-        events e, member m
-        WHERE
-        e.admin_id = m.id
+        events e
+        INNER JOIN member m ON e.admin_id = m.id
         ORDER BY e.id DESC
-        OFFSET #{offset} row fetch next #{perPage} row only
+        OFFSET #{offset} ROWS FETCH NEXT #{perPage} ROWS ONLY
     </select>
 
     <!-- 이벤트 추가: EVENT 테이블에 새로운 이벤트 정보를 추가합니다. -->
