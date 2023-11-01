@@ -15,6 +15,15 @@ public interface BoardService {
     public abstract BoardVO findBoard(Long id);
 
     // 게시글에 해당하는 댓글 목록 조회
-    public abstract BoardReplyVO findBoardReplyList(Long id);
+    public abstract List<BoardReplyVO> findBoardReplyList(Long id);
+
+    // 게시글에 해당하는 댓글 목록 조회
+    public abstract BoardReplyVO findBoardReply(Long id);
+
+    // 댓글 작성
+    public abstract Integer insertReply(String content, Long memberId, Long id);
+
+    // 댓글 수정
+    public abstract Integer updateBoardReply(BoardReplyVO reply);
 
 } // end interface

@@ -43,14 +43,28 @@ public class BoardController {
         log.trace("writeBoard() invoked.");
 
         return "redirect:/board/detailBoard"; // /board/detailBoard?boardNum=***
-    } // writeBoardView
+    } // writeBoard
+
+    @GetMapping("/updateBoard/{id}")
+    public String updateBoardView(Model model, @PathVariable("id") Long id) {
+        log.trace("updateBoardView() invoked.");
+
+        return "/board/updateBoard";
+    } // updateBoardView
+
+    @PostMapping ("/updateBoard")
+    public String updateBoard() {
+        log.trace("updateBoard() invoked.");
+
+        return "redirect:/board/detailBoard"; // /board/detailBoard?boardNum=***
+    } // updateBoard
 
     @GetMapping("/detailBoard/{id}") //{/detailBoard/boardNum}
     public String detailBoardView(Model model, @PathVariable("id") Long id) {
         log.trace("detailBoardView({}) invoked.", id);
 
         BoardVO board = this.boardService.findBoard(id);
-        BoardReplyVO boardReplyList = this.boardService.findBoardReplyList(id);
+        List<BoardReplyVO> boardReplyList = this.boardService.findBoardReplyList(id);
 
         model.addAttribute("board", board);
         model.addAttribute("boardReplyList", boardReplyList);
@@ -58,25 +72,39 @@ public class BoardController {
         return "/board/detailBoard";
     } // detailBoardView
 
-    @PostMapping("/reply")
-    public String replyWrite(){
-        log.trace("replyWrite() invoked.");
+    @PostMapping ("/comment")
+    public String writereply(Model model, String content, Long memberId, Long id) {
+        log.trace("writereply() invoked.");
+
+        return "redirect:/board/detailBoard"; // /board/detailBoard?boardNum=***
+    } // writereply
+
+    // 댓글 수정 폼을 보여주는 메서드
+    @GetMapping("/board/commentEdit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        log.trace("showEditForm({}) invoked.", id);
+
+        BoardReplyVO boardReply = this.boardService.findBoardReply(id);
+
+        // 조회한 댓글 정보를 모델에 추가
+        model.addAttribute("reply", boardReply);
+
+        // 수정 폼이 포함된 뷰 반환
+        return "/board/detailBoard"; // 해당 뷰 이름으로 수정 필요
+    }
+
+    // 댓글을 실제로 수정하는 메서드
+    @PutMapping("/board/commentEdit/{id}")
+    public String editComment(@PathVariable Long id, BoardReplyVO reply) {
+        log.trace("editComment({}, {}) invoked.", id, reply);
+
+        Integer updated = this.boardService.updateBoardReply(reply);
+
+        log.info("\t+ updated: {}", updated);
+
+        // 댓글 목록이나 상세보기 페이지 등으로 리다이렉트
         return "redirect:/board/detailBoard";
-    } //replyWrite
-
-    @PutMapping ("/reply")
-    public String replyEdit(){
-        log.trace("replyEdit() invoked.");
-
-        return "redirect:/board/detailBoard";
-    } //replyEdit
-
-    @DeleteMapping("/reply")
-    public String replyDelete(){
-        log.trace("replyDelete() invoked.");
-
-        return "redirect:/board/detailBoard";
-    } //replyDelete
+    }
 
     @GetMapping("/reportBoard")
     public String reportBoardView() {

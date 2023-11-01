@@ -53,4 +53,33 @@
         Board_reply.id DESC
     </select>
 
+    <!-- 게시글에 해당하는 특정 댓글 조회 -->
+    <select id="findBoardReply" resultType="org.zerock.myapp.domain.BoardReplyVO">
+        SELECT
+        Board_reply.*,
+        Member.nickname
+        FROM
+        Board_reply
+        INNER JOIN
+        Board ON Board_reply.board_id = Board.id
+        INNER JOIN
+        Member ON Board_reply.member_id = Member.id
+        WHERE
+        Board_reply.id = #{id}
+        ORDER BY
+        Board_reply.id DESC
+    </select>
+
+    <update id="updateBoardReply">
+        UPDATE Board_reply
+        SET content = #{reply.content},
+        updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{reply.id};
+    </update>
+
+    <insert id="insertReply">
+        INSERT INTO Board_reply (content, member_id, board_id)
+        VALUES (#{content}, #{memberId}, #{id})
+    </insert>
+
 </mapper>

@@ -29,8 +29,23 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public BoardReplyVO findBoardReplyList(Long id) {
+    public List<BoardReplyVO> findBoardReplyList(Long id) {
         return boardMapper.findBoardReplyList(id);
+    }
+
+    @Override
+    public BoardReplyVO findBoardReply(Long id) {
+        return boardMapper.findBoardReply(id);
+    }
+
+    @Override
+    public Integer insertReply(String content, Long memberId, Long id) {
+        return boardMapper.insertReply(content, memberId, id);
+    }
+
+    @Override
+    public Integer updateBoardReply(BoardReplyVO reply) {
+        return boardMapper.updateBoardReply(reply);
     }
 
 } // end class

@@ -170,47 +170,53 @@
         </div>
 
         <div class="board-buttons">
-            <a href="/board/list" class="button">목록으로</a>
-            <button class="button" th:onclick="'location.href=\'/board/edit/' + ${board.id} + '\''">수정</button>
+            <a th:href="@{/board/boards}" class="button">목록으로</a>
+            <a th:href="@{'/board/updateBoard/' + ${board.id}}" class="button">수정</a>
         </div>
     </div>
 
     <div class="comments-section">
         <h3>댓글</h3>
-        <div class="comment-form">
-            <textarea placeholder="댓글을 입력하세요" required></textarea>
-            <button type="submit">댓글 작성</button>
-        </div>
+        <form th:action="@{/board/comment}" method="post">
+            <div class="comment-form">
+                <textarea name="content" placeholder="댓글을 입력하세요" required></textarea>
+                <button type="submit">댓글 작성</button>
+            </div>
+        </form>
 
         <div class="comment-list">
             <div class="comment-item" th:each="reply : ${boardReplyList}">
                 <div class="comment-content" th:text="${reply.content}">댓글 내용</div>
                 <div class="comment-meta">
                     <span th:text="${#dates.format(reply.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2023-01-01 12:00:00</span>
-                    <span th:text="${#dates.format(reply.updatedAt, 'yyyy-MM-dd HH:mm:ss')}">2023-01-01 12:00:00</span>
+                    <span th:text="${reply.updatedAt != null ? #dates.format(reply.updatedAt, 'yyyy-MM-dd HH:mm:ss') : ''}">2023-01-01 12:00:00</span>
                     <span th:text="${reply.nickname}">회원 닉네임</span>
                 </div>
                 <div class="comment-buttons">
-                    <button class="button" onclick="openModal(${reply.id})">수정</button>
+                    <button class="button" onclick="openModal('${reply.id}', '${reply.content}')">수정</button>
                 </div>
             </div>
         </div>
     </div>
     <!-- 모달창 HTML 추가 -->
-    <div id="editModal" style="display:none;">
+    <div id="editModal" class="modal-backdrop">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
-            <form th:action="@{/board/commentEdit/{id}(id=${reply.id})}" th:object="${reply}" method="post">
-                <textarea th:text="${reply.content}" required></textarea>
+            <form id="editModalForm" action="" method="post">
+                <input type="hidden" name="_method" value="PUT">
+                <textarea id="editModalContent" required></textarea>
                 <button type="submit">댓글 수정</button>
             </form>
+
         </div>
     </div>
 </main>
 <footer th:replace="footer.html" />
 <script>
     // 모달창 열기 함수
-    function openModal(replyId) {
+    function openModal(replyId, replyContent) {
+        document.getElementById('editModalForm').action = `/board/commentEdit/${replyId}`;
+        document.getElementById('editModalContent').value = replyContent;
         document.getElementById('editModal').style.display = 'block';
     }
 
@@ -218,6 +224,12 @@
     function closeModal() {
         document.getElementById('editModal').style.display = 'none';
     }
+
+    document.getElementById('editModal').addEventListener("click", e => {
+        if(e.target === editModal) { // 클릭된 요소가 모달 배경인지 확인
+            editModal.style.display = "none";
+        }
+    });
 </script>
 </body>
 </html>
