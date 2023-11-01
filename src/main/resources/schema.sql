@@ -18,7 +18,7 @@ CREATE TABLE Movies (
 
 CREATE TABLE genres (
 	id NUMBER PRIMARY KEY,
-	name VARCHAR2(255)
+	name VARCHAR2(255) UNIQUE
 );
 
 CREATE TABLE MovieGenres (
