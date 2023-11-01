@@ -38,7 +38,7 @@ CREATE TABLE Movies (
 
 CREATE TABLE genres (
 	id BIGINT PRIMARY KEY,
-	name VARCHAR(255)
+	name VARCHAR(255) UNIQUE
 );
 
 CREATE TABLE MovieGenres (
@@ -225,8 +225,6 @@ CREATE TABLE wishlist (
 	FOREIGN KEY (member_id) REFERENCES Member(id),
 	FOREIGN KEY (movie_id) REFERENCES Movies(id)
 );
-
-ALTER TABLE GENRES ADD UNIQUE (name);
 
 INSERT INTO board_kategories (name) VALUES('영화');
 INSERT INTO board_kategories (name) VALUES('공지');
