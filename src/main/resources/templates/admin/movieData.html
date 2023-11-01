@@ -7,7 +7,8 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <title>MOVIE MOA</title>
 <style>
-    main {
+    .admin-container {
+        grid-area: main;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -113,6 +114,8 @@
 <body>
 <header th:replace="nav.html" />
 <main class="item">
+    <aside th:replace="adminSide.html" />
+    <div class="admin-container">
         <form class="profile-section" action="/admin/movieData" method="post" id="moviesDataForm">
             <input type="hidden" name="_method" value="PUT">
             <h1>영화 데이터 가져오기</h1>
@@ -125,6 +128,7 @@
                 <button type="submit">확인</button>
             </div>
         </form>
+    </div>
     </main>
 <a id="movieButton" th:href="@{/admin/movieDataList}" class="button-link" sec:authorize="hasRole('ADMIN')">영화 목록(관리자용)</a>
 <footer th:replace="footer.html" />
