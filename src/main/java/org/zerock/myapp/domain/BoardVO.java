@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 
 @Value
 public class BoardVO {
+    // Board 테이블 필드
     private Long id;
     private String title;
     private String content;
@@ -16,5 +17,13 @@ public class BoardVO {
     private Long kategorieId;
     private Long movieId;
     private Long memberId;
-    private String nickname;
+
+    // Movies 테이블 필드
+    private String movieTitle;
+
+    // board_kategories 테이블 필드
+    private String kategorieName;
+
+    // Member 테이블 필드
+    private String memberNickname;
 } // end class

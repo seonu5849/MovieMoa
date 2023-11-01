@@ -101,17 +101,17 @@
             </tr>
             <tr th:each="board : ${boards}">
                 <td th:text="${board.id}">1</td>
-                <td th:text="${board.category}">카테고리</td>
+                <td th:text="${board.kategorieName}">카테고리</td>
                 <td>
                     <a th:href="@{'/board/detailBoard/' + ${board.id}}">
                         <span th:text="'[' + ${board.movieTitle} + '] ' + ${board.title}">[영화제목] 게시글 제목</span>
                     </a>
                 </td>
-                <td th:text="${board.likes}">10</td>
-                <td th:text="${board.views}">100</td>
-                <td th:text="${#dates.format(board.registrationDate, 'yyyy-MM-dd')}">2023-11-01</td>
-                <td th:text="${#dates.format(board.modificationDate, 'yyyy-MM-dd')}">2023-11-01</td>
-                <td th:text="${board.nickname}">작성자</td>
+                <td th:text="${board.favorites}">10</td>
+                <td th:text="${board.viewCount}">100</td>
+                <td th:text="${#dates.format(board.createdAt, 'yyyy-MM-dd')}">2023-11-01</td>
+                <td th:text="${board.updatedAt != null ? #dates.format(board.updatedAt, 'yyyy-MM-dd') : ''}">2023-11-01</td>
+                <td th:text="${board.memberNickname}">작성자</td>
             </tr>
         </table>
         <div class="pagination">

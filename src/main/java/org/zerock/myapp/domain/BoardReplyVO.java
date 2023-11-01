@@ -12,4 +12,5 @@ public class BoardReplyVO {
     private Timestamp updatedAt;
     private Long memberId;
     private Long boardId;
+    private String nickname;
 } // end class

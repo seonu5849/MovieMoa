@@ -141,14 +141,17 @@
     <!-- 특정 멤버의 게시글을 조회하여 페이징 처리된 결과를 반환 -->
     <select id="selectMemberByBoard" resultType="org.zerock.myapp.domain.BoardVO">
         SELECT
-        b.*,
-        m.nickname
+        Board.*,
+        Movies.title AS movie_title,
+        board_kategories.name AS kategorie_name,
+        Member.nickname
         FROM
-        board b, member m
-        WHERE
-        b.member_id = m.id
-        AND b.member_id = #{memberId}
-        ORDER BY b.id DESC
+        Board
+        LEFT JOIN Movies ON Board.movie_id = Movies.id
+        LEFT JOIN board_kategories ON Board.kategorie_id = board_kategories.id
+        LEFT JOIN Member ON Board.member_id = Member.id
+        WHERE board.member_id = #{memberId}
+        ORDER BY board.id DESC
         OFFSET #{offset} ROW FETCH NEXT #{perPage} ROW ONLY
     </select>
 

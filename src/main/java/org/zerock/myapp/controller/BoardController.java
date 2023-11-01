@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.zerock.myapp.domain.BoardReplyVO;
 import org.zerock.myapp.domain.BoardVO;
 import org.zerock.myapp.service.BoardService;
 
@@ -44,9 +45,15 @@ public class BoardController {
         return "redirect:/board/detailBoard"; // /board/detailBoard?boardNum=***
     } // writeBoardView
 
-    @GetMapping("/detailBoard") //{/detailBoard/boardNum}
-    public String detailBoardView() {
-        log.trace("detailBoardView() invoked.");
+    @GetMapping("/detailBoard/{id}") //{/detailBoard/boardNum}
+    public String detailBoardView(Model model, @PathVariable("id") Long id) {
+        log.trace("detailBoardView({}) invoked.", id);
+
+        BoardVO board = this.boardService.findBoard(id);
+        BoardReplyVO boardReplyList = this.boardService.findBoardReplyList(id);
+
+        model.addAttribute("board", board);
+        model.addAttribute("boardReplyList", boardReplyList);
 
         return "/board/detailBoard";
     } // detailBoardView

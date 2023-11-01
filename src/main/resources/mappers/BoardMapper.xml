@@ -8,11 +8,49 @@
     <!-- 게시판 목록 -->
     <select id="findBoardList" resultType="org.zerock.myapp.domain.BoardVO">
         SELECT
-        board.*,
-        Member.nickname AS member_nickname
+        Board.*,
+        Movies.title AS movie_title,
+        board_kategories.name AS kategorie_name,
+        Member.nickname
         FROM
-        board
-        INNER JOIN Member ON board.member_id = Member.id
+        Board
+        LEFT JOIN Movies ON Board.movie_id = Movies.id
+        LEFT JOIN board_kategories ON Board.kategorie_id = board_kategories.id
+        LEFT JOIN Member ON Board.member_id = Member.id
+        ORDER BY board.id DESC
+    </select>
+
+    <!-- 특정 게시글 조회 -->
+    <select id="findBoard" resultType="org.zerock.myapp.domain.BoardVO">
+        SELECT
+        Board.*,
+        Movies.title AS movie_title,
+        board_kategories.name AS kategorie_name,
+        Member.nickname
+        FROM
+        Board
+        LEFT JOIN Movies ON Board.movie_id = Movies.id
+        LEFT JOIN board_kategories ON Board.kategorie_id = board_kategories.id
+        LEFT JOIN Member ON Board.member_id = Member.id
+        WHERE board.id = #{id}
+        ORDER BY board.id DESC
+    </select>
+
+    <!-- 게시글에 해당하는 댓글 목록 -->
+    <select id="findBoardReplyList" resultType="org.zerock.myapp.domain.BoardReplyVO">
+        SELECT
+        Board_reply.*,
+        Member.nickname
+        FROM
+        Board_reply
+        INNER JOIN
+        Board ON Board_reply.board_id = Board.id
+        INNER JOIN
+        Member ON Board_reply.member_id = Member.id
+        WHERE
+        Board.id = #{id}
+        ORDER BY
+        Board_reply.id DESC
     </select>
 
 </mapper>

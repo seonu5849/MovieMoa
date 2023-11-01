@@ -156,7 +156,7 @@
     <div class="board-details">
         <div class="board-header">
             <div class="board-title" th:text="${board.title}">게시글 제목</div>
-            <div class="board-info">작성자: <span th:text="${board.nickname}">작성자 닉네임</span></div>
+            <div class="board-info">작성자: <span th:text="${board.memberNickname}">작성자 닉네임</span></div>
         </div>
         <div class="board-content" th:text="${board.content}">게시글 내용</div>
         <div class="board-meta">
@@ -164,9 +164,9 @@
             <span>조회수: <span th:text="${board.viewCount}">0</span></span>
             <span>생성 시간: <span th:text="${#dates.format(board.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2023-01-01 12:00:00</span></span>
             <span>수정 시간: <span th:text="${#dates.format(board.updatedAt, 'yyyy-MM-dd HH:mm:ss')}">2023-01-01 12:00:00</span></span>
-            <span>카테고리 ID: <span th:text="${board.kategorieId}">1</span></span>
-            <span>영화 ID: <span th:text="${board.movieId}">1</span></span>
-            <span>회원 ID: <span th:text="${board.memberId}">1</span></span>
+            <span>카테고리 이름: <span th:text="${board.kategorieName}">영화</span></span>
+            <span>영화 제목: <span th:text="${board.movieTitle}">1</span></span>
+            <span>회원 닉네임: <span th:text="${board.memberNickname}">1</span></span>
         </div>
 
         <div class="board-buttons">
@@ -183,14 +183,15 @@
         </div>
 
         <div class="comment-list">
-            <div class="comment-item" th:each="reply : ${replies}">
+            <div class="comment-item" th:each="reply : ${boardReplyList}">
                 <div class="comment-content" th:text="${reply.content}">댓글 내용</div>
                 <div class="comment-meta">
                     <span th:text="${#dates.format(reply.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2023-01-01 12:00:00</span>
-                    <span th:text="${reply.memberId}">회원 ID</span>
+                    <span th:text="${#dates.format(reply.updatedAt, 'yyyy-MM-dd HH:mm:ss')}">2023-01-01 12:00:00</span>
+                    <span th:text="${reply.nickname}">회원 닉네임</span>
                 </div>
                 <div class="comment-buttons">
-                    <button class="button" th:onclick="'location.href=\'/comment/edit/' + ${reply.id} + '\''">수정</button>
+                    <button class="button" onclick="openModal(${reply.id})">수정</button>
                 </div>
             </div>
         </div>
@@ -199,7 +200,7 @@
     <div id="editModal" style="display:none;">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
-            <form th:action="@{/comment/edit/{id}(id=${reply.id})}" th:object="${reply}" method="post">
+            <form th:action="@{/board/commentEdit/{id}(id=${reply.id})}" th:object="${reply}" method="post">
                 <textarea th:text="${reply.content}" required></textarea>
                 <button type="submit">댓글 수정</button>
             </form>
