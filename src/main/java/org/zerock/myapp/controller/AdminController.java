@@ -301,4 +301,60 @@ public class AdminController {
         return "/admin/movieDataList";
     } // movieDataListView
 
+    @GetMapping("/eventWrite")
+    public String eventWriteView() {
+        log.trace("eventWriteView() invoked.");
+
+        return "/event/eventWrite";
+    } // eventWriteView
+
+    @PostMapping("/eventWrite")
+    public String eventWrite() {
+        log.trace("eventWrite() invoked.");
+
+        return "redirect:/event/detailEvent";
+    } // eventWrite
+
+    @GetMapping("/eventUpdate")
+    public String eventUpdateView() {
+        log.trace("eventUpdateView() invoked.");
+
+        return "/event/eventUpdate";
+    } // eventUpdateView
+
+    @PutMapping("/eventUpdate")
+    public String eventUpdate() {
+        log.trace("eventUpdate() invoked.");
+
+        return "redirect:/event/detailEvent";
+    } // eventUpdate
+
+    @GetMapping("/writeProduct")
+    public String writeProductView() {
+        log.trace("writeProductView() invoked.");
+
+        return "/store/writeProduct";
+    } // writeProductView
+
+    @PostMapping("/writeProduct")
+    public String writeProduct() {
+        log.trace("writeProduct() invoked.");
+
+        return "redirect:/store/detailProduct";
+    } // writeProduct
+
+    @GetMapping("/updateProduct")
+    public String updateProductView() {
+        log.trace("updateProductView() invoked.");
+
+        return "/store/updateProduct";
+    } // eventUpdateView
+
+    @PutMapping("/updateProduct")
+    public String updateProduct() {
+        log.trace("updateProduct() invoked.");
+
+        return "redirect:/store/detailProduct";
+    } // eventUpdateView
+
 } // end class

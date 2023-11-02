@@ -74,7 +74,7 @@ CREATE TABLE Member (
 	email VARCHAR(100) NOT NULL UNIQUE,
 	name VARCHAR(20) NOT NULL,
 	nickname VARCHAR(20) NOT NULL,
-	password VARCHAR(20) NOT NULL,
+	password VARCHAR(100) NOT NULL,
 	phone_num VARCHAR(50) NOT NULL,
 	join_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	last_login_date TIMESTAMP,
@@ -86,7 +86,7 @@ CREATE TABLE Member (
 
 CREATE TABLE board_kategories (
 	id BIGINT AUTO_INCREMENT PRIMARY KEY,
-	name VARCHAR(20) UNIQUE DEFAULT '영화' NOT NULL
+	name VARCHAR(20) DEFAULT '영화' UNIQUE NOT NULL
 );
 
 CREATE TABLE Board (
@@ -225,6 +225,8 @@ CREATE TABLE wishlist (
 	FOREIGN KEY (member_id) REFERENCES Member(id),
 	FOREIGN KEY (movie_id) REFERENCES Movies(id)
 );
+
+INSERT INTO Member (EMAIL, NAME, NICKNAME, PASSWORD, PHONE_NUM) VALUES('','','','','');
 
 INSERT INTO board_kategories (name) VALUES('영화');
 INSERT INTO board_kategories (name) VALUES('공지');

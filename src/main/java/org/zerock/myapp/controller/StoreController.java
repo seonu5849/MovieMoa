@@ -57,33 +57,7 @@ public class StoreController {
         return "redirect:/store/tickets";
     } // detailProductDelete
 
-    @GetMapping("/writeProduct")
-    public String writeProductView() {
-        log.trace("writeProductView() invoked.");
 
-        return "/store/writeProduct";
-    } // writeProductView
-
-    @PostMapping("/writeProduct")
-    public String writeProduct() {
-        log.trace("writeProduct() invoked.");
-
-        return "redirect:/store/detailProduct";
-    } // writeProduct
-
-    @GetMapping("/updateProduct")
-    public String updateProductView() {
-        log.trace("updateProductView() invoked.");
-
-        return "/store/updateProduct";
-    } // eventUpdateView
-
-    @PutMapping("/updateProduct")
-    public String updateProduct() {
-        log.trace("updateProduct() invoked.");
-
-        return "redirect:/store/detailProduct";
-    } // eventUpdateView
 
     @GetMapping("/photoReply")
     public String photoReplyView(){

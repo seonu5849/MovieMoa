@@ -67,32 +67,6 @@ public class EventController {
         return "redirect:/event/currentEvents";
     } // detailEventDelete
 
-    @GetMapping("/eventWrite")
-    public String eventWriteView() {
-        log.trace("eventWriteView() invoked.");
 
-        return "/event/eventWrite";
-    } // eventWriteView
-
-    @PostMapping("/eventWrite")
-    public String eventWrite() {
-        log.trace("eventWrite() invoked.");
-
-        return "redirect:/event/detailEvent";
-    } // eventWrite
-
-    @GetMapping("/eventUpdate")
-    public String eventUpdateView() {
-        log.trace("eventUpdateView() invoked.");
-
-        return "/event/eventUpdate";
-    } // eventUpdateView
-
-    @PutMapping("/eventUpdate")
-    public String eventUpdate() {
-        log.trace("eventUpdate() invoked.");
-
-        return "redirect:/event/detailEvent";
-    } // eventUpdate
 
 } // end class
