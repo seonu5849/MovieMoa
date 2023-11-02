@@ -89,12 +89,12 @@ public class MainController {
     } // registrationView
 
     @PostMapping("/registration")
-    public String registration(MemberDTO dto){
+    public String registration(MemberDTO dto ){
         log.trace("registration() invoked.");
 
         this.memberService.saveMember(dto);
 
-        return "/main";
+        return "/login";
     } // registration
 
     @ResponseBody
@@ -102,6 +102,9 @@ public class MainController {
     public Map<String, Boolean> checkEmail(@RequestBody Map<String, String> request){
         log.trace("checkEmail({}) invoked.", request);
         String email = request.get("email");
+
+        // 이메일 중복 체크시 true면 회원가입 페이지의 비동기 체크를 위해
+        // isEmailAvailable로 return
         if(!email.equals("")){
             Boolean dupleEmail = this.memberService.checkDupleEmail(email);
 
@@ -163,7 +166,9 @@ public class MainController {
     } //PasswordSearch
 
     @PutMapping("/UpdatePassword")
-    public String ChangePassword(Model model, @RequestParam Long id, @RequestParam String password, @RequestParam String confirmPassword){
+    public String ChangePassword(Model model, @RequestParam Long id,
+                                 @RequestParam String password,
+                                 @RequestParam String confirmPassword){
         log.trace("ChangePassword({}, {}, {}) invoked.", id, password, confirmPassword);
 
         MemberVO member = memberService.findUser(id);
@@ -173,6 +178,8 @@ public class MainController {
             Integer updated = this.memberService.updatePassword(id, confirmPassword);
             log.info("\t+ updated: {}", updated);
             model.addAttribute("updateSuccess", true);
+            // updatePassword true 전달 시 UpdatePassword.html
+            // script 내 작성된 showConfirmationAndRedirect() 이벤트가 수행됨
             return "/UpdatePassword";
         } else {
             model.addAttribute("error", true);

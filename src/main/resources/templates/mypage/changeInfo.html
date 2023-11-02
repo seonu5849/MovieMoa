@@ -117,7 +117,16 @@
             <input type="tel" id="phoneNum" name="phoneNum" th:placeholder="${member.phoneNum}" minlength="13" maxlength="13" pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}">
 
             <label for="address">주소</label>
-            <input type="text" id="address" name="address" th:placeholder="${member.address}">
+            <input class="form-control" style="width: 40%; display: inline;" placeholder="우편번호" name="address" id="addr1" type="text" readonly="readonly" >
+            <button type="button" class="btn btn-default" th:onclick="execPostCode();"><i class="fa fa-search"></i> 우편번호 찾기</button>
+            <div>
+                <input class="form-control" style="top: 5px;" placeholder="도로명 주소" name="address" id="addr2" type="text" readonly="readonly" />
+            </div>
+            <div>
+                <input class="form-control" placeholder="상세주소" name="address" id="addr3" type="text"  />
+            </div>
+
+<!--            <input type="text" id="address" name="address" th:placeholder="${member.address}">-->
 
             <label for="birthday">생년월일</label>
             <input type="date" id="birthday" name="birthday" th:placeholder="${member.birthday}">
@@ -131,9 +140,47 @@
 </div>
 </main>
 <footer th:replace="footer.html" />
-<script th:inline="javascript">
-    document.getElementById('changeInfoForm').addEventListener('submit', function(e) {
 
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js">
+    // 주소 api 용
+</script>
+
+<script th:inline="javascript">
+    function execPostCode() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var addr = ''; // 주소 변수
+                var extraAddr = ''; // 참고항목 변수
+
+                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                    addr = data.roadAddress;
+                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                    addr = data.jibunAddress;
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.getElementById('addr1').value = data.zonecode;
+                document.getElementById("addr2").value = addr;
+                // 커서를 상세주소 필드로 이동한다.
+                document.getElementById("addr3").focus();
+            }
+        }).open();
+    }
+      // 주소 api 용
+
+    var Address = /*[[@{member.address}]]*/;
+        document.getElementById('addr1').value = Address[0];
+        document.getElementById('addr2').value = Address[1];
+        document.getElementById('addr3').value = Address[2];
+
+    // 주소 값 합치기
+
+    document.getElementById('changeInfoForm').addEventListener('submit', function(e) {
         // 닉네임 필드가 비어 있으면 타임리프 변수를 사용하여 기본값 설정
         if (!document.getElementById('nickname').value) {
             document.getElementById('nickname').value = /*[[${member.nickname}]]*/;
