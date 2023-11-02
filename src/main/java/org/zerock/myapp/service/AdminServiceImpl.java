@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.zerock.myapp.domain.*;
 import org.zerock.myapp.mapper.AdminMapper;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -163,6 +164,35 @@ public class AdminServiceImpl implements AdminService {
 
         Integer offset = offset(pageNum);
         return this.adminMapper.selectReportedReply(offset, perPage);
+    }
+
+    @Override
+    public Integer editMemberStatus(Long memberId, String status) {
+        log.trace("editMemberStatus({}, {}) invoked.", memberId, status);
+
+        LocalDate currentDay = LocalDate.now();
+
+        LocalDate suspensionPeriod = currentDay;
+        String modifyStatus = MemberStatus.ACTIVITY.getStatus();
+        Role role = Role.ROLE_LOCKED;
+
+        switch(status){
+            case "활동" -> role = Role.ROLE_MEMBER;
+            case "1일정지" -> {
+                modifyStatus = MemberStatus.ONE_DAY_SUSPENSTION.getStatus();
+                suspensionPeriod = currentDay.plusDays(1);
+            }
+            case "7일정지" -> {
+                modifyStatus = MemberStatus.SEVEN_DAY_SUSPENTION.getStatus();
+                suspensionPeriod = currentDay.plusDays(7);
+            }
+            case "30일정지" -> {
+                modifyStatus = MemberStatus.THIRTY_DAY_SUSPENTION.getStatus();
+                suspensionPeriod = currentDay.plusDays(30);
+            }
+        }
+
+        return this.adminMapper.updateMemberStatus(memberId, role, modifyStatus, suspensionPeriod);
     }
 
     @Override

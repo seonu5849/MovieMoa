@@ -46,6 +46,9 @@ public interface AdminService {
     // 해당 페이지의 신고된 댓글 목록 조회
     public abstract List<ReportReplyVO> findReportedReply(Integer pageNum);
 
+    // 회원에 대한 처분(상태)를 업데이트
+    public abstract Integer editMemberStatus(Long memberId, String status);
+
 //    ====================================================================================================
     // 페이징 처리된 멤버의 게시글 출력
     public abstract List<BoardVO> findMemberByBoard(Long memberId, Integer pageNum);

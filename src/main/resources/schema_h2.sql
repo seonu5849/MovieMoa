@@ -81,7 +81,8 @@ CREATE TABLE Member (
 	role VARCHAR(20) DEFAULT 'ROLE_MEMBER' NOT NULL,
 	status VARCHAR(50) DEFAULT '활동' NOT NULL,
 	address VARCHAR(100),
-	birthday DATE
+	birthday DATE,
+	suspension_period DATE
 );
 
 

@@ -19,4 +19,5 @@ public class MemberVO {
     private String status;
     private String address;
     private Date birthday;
+    private Date suspensionPeriod;
 } // end class

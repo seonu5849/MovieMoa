@@ -136,6 +136,16 @@
         OFFSET #{offset} ROW FETCH NEXT #{perPage} ROW ONLY
     </select>
     
+    <update id="updateMemberStatus">
+        UPDATE member
+        SET
+            role = #{role},
+            status = #{status},
+            suspension_period = #{suspensionPeriod}
+        WHERE
+            id = #{memberId}
+    </update>
+    
 <!--    =======================================================================================-->
     
     <!-- 특정 멤버의 게시글을 조회하여 페이징 처리된 결과를 반환 -->

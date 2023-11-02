@@ -2,8 +2,10 @@ package org.zerock.myapp.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.security.core.parameters.P;
 import org.zerock.myapp.domain.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -49,6 +51,9 @@ public interface AdminMapper {
 
     // 해당 페이지의 신고된 댓글 목록 조회
     public abstract List<ReportReplyVO> selectReportedReply(@Param("offset") Integer offset, @Param("perPage") Integer perPage);
+
+    // 회원에 대한 처분(상태)를 업데이트
+    public abstract Integer updateMemberStatus(@Param("memberId") Long mmeberId, @Param("role") Role role, @Param("status") String Status, @Param("suspensionPeriod") LocalDate suspensionPeriod);
 
 //    ============================================================================================
 
