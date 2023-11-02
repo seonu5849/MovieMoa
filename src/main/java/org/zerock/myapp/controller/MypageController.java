@@ -12,6 +12,7 @@ import org.zerock.myapp.domain.MemberVO;
 import org.zerock.myapp.service.MemberService;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -105,8 +106,8 @@ public class MypageController {
     } // mypageChangeInfoView
 
     @PutMapping("/changeInfo")
-    public String mypageChangeInfo(Model model, String passwordInput, String confirmPassword, @RequestParam String nickname, @RequestParam String address, @RequestParam String phoneNum, @RequestParam String birthday) {
-        log.trace("mypageChangeInfo({}, {}, {}, {}, {}) invoked.", passwordInput, confirmPassword, nickname, address, phoneNum);
+    public String mypageChangeInfo(Model model, String passwordInput, String confirmPassword, @RequestParam String nickname, @RequestParam String[] address, @RequestParam String phoneNum, @RequestParam String birthday) {
+        log.trace("mypageChangeInfo({}, {}, {}, {}, {}) invoked.", passwordInput, confirmPassword, nickname, Arrays.toString(address), phoneNum);
 
         // 현재 인증된 사용자의 정보를 가져옵니다.
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -123,7 +124,11 @@ public class MypageController {
 
         if(!passwordInput.equals("") || !confirmPassword.equals("")){
             if(passwordInput.equals(confirmPassword)){
-                Integer updated = memberService.updateMypageMember(confirmPassword, nickname, address, phoneNum, birthday, id);
+                StringBuffer sb = new StringBuffer();
+                StringBuffer append = sb.append(address[0]).append(address[1]).append(address[2]);
+                String fullAddress = append.toString();
+
+                Integer updated = memberService.updateMypageMember(confirmPassword, nickname, fullAddress , phoneNum, birthday, id);
                 log.info("\t+ updated: {}", updated);
 
                 model.addAttribute("updateSuccess", true);
@@ -134,7 +139,12 @@ public class MypageController {
                 return "/mypage/changeInfo";
             }
         } else {
-            Integer updated = memberService.updateMypageMember(null, nickname, address, phoneNum, birthday, id);
+
+            StringBuffer sb = new StringBuffer();
+            StringBuffer append = sb.append(address[0]).append(address[1]).append(address[2]);
+            String fullAddress = append.toString();
+
+            Integer updated = memberService.updateMypageMember(confirmPassword, nickname, fullAddress , phoneNum, birthday, id);
             log.info("\t+ password null updated: {}", updated);
 
             model.addAttribute("updateSuccess", true);
