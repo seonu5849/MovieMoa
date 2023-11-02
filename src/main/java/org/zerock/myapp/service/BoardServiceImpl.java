@@ -29,6 +29,49 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    public Integer viewCountUp(Long id) {
+        return boardMapper.viewCountUp(id);
+    }
+
+    @Override
+    public Boolean likescheck(Long boardId, Long memberId) {
+        Integer likescheck = boardMapper.likescheck(boardId, memberId);
+        
+        if(likescheck == 0){
+            // 좋아요 누르지 않음
+            return false;
+        } else {
+            // 좋아요 이미 누름
+            return true;
+        }
+    }
+
+    @Override
+    public Integer cancelLikes(Long boardId, Long memberId) {
+        return boardMapper.cancelLikes(boardId, memberId);
+    }
+
+    @Override
+    public Integer LikesCountDown(Long boardId) {
+        return boardMapper.LikesCountDown(boardId);
+    }
+
+    @Override
+    public Integer addLikes(Long boardId, Long memberId) {
+        return boardMapper.addLikes(boardId, memberId);
+    }
+
+    @Override
+    public Integer LikesCountUp(Long boardId) {
+        return boardMapper.LikesCountUp(boardId);
+    }
+
+    @Override
+    public Integer getLikeCount(Long boardId) {
+        return boardMapper.getLikeCount(boardId);
+    }
+
+    @Override
     public List<BoardReplyVO> findBoardReplyList(Long id) {
         return boardMapper.findBoardReplyList(id);
     }
@@ -44,8 +87,8 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Integer updateBoardReply(BoardReplyVO reply) {
-        return boardMapper.updateBoardReply(reply);
+    public Integer updateBoardReply(Long id, String content) {
+        return boardMapper.updateBoardReply(id, content);
     }
 
 } // end class

@@ -84,6 +84,8 @@ CREATE TABLE Member (
 	birthday DATE
 );
 
+
+
 CREATE TABLE board_kategories (
 	id BIGINT AUTO_INCREMENT PRIMARY KEY,
 	name VARCHAR(20) DEFAULT '영화' UNIQUE NOT NULL
@@ -103,6 +105,15 @@ CREATE TABLE Board (
 	FOREIGN KEY (kategorie_id) REFERENCES board_kategories(id),
 	FOREIGN KEY (movie_id) REFERENCES Movies(id),
 	FOREIGN KEY (member_id) REFERENCES Member(id)
+);
+
+CREATE TABLE Likes (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    board_id BIGINT NOT NULL,
+    member_id BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (board_id) REFERENCES Board(id),
+    FOREIGN KEY (member_id) REFERENCES Member(id)
 );
 
 CREATE TABLE events (

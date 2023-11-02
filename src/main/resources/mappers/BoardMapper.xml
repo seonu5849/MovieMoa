@@ -36,6 +36,43 @@
         ORDER BY board.id DESC
     </select>
 
+    <!-- 특정 게시글 조회시 조회수 1씩 증가 -->
+    <update id="viewCountUp">
+        UPDATE Board
+        SET view_count = view_count + 1
+        WHERE id = #{id}
+    </update>
+
+    <!-- 사용자가 해당 게시글에 좋아요를 눌렀는지 확인 -->
+    <select id="likescheck" resultType="Integer">
+        SELECT COUNT(id) FROM Likes WHERE board_id = #{boardId} AND member_id = #{memberId}
+    </select>
+
+    <!-- 이미 좋아요를 눌렀다면, 좋아요 취소 -->
+    <delete id="cancelLikes">
+        DELETE FROM Likes WHERE board_id = #{boardId} AND member_id = #{memberId}
+    </delete>
+
+    <!-- 이미 좋아요를 눌렀다면, 좋아요 취소 -->
+    <update id="LikesCountDown">
+        UPDATE Board SET favorites = favorites - 1 WHERE id = #{boardId}
+    </update>
+
+    <!-- 좋아요를 누르지 않았다면, 좋아요 추가 -->
+    <insert id="addLikes">
+        INSERT INTO Likes (board_id, member_id) VALUES (#{boardId}, #{memberId})
+    </insert>
+
+    <!-- 좋아요를 누르지 않았다면, 좋아요 추가 -->
+    <update id="LikesCountUp">
+        UPDATE Board SET favorites = favorites + 1 WHERE id = #{boardId}
+    </update>
+
+    <!-- 좋아요 수 조회 -->
+    <select id="getLikeCount" resultType="Integer">
+        SELECT COUNT(id) FROM Likes WHERE board_id = #{boardId}
+    </select>
+
     <!-- 게시글에 해당하는 댓글 목록 -->
     <select id="findBoardReplyList" resultType="org.zerock.myapp.domain.BoardReplyVO">
         SELECT
@@ -70,13 +107,15 @@
         Board_reply.id DESC
     </select>
 
+    <!-- 댓글 수정 -->
     <update id="updateBoardReply">
         UPDATE Board_reply
-        SET content = #{reply.content},
+        SET content = #{content},
         updated_at = CURRENT_TIMESTAMP
-        WHERE id = #{reply.id};
+        WHERE id = #{id};
     </update>
 
+    <!-- 댓글 작성 -->
     <insert id="insertReply">
         INSERT INTO Board_reply (content, member_id, board_id)
         VALUES (#{content}, #{memberId}, #{id})
