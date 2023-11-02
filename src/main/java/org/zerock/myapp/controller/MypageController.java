@@ -122,35 +122,29 @@ public class MypageController {
 
         model.addAttribute("member", member);
 
-        if(!passwordInput.equals("") || !confirmPassword.equals("")){
-            if(passwordInput.equals(confirmPassword)){
-                StringBuffer sb = new StringBuffer();
-                StringBuffer append = sb.append(address[0]).append(address[1]).append(address[2]);
-                String fullAddress = append.toString();
+        // 주소를 결합합니다.
+        String fullAddress = String.join("", address[0], address[1], address[2]);
+        Integer updated;
 
-                Integer updated = memberService.updateMypageMember(confirmPassword, nickname, fullAddress , phoneNum, birthday, id);
-                log.info("\t+ updated: {}", updated);
-
-                model.addAttribute("updateSuccess", true);
-                return "/mypage/changeInfo";
-            } else {
-                log.info("\t+ 비밀번호 오류");
-                model.addAttribute("error", true);
-                return "/mypage/changeInfo";
-            }
-        } else {
-
-            StringBuffer sb = new StringBuffer();
-            StringBuffer append = sb.append(address[0]).append(address[1]).append(address[2]);
-            String fullAddress = append.toString();
-
-            Integer updated = memberService.updateMypageMember(confirmPassword, nickname, fullAddress , phoneNum, birthday, id);
+        if (passwordInput.isEmpty() && confirmPassword.isEmpty()) {
+            // 비밀번호 입력이 둘 다 비어있는 경우
+            updated = memberService.updateMypageMember(null, nickname, fullAddress, phoneNum, birthday, id);
             log.info("\t+ password null updated: {}", updated);
 
             model.addAttribute("updateSuccess", true);
-            return "/mypage/changeInfo";
+        } else if (passwordInput.equals(confirmPassword)) {
+            // 비밀번호 입력이 같은 경우
+            updated = memberService.updateMypageMember(confirmPassword, nickname, fullAddress, phoneNum, birthday, id);
+            log.info("\t+ updated: {}", updated);
+
+            model.addAttribute("updateSuccess", true);
+        } else {
+            // 비밀번호 입력이 다른 경우
+            log.info("\t+ 비밀번호 오류");
+            model.addAttribute("error", true);
         }
 
+        return "/mypage/changeInfo";
     } // mypageChangeInfo
 
 //    @DeleteMapping("/changeInfo")
