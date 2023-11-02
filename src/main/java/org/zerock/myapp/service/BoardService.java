@@ -47,4 +47,7 @@ public interface BoardService {
     // 댓글 수정
     public abstract Integer updateBoardReply(Long id, String content);
 
+    // 댓글 삭제
+    public abstract Integer deleteBoardReply(Long replyId);
+
 } // end interface

@@ -171,6 +171,18 @@ public class BoardController {
         return "redirect:/board/detailBoard/" + boardReply.getBoardId();
     }
 
+    @DeleteMapping("/commentDelete/{replyId}")
+    public ResponseEntity<?> commentDelete(@PathVariable("replyId")Long replyId, @RequestBody Map<String, Long> body) {
+        log.trace("commentDelete({}) invoked.", replyId);
+        Long boardId = body.get("boardId");
+
+        Integer deleted = this.boardService.deleteBoardReply(replyId);
+        log.info("\t+ deleted: {}", deleted);
+
+        // 리다이렉트할 URL을 JSON 객체로 반환
+        return ResponseEntity.ok(Collections.singletonMap("redirectUrl", "/board/detailBoard/" + boardId));
+    }
+
     @GetMapping("/reportBoard")
     public String reportBoardView() {
         log.trace("reportBoardView() invoked.");

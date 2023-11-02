@@ -91,4 +91,9 @@ public class BoardServiceImpl implements BoardService {
         return boardMapper.updateBoardReply(id, content);
     }
 
+    @Override
+    public Integer deleteBoardReply(Long replyId) {
+        return boardMapper.deleteBoardReply(replyId);
+    }
+
 } // end class

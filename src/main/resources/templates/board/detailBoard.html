@@ -108,7 +108,7 @@
             flex-shrink: 0; /* 버튼이 줄어들지 않도록 함 */
         }
 
-        #replyButton {
+        .comment-buttons button {
             margin-left: 10px;
         }
 
@@ -226,8 +226,8 @@
                         <span  th:if="${reply.updatedAt}">수정일: <span th:text="${reply.updatedAt != null ? #dates.format(reply.updatedAt, 'yyyy-MM-dd HH:mm:ss') : ''}">2023-01-01 12:00:00</span></span>
                     </div>
                     <div class="comment-buttons">
-                        <button class="button" id="replyButton" th:if="${reply.memberId == currentUserId}" th:data-replyId="${reply.id}">수정</button>
-                        <button class="button" id="replyButton" th:if="${reply.memberId == currentUserId}">삭제</button>
+                        <button class="button" id="replyModifyButton" th:if="${reply.memberId == currentUserId}" th:data-replyId="${reply.id}">수정</button>
+                        <button class="button" id="replyDeleteButton" th:if="${reply.memberId == currentUserId}" th:data-replyId="${reply.id}" th:data-boardId="${board.id}">삭제</button>
                         <button class="button" id="replyButton" th:if="${reply.memberId != currentUserId}">신고</button>
                     </div>
                 </div>
@@ -252,7 +252,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
     // 댓글 수정 버튼 또는 링크에 이벤트 리스너 추가
-    document.getElementById('replyButton').addEventListener('click', function(event) {
+    document.getElementById('replyModifyButton').addEventListener('click', function(event) {
         const replyId = this.getAttribute('data-replyId'); // 버튼 또는 링크에 저장된 replyId 가져오기
 
         // AJAX 요청으로 서버에 댓글 내용 요청
@@ -285,15 +285,44 @@
     }
 
     // 삭제 버튼 클릭 시 삭제 확인 메시지 표시
-    document.querySelectorAll('.comment-buttons button').forEach(button => {
+    document.querySelectorAll('#replyDeleteButton').forEach(button => {
         button.addEventListener('click', function() {
+            const replyId = this.getAttribute('data-replyId'); // 버튼 또는 링크에 저장된 replyId 가져오기
+            const boardId = this.getAttribute('data-boardId'); // 버튼 또는 링크에 저장된 boardId를 숫자로 변환
+
             if (this.innerText === '삭제') {
-                if (!confirm('정말로 삭제하시겠습니까?')) {
+                if (confirm('정말로 삭제하시겠습니까?')) {
+                    fetch('/board/commentDelete/' + replyId, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({boardId: boardId}) // 숫자로 변환된 boardId를 서버로 전송
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            throw new Error('서버에 문제가 발생했습니다.');
+                        }
+                    })
+                    .then(data => {
+                        if (data.redirectUrl) {
+                            window.location.href = data.redirectUrl; // 서버가 제공한 URL로 리다이렉트
+                        } else {
+                            console.log('Success:', data);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+                } else {
                     event.preventDefault();
                 }
             }
         });
     });
+
 
     $(document).ready(function() {
         $('#likeButton').on('click', function() {

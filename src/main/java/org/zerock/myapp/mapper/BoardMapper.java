@@ -51,4 +51,7 @@ public interface BoardMapper {
     // 댓글 수정
     public abstract Integer updateBoardReply(@Param("id")Long id, @Param("content") String content);
 
+    // 댓글 삭제
+    public abstract Integer deleteBoardReply(@Param("replyId")Long replyId);
+
 } // end interface
