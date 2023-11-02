@@ -9,6 +9,9 @@ public interface AdminService {
     // 페이지 번호에 따른 데이터 시작점 계산
     public abstract Integer offset(Integer pageNum);
 
+    // 매개변수 없는 전체 회원 조회
+    public abstract List<MemberVO> findAllMember();
+
     // 전체 회원 조회: 페이징 처리를 포함해 전체 회원 목록을 조회
     public abstract List<MemberVO> findAllMember(Integer pageNum);
 

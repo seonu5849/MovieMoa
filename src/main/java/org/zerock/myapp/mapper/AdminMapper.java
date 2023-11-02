@@ -12,8 +12,11 @@ import java.util.Map;
 @Mapper
 public interface AdminMapper {
 
+    // 전체 회원 조회: 단순 출력
+    public abstract List<MemberVO> selectAllMember();
+
     // 전체 회원 조회: 페이징 처리를 포함해 전체 회원 목록을 조회
-    public abstract List<MemberVO> selectAllMember(@Param("offset") Integer offset, @Param("perPage") Integer perPage);
+    public abstract List<MemberVO> selectAllMemberPaging(@Param("offset") Integer offset, @Param("perPage") Integer perPage);
 
     // 특정 이름 또는 이메일로 회원 검색: 이름 또는 이메일로 회원을 검색. 페이징 처리 포함.
     public abstract List<MemberVO> selectMemberNameOrEmail(@Param("params") Map<String, String> params,

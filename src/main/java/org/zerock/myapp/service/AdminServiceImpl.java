@@ -6,11 +6,10 @@ import org.springframework.stereotype.Service;
 import org.zerock.myapp.domain.*;
 import org.zerock.myapp.mapper.AdminMapper;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.ZoneId;
+import java.util.*;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -27,13 +26,18 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    public List<MemberVO> findAllMember() {
+        return adminMapper.selectAllMember();
+    }
+
+    @Override
     public List<MemberVO> findAllMember(Integer pageNum) { // 전체 회원 조회
         log.trace("findAllMember({}) invoked.", pageNum);
 
         Integer offset = offset(pageNum);
         log.info("\t+ offset: {}, perPage: {}", offset, perPage);
 
-        return this.adminMapper.selectAllMember(offset, perPage);
+        return this.adminMapper.selectAllMemberPaging(offset, perPage);
     }
 
     @Override
@@ -172,7 +176,7 @@ public class AdminServiceImpl implements AdminService {
 
         LocalDate currentDay = LocalDate.now();
 
-        LocalDate suspensionPeriod = currentDay;
+        LocalDate suspensionPeriod = null;
         String modifyStatus = MemberStatus.ACTIVITY.getStatus();
         Role role = Role.ROLE_LOCKED;
 
