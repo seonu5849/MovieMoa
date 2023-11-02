@@ -109,7 +109,7 @@
     <div class="outer-div">
         <div class="main-container">
             <div class="event-main-container">
-                <div class="bottom-right">
+                <div sec:authorize="hasRole('ADMIN')" class="bottom-right">
                     <a class="register-button" th:href="@{/admin/eventWrite}">등록</a>
                 </div>
                 <ul class="event-list">

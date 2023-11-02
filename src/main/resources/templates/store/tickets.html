@@ -108,7 +108,7 @@
 <main>
     <aside th:replace="storeSide.html" />
     <div class="product-main-container">
-        <div class="bottom-right">
+        <div sec:authorize="hasRole('ADMIN')" class="bottom-right">
             <a class="register-button" th:href="@{/admin/writeProduct}">등록</a>
         </div>
         <ul class="product-list">
