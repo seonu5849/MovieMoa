@@ -1,21 +1,35 @@
 package org.zerock.myapp.config;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
+import org.zerock.myapp.domain.MemberVO;
+import org.zerock.myapp.mapper.MemberMapper;
 import org.zerock.myapp.service.MemberUserDetailsService;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
@@ -29,6 +43,9 @@ public class SecurityConfig {
 
     @Setter(onMethod_ = @Autowired) // 자동 주입 설정
     private MemberUserDetailsService memberUserDetailsService;
+
+    @Setter(onMethod_= @Autowired)
+    private MemberMapper memberMapper;
 
     // SecurityFilterChain을 Bean으로 등록
     @Bean
@@ -100,6 +117,8 @@ public class SecurityConfig {
                 customizer -> customizer
                         // 로그인 페이지의 URL을 설정함. 사용자가 로그인을 시도할 때 이 URL로 접근
                         .loginPage("/login")
+                        // 로그인 실패 핸들러 추가
+                        .failureHandler(authenticationFailureHandler())
                         // 로그인 성공 후 리다이렉트 될 기본 URL 설정. true로 설정되면 항상 이 URL로 리다이렉트
                         .defaultSuccessUrl("/", true)
                         // 모든 사용자가 로그인 페이지에 접근할 수 있도록 허용
@@ -145,5 +164,48 @@ public class SecurityConfig {
         log.trace("passwordEncoder() invoked");
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     } // passwordEncoder
+
+    // 로그인 실패 핸들러 Bean 설정
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+        return new SimpleUrlAuthenticationFailureHandler() {
+            @Override
+            public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
+                log.info("Authentication failure: " + exception.getClass().getSimpleName() + " - " + exception.getMessage());
+
+                String errorMessage;
+                if (exception instanceof InternalAuthenticationServiceException) {
+                    Throwable cause = exception.getCause();
+                    if (cause instanceof LockedException) {
+
+                        log.info("계정이 잠겨 있습니다. 관리자에게 문의하세요.");
+                        errorMessage = "계정이 잠겨 있습니다. 관리자에게 문의하세요.";
+                        request.getSession().setAttribute("SPRING_SECURITY_LAST_EXCEPTION", errorMessage);
+                        response.sendRedirect(request.getContextPath() + "/login?error&locked");
+                        return;
+                    }
+                } else if (exception instanceof BadCredentialsException || exception instanceof UsernameNotFoundException) {
+                    log.info("사용자ID 또는 비밀번호를 확인해 주세요.");
+                    errorMessage = "사용자ID 또는 비밀번호를 확인해 주세요.";
+                    request.getSession().setAttribute("SPRING_SECURITY_LAST_EXCEPTION", errorMessage);
+                    response.sendRedirect(request.getContextPath() + "/login?error");
+                    return;
+                } else if (exception instanceof DisabledException) {
+                    log.info("계정이 비활성화되었습니다. 관리자에게 문의하세요.");
+                    errorMessage = "계정이 비활성화되었습니다. 관리자에게 문의하세요.";
+                    request.getSession().setAttribute("SPRING_SECURITY_LAST_EXCEPTION", errorMessage);
+                    response.sendRedirect(request.getContextPath() + "/login?error&disabled");
+                    return;
+                } else {
+                    log.info("알 수 없는 이유로 로그인에 실패했습니다.");
+                    errorMessage = "알 수 없는 이유로 로그인에 실패했습니다.";
+                    request.getSession().setAttribute("SPRING_SECURITY_LAST_EXCEPTION", errorMessage);
+                    response.sendRedirect(request.getContextPath() + "/login?error");
+                    return;
+                }
+            }
+        };
+    }
+
 
 } // end class

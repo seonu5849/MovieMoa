@@ -1,5 +1,7 @@
 package org.zerock.myapp.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
@@ -68,9 +70,14 @@ public class MainController {
 
 
     @GetMapping("/login")
-    public String loginView() {
-        log.trace("loginView() invoked.");
-
+    public String loginView(Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            String errorMessage = (String) session.getAttribute("SPRING_SECURITY_LAST_EXCEPTION");
+            if (errorMessage != null) {
+                model.addAttribute("errorMessage", errorMessage);
+            }
+        }
         return "/login";
     } // login
 

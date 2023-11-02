@@ -4,15 +4,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.zerock.myapp.config.SecurityUser;
 import org.zerock.myapp.domain.MemberVO;
+import org.zerock.myapp.domain.Role;
 import org.zerock.myapp.mapper.MemberMapper;
 
 import java.util.Objects;
+
+import static org.zerock.myapp.domain.Role.ROLE_LOCKED;
 
 @Log4j2
 @NoArgsConstructor
@@ -32,6 +36,10 @@ public class MemberUserDetailsService implements UserDetailsService {
 
         MemberVO foundMember = this.memberMapper.loadUserByUserEmail(email);  // 사용자 이름으로 사용자 정보를 조회
         log.info("\t+ foundMember : {}", foundMember);  // 찾은 사용자 정보 로그 출력
+
+        if (foundMember != null && foundMember.getRole() == ROLE_LOCKED) {
+            throw new LockedException("Account is locked");
+        }
 
         Integer lastLoginDate = this.memberMapper.lastLoginDate(email);
         log.info("\t+ lastLoginDate: {}", lastLoginDate);
