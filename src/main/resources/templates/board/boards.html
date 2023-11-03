@@ -87,7 +87,9 @@
 <main>
     <section id="notice" class="board-list">
         <h1>게시판(<span th:text="${#lists.size(boards)}">0</span>개)</h1>
-        <a th:href="@{/board/writeBoard}" class="create-button">게시글 작성</a>
+        <!-- 로그인 여부를 'data-loggedin' 속성에 설정 -->
+        <a href="javascript:void(0);" class="create-button" sec:authorize="isAuthenticated()" data-loggedin="true">게시글 작성</a>
+        <a href="javascript:void(0);" class="create-button" sec:authorize="!isAuthenticated()" data-loggedin="false">게시글 작성</a>
         <table>
             <tr>
                 <th>번호</th>
@@ -127,5 +129,34 @@
     </section>
 </main>
 <footer th:replace="footer.html" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var writeBoardUrl = /*[[@{/board/writeBoard}]]*/ 'defaultURL';
+    /*]]>*/
+
+    $(document).ready(function() {
+        // 로그인 체크하는 함수
+        function checkLogin($element) {
+            var loggedIn = $element.data('loggedin');
+            if (!loggedIn) {
+                alert('로그인이 필요한 서비스입니다.');
+                return false;
+            }
+            return true;
+        }
+
+        // 게시글 작성 버튼 클릭 이벤트
+        $('.create-button').on('click', function(e) {
+            if (!checkLogin($(this))) {
+                e.preventDefault(); // 기본 이벤트를 취소
+                // 로그인 페이지로 리다이렉트하거나 로그인 모달을 띄우는 등의 추가 작업을 할 수 있음
+            } else {
+                // 사용자가 로그인했다면 실제 게시글 작성 페이지로 이동
+                window.location.href = writeBoardUrl;
+            }
+        });
+    });
+</script>
 </body>
 </html>
