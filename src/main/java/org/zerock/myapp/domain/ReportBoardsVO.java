@@ -14,4 +14,8 @@ public class ReportBoardsVO {
     private Long reporterId;
     private String title;
     private String name;
+    private String status;
+    private Timestamp suspensionPeriod;
+    private Long boardWriterId;
+    private String boardWriter;
 } // end class

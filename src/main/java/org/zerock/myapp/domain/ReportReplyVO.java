@@ -14,4 +14,7 @@ public class ReportReplyVO {
     private String menu;
     private String content;
     private String name;
+    private String status;
+    private Timestamp suspensionPeriod;
+    private String boardWriter;
 } // end class

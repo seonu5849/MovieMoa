@@ -2,6 +2,7 @@ package org.zerock.myapp.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,8 +13,7 @@ import org.zerock.myapp.service.MovieService;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -235,11 +235,30 @@ public class AdminController {
         return "/admin/boardComplaint";
     } // boardComplaintView
 
+    @ResponseBody
     @PostMapping("/boardComplaint") // 신고 게시글
-    public String boardComplaintTask(){
-        log.trace("boardComplaintTask() invoked.");
+    public Map<String, Object> boardComplaintTask(@RequestParam("option") String selectOption, @RequestParam("boardWriterId") Long boardWriterId){
+        log.trace("boardComplaintTask({}, {}) invoked.", selectOption, boardWriterId);
 
-        return "redirect:/admin/boardComplaint";
+        Integer affectedRows = this.adminService.editMemberStatus(boardWriterId, selectOption);
+        MemberVO member = this.adminService.findDetailMember(boardWriterId);
+
+        Date suspensionPeriod = member.getSuspensionPeriod();
+        Map<String, Object> response = new HashMap<>();
+
+        String formatDate = null;
+
+        if(suspensionPeriod != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            formatDate = sdf.format(suspensionPeriod);
+        }else{
+            formatDate = "";
+        }
+
+        response.put("status", member.getStatus());
+        response.put("suspensionPeriod", formatDate);
+
+        return response;
     } // boardComplaintTask
 
     @GetMapping("/replyComplaint/{pageNum}") // 신고 댓글
