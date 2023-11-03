@@ -239,7 +239,8 @@ CREATE TABLE wishlist (
 INSERT INTO Member (EMAIL, NAME, NICKNAME, PASSWORD, PHONE_NUM)
 VALUES('admin1@admin.com','adminName1','adminNickname1','admin1','010-1111-0001'),
 ('user1@user.com','userName1','userNickname1','user1','010-0000-0001'),
-('user2@user.com','userName2','userNickname2','user2','010-0000-0002');
+('user2@user.com','userName2','userNickname2','user2','010-0000-0002'),
+('user3@user.com','userName3','userNickname3','user3','010-0000-0003');
 
 UPDATE Member SET ROLE = 'ROLE_ADMIN' WHERE id=1;
 UPDATE Member SET ROLE = 'ROLE_LOCKED' WHERE id=3;
@@ -254,9 +255,9 @@ INSERT INTO events (title, start_at, end_at, created_at, updated_at, thumbnail_p
 VALUES
 ('이벤트 1', '2023-11-01 09:00:00', '2023-11-02 17:00:00', CURRENT_TIMESTAMP, NULL, 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 1),
 ('이벤트 2', '2023-11-03 10:00:00', '2023-11-05 18:00:00', CURRENT_TIMESTAMP, NULL, 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 1),
-('이벤트 3', '2023-11-06 11:00:00', '2023-11-08 19:00:00', CURRENT_TIMESTAMP, NULL, 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 1),
-('이벤트 4', '2023-11-10 12:00:00', '2023-11-12 20:00:00', CURRENT_TIMESTAMP, NULL, 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 1),
-('이벤트 5', '2023-11-15 13:00:00', '2023-11-17 21:00:00', CURRENT_TIMESTAMP, NULL, 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 1);
+('이벤트 3', '2023-10-06 11:00:00', '2023-11-08 19:00:00', CURRENT_TIMESTAMP, NULL, 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 1),
+('이벤트 4', '2023-10-10 12:00:00', '2023-11-12 20:00:00', CURRENT_TIMESTAMP, NULL, 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 1),
+('이벤트 5', '2023-10-15 13:00:00', '2023-11-17 21:00:00', CURRENT_TIMESTAMP, NULL, 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 1);
 
 INSERT INTO store (admin_id, title, content, price, usage_location, poster_path, kategorie_id)
 VALUES
@@ -274,18 +275,5 @@ VALUES
 ('문의 4', '이것은 문의 내용 4입니다.', 3),
 ('문의 5', '이것은 문의 내용 5입니다.', 3);
 
-INSERT INTO Board_reply (content, member_id, board_id)
-VALUES
-('댓글 내용 1', 2, 1),
-('댓글 내용 2', 3, 2),
-('댓글 내용 3', 2, 3),
-('댓글 내용 4', 3, 4),
-('댓글 내용 5', 2, 5),
-('댓글 내용 6', 3, 1),
-('댓글 내용 7', 2, 2),
-('댓글 내용 8', 3, 3),
-('댓글 내용 9', 2, 4),
-('댓글 내용 10', 3, 5);
-
--- 자동번호를 재시작하게 하는 쿼리문 예: 1부터 재생성
+-- 자동번호를 재시작하게 하는 쿼리문 (예: 1부터 재생성)
 -- ALTER TABLE Board AUTO_INCREMENT = 1;
