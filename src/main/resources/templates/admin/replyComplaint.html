@@ -181,7 +181,7 @@
                             <td th:text="${reportReply.reportContent != null ? (#strings.length(reportReply.reportContent) > 8 ? #strings.substring(reportReply.reportContent, 0, 8) + '...' : reportReply.reportContent) : ''}">
                                     신고사유</td>
                             <td th:text="${reportReply.reporterName}">신고자</td>
-                            <td th:text="${#dates.format(reportReply.reportDate, 'yyyy-MM-dd')}">신고날짜</td>
+                            <td th:text="${#dates.format(reportReply.reportDate, 'yyyy-MM-dd HH:mm')}">신고날짜</td>
                             <td>
                                 처분
                             </td>
