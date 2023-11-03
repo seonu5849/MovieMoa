@@ -195,7 +195,9 @@
         <div class="board-content-border">
             <div class="board-content" th:text="${board.content}">게시글 내용</div>
         </div>
-        <button class="button likeButton" th:data-board-id="${board.id}" th:data-logged-in="${#authorization.expression('isAuthenticated()')}">좋아요 <span id="likeCount" th:text="${board.favorites}">0</span></button>
+        <button class="button likeButton" th:data-boardid="${board.id}" th:data-loggedin="${#authorization.expression('isAuthenticated()')}">
+            좋아요 <span class="likeCount" th:data-likecount-for="${board.id}" th:text="${board.favorites}">0</span>
+        </button>
 
         <div class="board-buttons">
             <a th:href="@{'/board/updateBoard/' + ${board.id}}" id="boardButton" th:if="${board.memberId == currentUserId}" class="button">수정</a>
@@ -212,7 +214,7 @@
                 <textarea name="content" placeholder="댓글을 입력하세요" required></textarea>
                 <input type="hidden" name="id" th:value="${board.id}">
                 <input type="hidden" name="memberId" th:value="${currentUserId}">
-                <button type="submit" id="replyWriteButton" class="button" th:data-logged-in="${#authorization.expression('isAuthenticated()')}">댓글 작성</button>
+                <button type="submit" id="replyWriteButton" class="button" th:data-loggedin="${#authorization.expression('isAuthenticated()')}">댓글 작성</button>
             </div>
         </form>
 
@@ -226,8 +228,8 @@
                         <span  th:if="${reply.updatedAt}">수정일: <span th:text="${reply.updatedAt != null ? #dates.format(reply.updatedAt, 'yyyy-MM-dd HH:mm:ss') : ''}">2023-01-01 12:00:00</span></span>
                     </div>
                     <div class="comment-buttons">
-                        <button class="button replyModifyButton" th:if="${reply.memberId == currentUserId}" th:data-replyId="${reply.id}">수정</button>
-                        <button class="button replyDeleteButton" th:if="${reply.memberId == currentUserId}" th:data-replyId="${reply.id}" th:data-boardId="${board.id}">삭제</button>
+                        <button class="button replyModifyButton" th:if="${reply.memberId == currentUserId}" th:data-replyid="${reply.id}">수정</button>
+                        <button class="button replyDeleteButton" th:if="${reply.memberId == currentUserId}" th:data-replyid="${reply.id}" th:data-boardid="${board.id}">삭제</button>
                         <button class="button" id="replyButton" th:if="${reply.memberId != currentUserId}">신고</button>
                     </div>
                 </div>
@@ -251,113 +253,115 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-    // 댓글 수정 버튼에 이벤트 리스너 추가
-    document.querySelectorAll('.replyModifyButton').forEach(button => {
-        button.addEventListener('click', function(event) {
-            const replyId = this.getAttribute('data-replyId'); // 버튼에 저장된 replyId 가져오기
+    $(document).ready(function() {
+        // 로그인 체크하는 공통 함수
+        function checkLogin($element) {
+            var loggedIn = $element.data('loggedin');
+            if (!loggedIn) {
+                alert('로그인이 필요한 서비스입니다.');
+                return false;
+            }
+            return true;
+        }
+
+        // 댓글 수정 버튼에 이벤트 리스너 추가
+        $('.replyModifyButton').on('click', function() {
+            var replyId = $(this).data('replyid'); // 버튼에 저장된 replyId 가져오기
 
             // AJAX 요청으로 서버에 댓글 내용 요청
-            fetch(`/board/getReplyContent/${replyId}`)
-                .then(response => response.json())
-                .then(data => {
+            $.ajax({
+                url: `/board/getReplyContent/${replyId}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
                     // 서버에서 받은 댓글 내용을 모달 창의 textarea에 설정
-                    document.getElementById('replyModalContent').value = data.reply.content;
-
+                    $('#replyModalContent').val(data.reply.content);
                     // Hidden input에 replyId 값을 설정
-                    document.getElementById('modalReplyId').value = data.reply.id;
-
+                    $('#modalReplyId').val(data.reply.id);
                     // 모달 창 표시
-                    document.getElementById('editModal').style.display = 'block';
-                })
-                .catch(error => console.error('Error:', error));
+                    $('#editModal').show();
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                }
+            });
         });
-    });
 
-    // 모달 창 닫기 함수
-    function closeModal() {
-        document.getElementById('editModal').style.display = 'none';
-    }
-
-
-    // 모달창 밖을 클릭했을 때 모달창 닫기
-    window.onclick = function(event) {
-        if (event.target == document.getElementById('editModal')) {
-            closeModal();
+        // 모달 창 닫기 함수
+        window.closeModal = function() {
+            $('#editModal').hide();
         }
-    }
 
-    // 댓글 삭제 버튼에 대한 이벤트 핸들러를 모든 버튼에 등록
-    document.querySelectorAll('.replyDeleteButton').forEach(button => {
-        button.addEventListener('click', function(event) {
-            const replyId = this.getAttribute('data-replyId'); // 버튼에 저장된 replyId 가져오기
-            const boardId = this.getAttribute('data-boardId'); // 버튼에 저장된 boardId 가져오기
+
+        // 모달창 밖을 클릭했을 때 모달창 닫기
+        $(window).on('click', function(event) {
+            if ($(event.target).is('#editModal')) {
+                closeModal();
+            }
+        });
+
+        // 댓글 삭제 버튼에 대한 이벤트 핸들러를 모든 버튼에 등록
+        $('.replyDeleteButton').on('click', function() {
+            var replyId = $(this).data('replyid');
+            var boardId = $(this).data('boardid');
 
             if (confirm('정말로 삭제하시겠습니까?')) {
-                fetch('/board/commentDelete/' + replyId, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
+                $.ajax({
+                    url: '/board/commentDelete/' + replyId,
+                    type: 'DELETE',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ boardId: boardId }),
+                    success: function(data) {
+                        if (data.redirectUrl) {
+                            window.location.href = data.redirectUrl;
+                        } else {
+                            console.log('Success:', data);
+                        }
                     },
-                    body: JSON.stringify({ boardId: boardId }) // 서버로 전송할 boardId
-                })
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error('서버에 문제가 발생했습니다.');
+                    error: function(error) {
+                        console.error('Error:', error);
                     }
-                })
-                .then(data => {
-                    if (data.redirectUrl) {
-                        window.location.href = data.redirectUrl; // 서버가 제공한 URL로 리다이렉트
-                    } else {
-                        console.log('Success:', data);
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
                 });
-            } else {
-                event.preventDefault();
             }
         });
-    });
 
-    $('#replyWriteButton').on('click', function(e) {
-        // camelCase로 접근
-        var loggedIn = $(this).data('loggedIn'); // 현재 버튼의 로그인 상태 확인
-
-        if (!loggedIn) {
-            alert('로그인이 필요한 서비스입니다.'); // 로그인되지 않은 경우 경고창 표시
-            e.preventDefault(); // 폼 제출 방지
-        }
-    });
-
-    $('.likeButton').on('click', function() { // 가정: likeButton은 클래스 이름
-        var loggedIn = $(this).data('loggedIn'); // 올바른 데이터 속성 이름으로 수정
-
-        if (!loggedIn) {
-            alert('로그인이 필요한 서비스입니다.'); // 로그인되지 않은 경우 경고창 표시
-            return; // 함수 실행 종료
-        }
-
-        var boardId = $(this).data('boardId');
-        var $likeButton = $(this); // 클릭된 버튼에 대한 참조
-
-        $.ajax({
-            url: '/board/like/' + boardId,
-            type: 'POST',
-            success: function(response) {
-                if(response.liked) {
-                    $likeButton.addClass('liked');
-                } else {
-                    $likeButton.removeClass('liked');
-                }
-                $likeButton.siblings('.likeCount').text(response.likeCount); // 클릭된 버튼과 관련된 likeCount 업데이트
-            },
-            error: function() {
-                alert('오류가 발생했습니다. 다시 시도해주세요.');
+        // 댓글 작성 버튼 클릭 이벤트
+        $('#replyWriteButton').on('click', function(e) {
+            if (!checkLogin($(this))) {
+                e.preventDefault();
+                return;
             }
+        });
+
+        // 좋아요 버튼 클릭 이벤트
+        $('.likeButton').on('click', function() {
+            var $likeButton = $(this);
+            var boardId = $(this).data('boardid');
+            var $likeCount = $likeButton.find('.likeCount');
+
+            console.log("좋아요 버튼 클릭");
+            if (!checkLogin($(this))) {
+                console.log("비로그인");
+                e.preventDefault();
+                return;
+            }
+
+            $.ajax({
+                url: '/board/like/' + boardId,
+                type: 'POST',
+                success: function(response) {
+                    if(response.liked) {
+                        $likeButton.addClass('liked');
+                    } else {
+                        $likeButton.removeClass('liked');
+                    }
+                    $likeCount.text(response.likeCount);
+                },
+                error: function() {
+                    alert('오류가 발생했습니다. 다시 시도해주세요.');
+                }
+            });
+            console.log("Ajax 호출 후");
         });
     });
 </script>

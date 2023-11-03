@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 @Log4j2
 @SpringBootApplication
-@EnableScheduling
+//@EnableScheduling
 public class MovieApplication {
 
 	public static void main(String[] args) {
