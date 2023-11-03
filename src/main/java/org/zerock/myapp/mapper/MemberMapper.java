@@ -38,4 +38,8 @@ public interface MemberMapper {
     // 특정 회원정보 변경
     public abstract Integer updateMypageMember(@Param("changePW") String changePW, @Param("nickname") String nickname, @Param("address") String address, @Param("phoneNum") String phoneNum,  @Param("birthday") String birthday, @Param("id") Long id);
 
+    // 특정 회원 삭제(탈퇴)
+    public abstract Integer deleteMyPageMember(@Param("id") Long id);
+
+
 }// end interface

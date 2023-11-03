@@ -34,4 +34,7 @@ public interface MemberService {
     // 특정 회원정보 변경
     public abstract Integer updateMypageMember(String confirmPassword, String nickname, String address, String phoneNum,  String birthday, Long id);
 
+    // 특정 회원 삭제(탈퇴)
+    public abstract Integer deleteUser(@Param("id") Long id);
+
 } // end interface

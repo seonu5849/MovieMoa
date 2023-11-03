@@ -1,5 +1,6 @@
 package org.zerock.myapp.controller;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
@@ -119,12 +120,16 @@ public class MypageController {
         // 사용자 ID를 사용하여 회원 정보를 조회합니다.
         MemberVO member = memberService.findUser(id);
         log.info("\t+ member: {}", member);
-
         model.addAttribute("member", member);
 
         // 주소를 결합합니다.
-        String fullAddress = String.join("", address[0], address[1], address[2]);
+        String fullAddress = String.join(",", address[0], address[1], address[2]);
+        log.info("fullAddress({})", fullAddress);
         Integer updated;
+        // 주소가
+        if(fullAddress.equals(",,")){
+            fullAddress=member.getAddress();
+        }
 
         if (passwordInput.isEmpty() && confirmPassword.isEmpty()) {
             // 비밀번호 입력이 둘 다 비어있는 경우
@@ -145,14 +150,31 @@ public class MypageController {
         }
 
         return "/mypage/changeInfo";
-    } // mypageChangeInfo
 
-//    @DeleteMapping("/changeInfo")
-//    public String mypageQuit() {
-//        log.trace("mypageQuit() invoked.");
-//
-//        return "redirect:/Login";
-//    } // mypageQuit
+    } // mypageChangeInfo
+    @DeleteMapping("/changeInfo")
+    public String DeleteMypageUser(Model model, HttpSession session)
+    {
+        // 현재 인증된 사용자의 정보를 가져옵니다.
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // 인증된 사용자의 이름(여기서는 사용자 ID로 사용)을 가져옵니다.
+        String username = authentication.getName();
+        // 사용자 이름(아이디)를 Long 타입으로 변환합니다.
+        Long id = Long.valueOf(username);
+
+//        // 사용자 ID를 사용하여 회원 정보를 조회합니다.
+//        MemberVO member = memberService.findUser(id);
+//        log.info("\t+ member: {}", member);
+//        model.addAttribute("member", member);
+        Integer deleted;
+        deleted = memberService.deleteUser(id);
+        log.info("\t+ UserDeleted : {}", deleted);
+
+        session.invalidate();
+
+        return "/";
+
+    } // DeleteMypageUser
 
 //    @PostMapping("/myBoard")
 //    public String mypageBoardView() {

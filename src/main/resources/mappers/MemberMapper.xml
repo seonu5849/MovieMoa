@@ -108,4 +108,9 @@
         WHERE id = #{id}
     </update>
 
+    <delete id="deleteMyPageMember">
+        DELETE FROM member
+        WHERE id = #{id}
+    </delete>
+
 </mapper>

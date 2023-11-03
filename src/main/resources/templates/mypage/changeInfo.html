@@ -73,6 +73,21 @@
         background-color: #0056b3;
     }
 
+    .delBtn{
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        background-color: RED;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .delBtn:hover {
+        background-color: #8B4513;
+    }
+
     button {
         padding: 10px 15px;
         border: none;
@@ -89,6 +104,7 @@
         background-color: #0056b3;
     }
 </style>
+
 </head>
 
 <body>
@@ -116,9 +132,9 @@
             <label for="phoneNum">휴대폰 번호</label>
             <input type="tel" id="phoneNum" name="phoneNum" th:placeholder="${member.phoneNum}" minlength="13" maxlength="13" pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}">
 
-            <label>주소</label>
-            <input class="form-control" style="width: 40%; display: inline;" placeholder="우편번호" name="address" id="addr1" type="text" readonly="readonly" >
-            <button type="button" class="btn btn-default" th:onclick="execPostCode();"><i class="fa fa-search"></i> 우편번호 찾기</button>
+            <label for="address">주소</label>
+                <input class="form-control" style="width: 40%; display: inline;" placeholder="우편번호" name="address" id="addr1" type="text" readonly="readonly" >
+                <button type="button" class="btn btn-default" th:onclick="execPostCode();"><i class="fa fa-search"></i> 우편번호 찾기</button>
             <div>
                 <input class="form-control" style="top: 5px;" placeholder="도로명 주소" name="address" id="addr2" type="text" readonly="readonly" />
             </div>
@@ -132,19 +148,20 @@
             <input type="date" id="birthday" name="birthday" th:placeholder="${member.birthday}">
 
             <div class="buttons">
-                <button type="submit">수정하기</button>
+                <button type="submit" >수정하기</button>
                 <a th:href="@{/mypage/menu/myInfo}" class="button-link">취소</a>
+
+                <button type="button" onclick="deleteAccount()" class="delBtn">회원 탈퇴</button>
+
             </div>
         </div>
     </form>
 </div>
 </main>
 <footer th:replace="footer.html" />
-
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js">
     // 주소 api 용
 </script>
-
 <script th:inline="javascript">
     function execPostCode() {
         new daum.Postcode({
@@ -153,8 +170,8 @@
 
                 // 각 주소의 노출 규칙에 따라 주소를 조합한다.
                 // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
-                var addr = ''; // 주소 변수
-                var extraAddr = ''; // 참고항목 변수
+                var addr; // 주소 변수
+                var extraAddr; // 참고항목 변수
 
                 //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
                 if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
@@ -164,31 +181,41 @@
                 }
 
                 // 우편번호와 주소 정보를 해당 필드에 넣는다.
-                document.getElementById('addr1').value = data.zonecode;
+                document.getElementById("addr1").value = data.zonecode;
                 document.getElementById("addr2").value = addr;
                 // 커서를 상세주소 필드로 이동한다.
                 document.getElementById("addr3").focus();
             }
         }).open();
     }
-      // 주소 api 용
-
-    var Address = /*[[@{member.address}]]*/;
-        document.getElementById('addr1').value = Address[0];
-        document.getElementById('addr2').value = Address[1];
-        document.getElementById('addr3').value = Address[2];
-
-    // 주소 값 합치기
 
     document.getElementById('changeInfoForm').addEventListener('submit', function(e) {
+        console.log("addEventListener");
+
         // 닉네임 필드가 비어 있으면 타임리프 변수를 사용하여 기본값 설정
         if (!document.getElementById('nickname').value) {
             document.getElementById('nickname').value = /*[[${member.nickname}]]*/;
+            console.log(/*[[${member.nickname}]]*/);
         }
 
         // 주소 필드가 비어 있으면 타임리프 변수를 사용하여 기본값 설정
-        if (!document.getElementById('address').value) {
-            document.getElementById('address').value = /*[[${member.address}]]*/;
+        if (!document.getElementById('addr1').value &&
+            !document.getElementById('addr2').value &&
+            !document.getElementById('addr3').value) {
+
+            document.getElementById('addr1').value = address[0];
+            document.getElementById('addr2').value = address[1];
+            document.getElementById('addr3').value = address[2];
+
+            var address = /*[[@{member.address}]]*/;
+        } else{
+              // 주소 api 용
+            document.getElementById('addr1').value = Address[0];
+            document.getElementById('addr2').value = Address[1];
+            document.getElementById('addr3').value = Address[2];
+            var Address = /*[[@{member.address}]]*/;
+
+            // 주소 값 합치기
         }
 
         // 생년월일 필드가 비어 있으면 타임리프 변수를 사용하여 기본값 설정
@@ -202,19 +229,47 @@
         }
         return true;
     });
+
+        function deleteAccount() {
+        // 사용자가 "정말로 회원 탈퇴하시겠습니까?" 라는 확인 대화 상자를 통해 확인을 눌렀을 때 실행
+        if (confirm("정말로 회원 탈퇴하시겠습니까?")) {
+            // XMLHttpRequest 객체 생성
+            var xhr = new XMLHttpRequest();
+            var form = document.getElementById("changeInfoForm");
+            // 폼 데이터를 생성하여 현재 폼의 데이터를 수집
+            var formData = new FormData(form);
+
+            // POST 메서드로 서버에 회원 탈퇴 요청을 보낼 준비
+            xhr.open("DELETE", "/mypage/changeInfo", true);
+
+            // 서버 응답 처리
+            xhr.onload = function() {
+                // 서버 응답의 상태 코드를 확인
+                    // 회원 탈퇴가 성공적으로 처리됨
+                    alert("회원 탈퇴가 완료되었습니다.");
+                    // 회원 탈퇴 후 리다이렉트할 URL 설정
+                    window.location.href = "/";
+            };
+
+                // 서버에 폼 데이터를 전송
+                xhr.send(formData);
+            }
+        } // deleteAccount
+
     /*<![CDATA[*/
         function showConfirmationAndRedirect() {
+            console.log("showConfirmationAndRedirect()");
             alert('회원정보가 수정되었습니다.');
             window.location.href = /*[[@{/mypage/menu/myInfo}]]*/ '/mypage/menu/myInfo'; // 리다이렉트할 URL
         }
 
         // 페이지 로딩 시 `updateSuccess` 속성을 확인하여 함수 호출
         if ([[${updateSuccess}]]) {
+            console.log("updateSuccess()");
             showConfirmationAndRedirect();
         }
         /*]]>*/
 </script>
-
 </body>
 
 </html>

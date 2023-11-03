@@ -110,4 +110,11 @@ public class MemberServiceImpl implements MemberService {
         }
     } // updateMypageMember
 
+    @Override
+    public Integer deleteUser(Long id) {
+        log.trace("deleteUser({}) invoked.", id);
+
+        return memberMapper.deleteMyPageMember(id);
+    }
+
 } // end class
