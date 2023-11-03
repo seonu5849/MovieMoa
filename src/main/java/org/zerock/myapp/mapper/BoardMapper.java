@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 import org.zerock.myapp.domain.BoardKategoriesVO;
 import org.zerock.myapp.domain.BoardReplyVO;
 import org.zerock.myapp.domain.BoardVO;
+import org.zerock.myapp.domain.MovieVO;
 
 import java.util.List;
 
@@ -12,8 +13,20 @@ import java.util.List;
 @Mapper
 public interface BoardMapper {
 
-    // 이벤트 목록 조회: 페이지네이션과 진행 여부에 따른 이벤트 목록 조회
+    // 게시글 조회
     public abstract List<BoardVO> findBoardList();
+
+    // 게시글 작성
+    public abstract Integer postWriting(@Param("title")String title, @Param("content")String content, @Param("kategorieId")Long kategorieId, @Param("movieId")Long movieId, @Param("memberId")Long memberId);
+
+    // 게시글 수정
+    public abstract Integer updateBoard(@Param("id")Long id,@Param("title")String title, @Param("content")String content, @Param("kategorieId")Long kategorieId, @Param("movieId")Long movieId, @Param("memberId")Long memberId);
+
+    // 게시판 카테고리 조회
+    public abstract List<BoardKategoriesVO> findBoardKategoriesList();
+
+    // 영화 목록 조회
+    public abstract List<MovieVO> searchMovies(@Param("searchInput")String searchInput);
 
     // 특정 게시글 조회
     public abstract BoardVO findBoard(@Param("id")Long id);

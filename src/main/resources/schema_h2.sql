@@ -5,9 +5,12 @@ DROP TABLE IF EXISTS Certifications;
 DROP TABLE IF EXISTS board_files;
 DROP TABLE IF EXISTS events_backup;
 DROP TABLE IF EXISTS inquiry_responses;
-DROP TABLE IF EXISTS reportBoard_response;
+DROP TABLE IF EXISTS likes;
 DROP TABLE IF EXISTS search_history;
 DROP TABLE IF EXISTS wishlist;
+DROP TABLE IF EXISTS report_kategories;
+DROP TABLE IF EXISTS reportReply_response;
+DROP TABLE IF EXISTS reportBoard_response;
 DROP TABLE IF EXISTS reportReply;
 DROP TABLE IF EXISTS reportBoards;
 DROP TABLE IF EXISTS inquiries;
@@ -85,10 +88,6 @@ CREATE TABLE Member (
 	suspension_period DATE
 );
 
-alter table member
-add column suspension_period DATE
-
-
 CREATE TABLE board_kategories (
 	id BIGINT AUTO_INCREMENT PRIMARY KEY,
 	name VARCHAR(20) DEFAULT '영화' UNIQUE NOT NULL
@@ -115,7 +114,7 @@ CREATE TABLE Likes (
     board_id BIGINT NOT NULL,
     member_id BIGINT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (board_id) REFERENCES Board(id),
+    FOREIGN KEY (board_id) REFERENCES Board(id) ON DELETE CASCADE,
     FOREIGN KEY (member_id) REFERENCES Member(id)
 );
 
@@ -177,7 +176,7 @@ CREATE TABLE board_files (
 	file_path VARCHAR(255) NOT NULL,
 	created_at TIMESTAMP,
 	board_id BIGINT NOT NULL,
-	FOREIGN KEY (board_id) REFERENCES Board(id)
+	FOREIGN KEY (board_id) REFERENCES Board(id) ON DELETE CASCADE
 );
 
 CREATE TABLE Board_reply (
@@ -188,7 +187,12 @@ CREATE TABLE Board_reply (
 	member_id BIGINT NOT NULL,
 	board_id BIGINT NOT NULL,
 	FOREIGN KEY (member_id) REFERENCES Member(id),
-	FOREIGN KEY (board_id) REFERENCES Board(id)
+	FOREIGN KEY (board_id) REFERENCES Board(id) ON DELETE CASCADE
+);
+
+CREATE TABLE report_kategories (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(20) DEFAULT '부적절한 내용' UNIQUE NOT NULL
 );
 
 CREATE TABLE reportBoards (
@@ -198,18 +202,9 @@ CREATE TABLE reportBoards (
 	report_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	board_id BIGINT NOT NULL,
 	reporter_id BIGINT NOT NULL,
-	FOREIGN KEY (board_id) REFERENCES Board(id),
+	FOREIGN KEY (board_id) REFERENCES Board(id) ON DELETE CASCADE,
+	FOREIGN KEY (menu) REFERENCES report_kategories(id),
 	FOREIGN KEY (reporter_id) REFERENCES Member(id)
-);
-
-CREATE TABLE reportBoard_response (
-	reportBoard_id BIGINT NOT NULL,
-	content VARCHAR(255),
-	response_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	admin_id BIGINT NOT NULL,
-	PRIMARY KEY (reportBoard_id),
-	FOREIGN KEY (reportBoard_id) REFERENCES reportBoards(id),
-	FOREIGN KEY (admin_id) REFERENCES Member(id)
 );
 
 CREATE TABLE reportReply (
@@ -220,7 +215,8 @@ CREATE TABLE reportReply (
 	reply_id BIGINT NOT NULL,
 	menu VARCHAR(50) NOT NULL,
 	FOREIGN KEY (reporter_id) REFERENCES Member(id),
-	FOREIGN KEY (reply_id) REFERENCES Board_reply(id)
+	FOREIGN KEY (menu) REFERENCES report_kategories(id),
+	FOREIGN KEY (reply_id) REFERENCES Board_reply(id) ON DELETE CASCADE
 );
 
 CREATE TABLE search_history (
@@ -240,40 +236,38 @@ CREATE TABLE wishlist (
 	FOREIGN KEY (movie_id) REFERENCES Movies(id)
 );
 
-INSERT INTO Member (EMAIL, NAME, NICKNAME, PASSWORD, PHONE_NUM) VALUES('','','','','');
+alter table member
+add column suspension_period DATE;
 
-INSERT INTO board_kategories (name) VALUES('영화');
-INSERT INTO board_kategories (name) VALUES('공지');
-INSERT INTO board_kategories (name) VALUES('잡담');
+INSERT INTO Member (EMAIL, NAME, NICKNAME, PASSWORD, PHONE_NUM)
+VALUES('admin1@admin.com','adminName1','adminNickname1','admin1','010-1111-0001'),
+('user1@user.com','userName1','userNickname1','user1','010-0000-0001'),
+('user2@user.com','userName2','userNickname2','user2','010-0000-0002');
 
-INSERT INTO STORE_KATEGORIES (name) VALUES('티켓');
-INSERT INTO STORE_KATEGORIES (name) VALUES('팝콘/음료');
-INSERT INTO STORE_KATEGORIES (name) VALUES('상품권');
-INSERT INTO STORE_KATEGORIES (name) VALUES('기프티콘');
+UPDATE Member SET ROLE = 'ROLE_ADMIN' WHERE id=1;
+UPDATE Member SET ROLE = 'ROLE_LOCKED' WHERE id=3;
 
-INSERT INTO Board (title, content, favorites, view_count, created_at, updated_at, kategorie_id, movie_id, member_id)
-VALUES
-('첫 번째 게시글', '이것은 첫 번째 게시글입니다.', 10, 100, CURRENT_TIMESTAMP, NULL, 1, 671, 2),
-('두 번째 게시글', '이것은 두 번째 게시글입니다.', 5, 50, CURRENT_TIMESTAMP, NULL, 2, 672, 2),
-('세 번째 게시글', '이것은 세 번째 게시글입니다.', 20, 200, CURRENT_TIMESTAMP, NULL, 2, 673, 3),
-('네 번째 게시글', '이것은 네 번째 게시글입니다.', 0, 10, CURRENT_TIMESTAMP, NULL, 3, 674, 5),
-('다섯 번째 게시글', '이것은 다섯 번째 게시글입니다.', 3, 30, CURRENT_TIMESTAMP, NULL, 3, 675, 3);
+INSERT INTO board_kategories (name) VALUES('영화'),('공지'),('잡담');
+
+INSERT INTO STORE_KATEGORIES (name) VALUES('티켓'),('팝콘/음료'),('상품권'),('기프티콘');
+
+INSERT INTO REPORT_KATEGORIES (name) VALUES('부적절한 내용'),('광고글'),('허위 정보'),('저작권 침해'),('개인정보 무단 사용');
 
 INSERT INTO events (title, start_at, end_at, created_at, updated_at, thumbnail_path, contents_path, admin_id)
 VALUES
-('이벤트 1', '2023-11-01 09:00:00', '2023-11-02 17:00:00', CURRENT_TIMESTAMP, NULL, 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 3),
-('이벤트 2', '2023-11-03 10:00:00', '2023-11-05 18:00:00', CURRENT_TIMESTAMP, NULL, 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 3),
-('이벤트 3', '2023-11-06 11:00:00', '2023-11-08 19:00:00', CURRENT_TIMESTAMP, NULL, 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 3),
-('이벤트 4', '2023-11-10 12:00:00', '2023-11-12 20:00:00', CURRENT_TIMESTAMP, NULL, 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 3),
-('이벤트 5', '2023-11-15 13:00:00', '2023-11-17 21:00:00', CURRENT_TIMESTAMP, NULL, 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 3);
+('이벤트 1', '2023-11-01 09:00:00', '2023-11-02 17:00:00', CURRENT_TIMESTAMP, NULL, 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 1),
+('이벤트 2', '2023-11-03 10:00:00', '2023-11-05 18:00:00', CURRENT_TIMESTAMP, NULL, 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 1),
+('이벤트 3', '2023-11-06 11:00:00', '2023-11-08 19:00:00', CURRENT_TIMESTAMP, NULL, 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 1),
+('이벤트 4', '2023-11-10 12:00:00', '2023-11-12 20:00:00', CURRENT_TIMESTAMP, NULL, 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 1),
+('이벤트 5', '2023-11-15 13:00:00', '2023-11-17 21:00:00', CURRENT_TIMESTAMP, NULL, 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 1);
 
 INSERT INTO store (admin_id, title, content, price, usage_location, poster_path, kategorie_id)
 VALUES
-(3, '상품 1', '이것은 상품 1입니다.', '10000', '서울', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 1),
-(3, '상품 2', '이것은 상품 2입니다.', '20000', '부산', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 2),
-(3, '상품 3', '이것은 상품 3입니다.', '30000', '대구', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 3),
-(3, '상품 4', '이것은 상품 4입니다.', '40000', '광주', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 4),
-(3, '상품 5', '이것은 상품 5입니다.', '50000', '대전', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 1);
+(1, '상품 1', '이것은 상품 1입니다.', '10000', '서울', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 1),
+(1, '상품 2', '이것은 상품 2입니다.', '20000', '부산', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 2),
+(1, '상품 3', '이것은 상품 3입니다.', '30000', '대구', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 3),
+(1, '상품 4', '이것은 상품 4입니다.', '40000', '광주', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 4),
+(1, '상품 5', '이것은 상품 5입니다.', '50000', '대전', 'https://image.tmdb.org/t/p/w154/sfs4U6XpiKFngbbSzrpZbkM1ySI.jpg', 1);
 
 INSERT INTO inquiries (title, content, member_id)
 VALUES
@@ -311,3 +305,4 @@ VALUES
 ('이 댓글은 허위 정보를 포함하고 있습니다.', 2, 3, '신고 메뉴 3'),
 ('이 댓글은 저작권을 침해하고 있습니다.', 5, 4, '신고 메뉴 4'),
 ('이 댓글은 개인정보를 무단으로 사용하고 있습니다.', 2, 5, '신고 메뉴 1');
+

@@ -7,97 +7,126 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>boards</title>
     <style>
-        .main-container {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
+        /* 게시글 작성 폼 컨테이너 스타일 */
         .board-form-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 500px;
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-width: 700px;
+            width: 100%;
+            margin: auto;
+            margin-top: 50px;
+            margin-bottom: 50px;
         }
 
+        /* 폼 타이틀 스타일 */
         h1 {
-            text-align: center;
+            font-size: 24px;
             color: #333;
+            margin-bottom: 30px;
+            text-align: center;
         }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
-
+        /* 입력 필드 및 라벨 스타일 */
         .form-group label {
+            font-weight: bold;
+            margin-bottom: 8px;
             display: block;
-            margin-bottom: 5px;
+            color: #555;
         }
 
         .form-group input[type="text"],
-        .form-group input[type="number"],
+        .form-group select,
         .form-group textarea {
-            width: 95%;
-            padding: 10px;
-            border: 1px solid #ddd;
+            width: calc(100% - 24px);
+            padding: 12px;
+            border: 1px solid #ccc;
             border-radius: 4px;
+            font-size: 16px;
+            margin-bottom: 20px;
         }
 
-        .form-group textarea {
-            height: 100px;
-            resize: vertical;
-        }
-
+        /* 버튼 스타일 */
         .form-group button {
             width: 100%;
-            padding: 10px;
-            background-color: #ff4500;
+            padding: 12px;
+            background-color: #5cb85c;
             color: white;
+            font-size: 18px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         .form-group button:hover {
-            background-color: #e34d00;
+            background-color: #4cae4c;
         }
 
+        /* 자동완성 드롭다운 스타일 */
+        .ui-autocomplete {
+            position: absolute;
+            z-index: 1000;
+            cursor: default;
+            padding: 10px 0;
+            margin: 2px 0 0 0;
+            list-style: none;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 5px 15px rgba(0,0,0,.2);
+            overflow-y: auto; /* prevents horizontal scrollbar */
+            max-height: 200px; /* sets maximum height for dropdown */
+        }
+
+        .ui-autocomplete .ui-menu-item-wrapper {
+            padding: 10px;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .ui-autocomplete .ui-menu-item-wrapper.ui-state-active {
+            background-color: #e6e6e6;
+        }
     </style>
+
 </head>
 <body>
 <header th:replace="nav.html" />
 <main class="main-container">
     <div class="board-form-container">
         <h1>게시글 수정</h1>
-        <form id="boardForm" action="/submit-board" method="post">
+        <form th:action="@{/board/updateBoard}" method="post">
+            <input type="hidden" name="_method" value="PUT">
+
             <div class="form-group">
-                <label for="title">제목:</label>
-                <input type="text" id="title" name="title" required>
+                <label for="kategorieId">카테고리</label>
+                <select id="kategorieId" name="kategorieId" required disabled>
+                    <option th:text="${board.kategorieName}">카테고리를 선택하세요</option>
+                </select>
+                <input type="hidden" id="kategorieId" name="kategorieId" th:value="${board.kategorieId}">
+
             </div>
             <div class="form-group">
-                <label for="content">내용:</label>
-                <textarea id="content" name="content" required></textarea>
+                <label for="movieTitle">영화 제목</label>
+                <input type="text" id="movieTitle" name="movieTitle" th:value="${board.movieTitle}" required disabled>
             </div>
+            <input type="hidden" id="id" name="id" th:value="${board.id}">
+            <input type="hidden" id="movieId" name="movieId" th:value="${board.movieId}">
+
             <div class="form-group">
-                <label for="kategorieId">카테고리 ID:</label>
-                <input type="number" id="kategorieId" name="kategorieId" required>
+                <label for="title">제목</label>
+                <input type="text" id="title" name="title" th:value="${board.title}" required>
             </div>
+
             <div class="form-group">
-                <label for="movieId">영화 ID:</label>
-                <input type="number" id="movieId" name="movieId" required>
+                <label for="content">내용</label>
+                <textarea id="content" name="content" th:text="${board.content}" required></textarea>
             </div>
+
             <div class="form-group">
-                <label for="memberId">회원 ID:</label>
-                <input type="number" id="memberId" name="memberId" required>
-            </div>
-            <div class="form-group">
-                <button type="submit">게시글 등록</button>
+                <button type="submit">게시글 수정</button>
             </div>
         </form>
     </div>

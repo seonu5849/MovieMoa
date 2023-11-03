@@ -10,8 +10,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.zerock.myapp.domain.BoardKategoriesVO;
 import org.zerock.myapp.domain.BoardReplyVO;
 import org.zerock.myapp.domain.BoardVO;
+import org.zerock.myapp.domain.MovieVO;
 import org.zerock.myapp.service.BoardService;
 
 import java.util.Collections;
@@ -40,31 +42,77 @@ public class BoardController {
     } // boardView
 
     @GetMapping("/writeBoard")
-    public String writeBoardView() {
+    public String writeBoardView(Model model) {
         log.trace("writeBoardView() invoked.");
+
+        List<BoardKategoriesVO> kategoriesList = this.boardService.findBoardKategoriesList();
+
+        model.addAttribute("kategoriesList", kategoriesList);
 
         return "/board/writeBoard";
     } // writeBoardView
 
-    @PostMapping ("/writeBoard")
-    public String writeBoard() {
-        log.trace("writeBoard() invoked.");
+    // 영화 검색 엔드포인트
+    @GetMapping("/search/movies")
+    public @ResponseBody List<MovieVO> searchMovies(@RequestParam("term") String term) {
 
-        return "redirect:/board/detailBoard"; // /board/detailBoard?boardNum=***
+        // 검색어에 따라 영화를 찾고 MovieVO 객체 리스트를 반환
+        List<MovieVO> searchResults = this.boardService.searchMovies(term);
+
+        // 검색 결과를 JSON 형태로 반환합니다.
+        return searchResults;
+    }
+
+    @PostMapping ("/writeBoard")
+    public String writeBoard(String title, String content, Long kategorieId, Long movieId) {
+        log.trace("writeBoard({}, {}, {}, {}) invoked.", title, content, kategorieId, movieId);
+
+        // 현재 인증된 사용자의 정보를 가져옵니다.
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // 인증된 사용자의 이름(여기서는 사용자 ID로 사용)을 가져옵니다.
+        String username = authentication.getName();
+        // 사용자 이름(아이디)를 Long 타입으로 변환합니다.
+        Long memberId = Long.valueOf(username);
+
+        if (movieId != null) {
+            Integer posted = this.boardService.postWriting(title, content, kategorieId, movieId, memberId);
+        } else {
+            Integer posted = this.boardService.postWriting(title, content, kategorieId, null, memberId);
+        }
+
+        return "redirect:/board/boards";
     } // writeBoard
 
     @GetMapping("/updateBoard/{id}")
     public String updateBoardView(Model model, @PathVariable("id") Long id) {
         log.trace("updateBoardView() invoked.");
 
+        BoardVO board = this.boardService.findBoard(id);
+        log.info("\t+ board: {}", board);
+
+        model.addAttribute("board", board);
+
         return "/board/updateBoard";
     } // updateBoardView
 
-    @PostMapping ("/updateBoard")
-    public String updateBoard() {
-        log.trace("updateBoard() invoked.");
+    @PutMapping ("/updateBoard")
+    public String updateBoard(Long id, String title, String content, Long kategorieId, Long movieId) {
+        log.trace("updateBoard({}, {}, {}, {}, {}) invoked.", id, title, content, kategorieId, movieId);
 
-        return "redirect:/board/detailBoard"; // /board/detailBoard?boardNum=***
+        // 현재 인증된 사용자의 정보를 가져옵니다.
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // 인증된 사용자의 이름(여기서는 사용자 ID로 사용)을 가져옵니다.
+        String username = authentication.getName();
+        // 사용자 이름(아이디)를 Long 타입으로 변환합니다.
+        Long memberId = Long.valueOf(username);
+
+        if (movieId != null) {
+            Integer updated = this.boardService.updateBoard(id, title, content, kategorieId, movieId, memberId);
+        } else {
+            Integer updated = this.boardService.updateBoard(id, title, content, kategorieId, null, memberId);
+        }
+
+        return "redirect:/board/detailBoard/" + id;
     } // updateBoard
 
     @GetMapping("/detailBoard/{id}") //{/detailBoard/boardNum}

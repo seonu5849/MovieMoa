@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.zerock.myapp.domain.BoardKategoriesVO;
 import org.zerock.myapp.domain.BoardReplyVO;
 import org.zerock.myapp.domain.BoardVO;
+import org.zerock.myapp.domain.MovieVO;
 import org.zerock.myapp.mapper.BoardMapper;
 
 import java.util.List;
@@ -21,6 +22,26 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public List<BoardVO> findBoardList() {
         return boardMapper.findBoardList();
+    }
+
+    @Override
+    public Integer postWriting(String title, String content, Long kategorieId, Long movieId, Long memberId) {
+        return boardMapper.postWriting(title, content, kategorieId, movieId, memberId);
+    }
+
+    @Override
+    public Integer updateBoard(Long id, String title, String content, Long kategorieId, Long movieId, Long memberId) {
+        return boardMapper.updateBoard(id, title, content, kategorieId, movieId, memberId);
+    }
+
+    @Override
+    public List<BoardKategoriesVO> findBoardKategoriesList() {
+        return boardMapper.findBoardKategoriesList();
+    }
+
+    @Override
+    public List<MovieVO> searchMovies(String searchInput) {
+        return boardMapper.searchMovies(searchInput);
     }
 
     @Override

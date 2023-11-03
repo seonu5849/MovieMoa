@@ -20,6 +20,55 @@
         ORDER BY board.id DESC
     </select>
 
+    <!-- 게시글 작성 -->
+    <insert id="postWriting">
+        INSERT INTO Board (title, content, kategorie_id, member_id
+        <choose>
+            <when test="movieId != null">
+                , movie_id
+            </when>
+        </choose>)
+        VALUES (#{title}, #{content}, #{kategorieId}, #{memberId}
+        <choose>
+            <when test="movieId != null">
+                , #{movieId}
+            </when>
+        </choose>);
+    </insert>
+
+    <!-- 게시글 수정 -->
+    <update id="updateBoard">
+        UPDATE Board
+        SET title = #{title},
+        content = #{content},
+        updated_at = CURRENT_TIMESTAMP,
+        kategorie_id = #{kategorieId},
+        <if test="movieId != null">
+            movie_id = #{movieId},
+        </if>
+        member_id = #{memberId}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 게시판 카테고리 목록 -->
+    <select id="findBoardKategoriesList" resultType="org.zerock.myapp.domain.BoardKategoriesVO">
+        SELECT
+        *
+        FROM
+        board_kategories
+    </select>
+
+    <!-- 영화 검색 목록 -->
+    <select id="searchMovies" resultType="org.zerock.myapp.domain.MovieVO">
+        SELECT DISTINCT *
+        FROM movies
+        WHERE
+        (LOWER(title)  LIKE '%' || LOWER(#{searchInput}) || '%'
+        OR LOWER(original_title) LIKE '%' || LOWER(#{searchInput}) || '%')
+        ORDER BY
+        release_date DESC
+    </select>
+
     <!-- 특정 게시글 조회 -->
     <select id="findBoard" resultType="org.zerock.myapp.domain.BoardVO">
         SELECT
