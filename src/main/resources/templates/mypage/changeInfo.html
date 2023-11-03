@@ -73,6 +73,21 @@
         background-color: #0056b3;
     }
 
+    .delBtn{
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        background-color: RED;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .delBtn:hover {
+        background-color: #8B4513;
+    }
+
     button {
         padding: 10px 15px;
         border: none;
@@ -135,6 +150,9 @@
             <div class="buttons">
                 <button type="submit" >수정하기</button>
                 <a th:href="@{/mypage/menu/myInfo}" class="button-link">취소</a>
+
+                <button type="button" onclick="deleteAccount()" class="delBtn">회원 탈퇴</button>
+
             </div>
         </div>
     </form>
@@ -211,6 +229,32 @@
         }
         return true;
     });
+
+        function deleteAccount() {
+        // 사용자가 "정말로 회원 탈퇴하시겠습니까?" 라는 확인 대화 상자를 통해 확인을 눌렀을 때 실행
+        if (confirm("정말로 회원 탈퇴하시겠습니까?")) {
+            // XMLHttpRequest 객체 생성
+            var xhr = new XMLHttpRequest();
+            var form = document.getElementById("changeInfoForm");
+            // 폼 데이터를 생성하여 현재 폼의 데이터를 수집
+            var formData = new FormData(form);
+
+            // POST 메서드로 서버에 회원 탈퇴 요청을 보낼 준비
+            xhr.open("DELETE", "/mypage/changeInfo", true);
+
+            // 서버 응답 처리
+            xhr.onload = function() {
+                // 서버 응답의 상태 코드를 확인
+                    // 회원 탈퇴가 성공적으로 처리됨
+                    alert("회원 탈퇴가 완료되었습니다.");
+                    // 회원 탈퇴 후 리다이렉트할 URL 설정
+                    window.location.href = "/";
+            };
+
+                // 서버에 폼 데이터를 전송
+                xhr.send(formData);
+            }
+        } // deleteAccount
 
     /*<![CDATA[*/
         function showConfirmationAndRedirect() {
