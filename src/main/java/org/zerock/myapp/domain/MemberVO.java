@@ -18,6 +18,6 @@ public class MemberVO {
     private Role role;
     private String status;
     private String address;
-    private Date birthday;
+    private Timestamp birthday;
     private Date suspensionPeriod;
 } // end class

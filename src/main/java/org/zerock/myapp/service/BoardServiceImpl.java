@@ -3,10 +3,7 @@ package org.zerock.myapp.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-import org.zerock.myapp.domain.BoardKategoriesVO;
-import org.zerock.myapp.domain.BoardReplyVO;
-import org.zerock.myapp.domain.BoardVO;
-import org.zerock.myapp.domain.MovieVO;
+import org.zerock.myapp.domain.*;
 import org.zerock.myapp.mapper.BoardMapper;
 
 import java.util.List;
@@ -20,7 +17,7 @@ public class BoardServiceImpl implements BoardService {
     private final BoardMapper boardMapper;
 
     @Override
-    public List<BoardVO> findBoardList() {
+    public List<BoardAndReplyCntVO> findBoardList() {
         return boardMapper.findBoardList();
     }
 
@@ -35,8 +32,23 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    public Integer deleteAPost(Long id) {
+        return boardMapper.deleteAPost(id);
+    }
+
+    @Override
     public List<BoardKategoriesVO> findBoardKategoriesList() {
         return boardMapper.findBoardKategoriesList();
+    }
+
+    @Override
+    public List<ReportKategoriesVO> findReportKategoriesList() {
+        return boardMapper.findReportKategoriesList();
+    }
+
+    @Override
+    public Integer writingAReport(String content, Long kategorieId, Long boardId, Long reporterId) {
+        return boardMapper.writingAReport(content, kategorieId, boardId, reporterId);
     }
 
     @Override

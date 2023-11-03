@@ -119,16 +119,18 @@
         SELECT
         rb.*,
         b.title,
-        m.name,
+        m.name as "reporterName", -- 리포터의 이름을 'reporterName'으로 별칭 설정
         m1.status,
-        to_char(m1.suspension_period, 'yyyy-MM-dd'),
+        m1.suspension_period as "suspensionPeriod", -- 정지 기간을 'suspensionPeriod'로 별칭 설정
         m1.id as "boardWriterId",
-        m1.name as "boardWriter"
+        m1.name as "boardWriter",
+        rk.name as "categoryName" -- 신고 카테고리 이름을 'categoryName'으로 별칭 설정
         FROM
-        reportboards rb
+        reportBoards rb
         JOIN member m ON rb.reporter_id = m.id
         JOIN board b ON rb.board_id = b.id
         JOIN member m1 ON b.member_id = m1.id
+        JOIN report_kategories rk ON rb.menu = rk.id -- report_kategories 테이블을 조인
         OFFSET #{offset} ROW FETCH NEXT #{perPage} ROW ONLY
     </select>
 
@@ -137,18 +139,19 @@
         SELECT
         br.*,
         r.content,
-        m.name,
+        m.name as "reporterName", -- 리포터 이름을 'reporterName'으로 별칭 설정
         m1.status,
-        m1.suspension_period,
-        m1.id as "boardWriterId",
-        m1.name as "boardWriter"
+        m1.suspension_period as "suspensionPeriod", -- 정지 기간을 'suspensionPeriod'로 별칭 설정
+        m1.name as "boardWriter", -- 게시글 작성자 이름을 'boardWriter'로 별칭 설정
+        rk.name as "categoryName" -- 신고 카테고리 이름을 'categoryName'으로 별칭 설정
         FROM
-        reportreply br
-        JOIN member m on br.reporter_id = m.id
-        JOIN board_reply r on br.reply_id = r.id
+        reportReply br
+        JOIN member m ON br.reporter_id = m.id
+        JOIN board_reply r ON br.reply_id = r.id
         JOIN member m1 ON r.member_id = m1.id
+        JOIN report_kategories rk ON br.menu = rk.id -- report_kategories 테이블 조인
         ORDER BY br.id DESC
-        OFFSET #{offset} ROW FETCH NEXT #{perPage} ROW ONLY
+        OFFSET #{offset} ROWS FETCH NEXT #{perPage} ROWS ONLY
     </select>
     
     <update id="updateMemberStatus">

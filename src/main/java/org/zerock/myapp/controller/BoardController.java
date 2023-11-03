@@ -10,16 +10,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.zerock.myapp.domain.BoardKategoriesVO;
-import org.zerock.myapp.domain.BoardReplyVO;
-import org.zerock.myapp.domain.BoardVO;
-import org.zerock.myapp.domain.MovieVO;
+import org.zerock.myapp.domain.*;
 import org.zerock.myapp.service.BoardService;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -34,7 +28,7 @@ public class BoardController {
     public String boardView(Model model) {
         log.trace("boardView() invoked.");
 
-        List<BoardVO> boardList = this.boardService.findBoardList();
+        List<BoardAndReplyCntVO> boardList = this.boardService.findBoardList();
 
         model.addAttribute("boards", boardList);
 
@@ -114,6 +108,17 @@ public class BoardController {
 
         return "redirect:/board/detailBoard/" + id;
     } // updateBoard
+
+    @DeleteMapping("/deleteAPost/{id}")
+    public ResponseEntity<?> deleteAPost(@PathVariable("id") Long id) {
+        log.trace("deleteAPost({}) invoked.", id);
+
+        Integer deleted = this.boardService.deleteAPost(id);
+        log.info("\t+ deleted: {}", deleted);
+
+        // 리다이렉트할 URL을 JSON 객체로 반환
+        return ResponseEntity.ok(Collections.singletonMap("redirectUrl", "/board/boards"));
+    }
 
     @GetMapping("/detailBoard/{id}") //{/detailBoard/boardNum}
     public String detailBoardView(Model model, @PathVariable("id") Long id) {
@@ -231,18 +236,40 @@ public class BoardController {
         return ResponseEntity.ok(Collections.singletonMap("redirectUrl", "/board/detailBoard/" + boardId));
     }
 
-    @GetMapping("/reportBoard")
-    public String reportBoardView() {
-        log.trace("reportBoardView() invoked.");
+    // 게시글 신고 폼을 보여주는 메서드
+    @GetMapping("/reportBoard/{id}")
+    public ResponseEntity<?> reportBoardView(Model model, @PathVariable("id")Long id) {
+        log.trace("reportBoardView({}) invoked.", id);
 
-        return "/board/reportBoard";
+        try{
+            BoardVO board = this.boardService.findBoard(id);
+
+            List<ReportKategoriesVO> kategoriesList = this.boardService.findReportKategoriesList();
+
+            Map<String, Object> resultMap = new LinkedHashMap<>();
+            resultMap.put("kategoriesList", kategoriesList);
+            resultMap.put("board", board);
+
+            return ResponseEntity.ok().body(resultMap);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("내용을 불러오는데 실패했습니다.");
+        }
     } // reportBoardView
 
-    @PostMapping("/reportBoard")
-    public String reportBoardWrite() {
-        log.trace("reportBoardWrite() invoked.");
+    @PostMapping("/reportBoard/{boardId}")
+    public String reportBoardWrite(String content, Long kategorieId, @PathVariable("boardId")Long boardId) {
+        log.trace("reportBoardWrite({}, {}, {}) invoked.", content, kategorieId, boardId);
+        // 현재 인증된 사용자의 정보를 가져옵니다.
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // 인증된 사용자의 이름(여기서는 사용자 ID로 사용)을 가져옵니다.
+        String username = authentication.getName();
+        // 사용자 이름(아이디)를 Long 타입으로 변환합니다.
+        Long reporterId = Long.valueOf(username);
 
-        return "redirect:/board/detailBoard";
+        Integer writinged = this.boardService.writingAReport(content, kategorieId, boardId, reporterId);
+        log.info("\t+ writinged: {}", writinged);
+
+        return "redirect:/board/detailBoard/" + boardId;
     } // reportReplyWrite
 
     @GetMapping("/reportReply")

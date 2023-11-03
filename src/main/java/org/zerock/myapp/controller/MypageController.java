@@ -39,11 +39,7 @@ public class MypageController {
 
         // 사용자 ID를 사용하여 회원 정보를 조회합니다.
         MemberVO member = memberService.findUser(id);
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        if(member.getBirthday() != null){
-            String formattedDate = formatter.format(member.getBirthday());
-            model.addAttribute("birthday", formattedDate);
-        }
+
         log.info("\t+ member: {}", member);
 
         model.addAttribute("member", member);

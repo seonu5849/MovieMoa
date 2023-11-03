@@ -69,7 +69,7 @@
                 <p><strong>아이디(이메일) : </strong> <span class="email-info" th:text="${member.email}">test1@test.com</span></p>
                 <p><strong>이름 : </strong><span class="email-info" th:text="${member.name}">홍길동</span> </p>
                 <p><strong>휴대폰 번호 : </strong><span class="email-info" th:text="${member.phoneNum}">010-1234-5678</span> </p>
-                <p><strong>생년월일 : </strong><span class="email-info" th:text="${birthday} ?: ''">2000-01-01</span> </p>
+                <p><strong>생년월일 : </strong><span class="email-info" th:text="${#dates.format(member.birthday, 'yyyy-MM-dd')}  ?: ''">2000-01-01</span> </p>
                 <p><strong>주소 : </strong><span class="email-info" th:text="${member?.address} ?: ''">주소지</span> </p>
             </div>
         </div>

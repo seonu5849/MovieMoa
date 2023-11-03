@@ -197,8 +197,8 @@ CREATE TABLE report_kategories (
 
 CREATE TABLE reportBoards (
 	id BIGINT AUTO_INCREMENT PRIMARY KEY,
-	content VARCHAR(255),
-	menu VARCHAR(50) NOT NULL,
+	content TEXT,
+	menu BIGINT NOT NULL,
 	report_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	board_id BIGINT NOT NULL,
 	reporter_id BIGINT NOT NULL,
@@ -209,11 +209,11 @@ CREATE TABLE reportBoards (
 
 CREATE TABLE reportReply (
 	id BIGINT AUTO_INCREMENT PRIMARY KEY,
-	report_content VARCHAR(255),
+	report_content TEXT,
 	report_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	reporter_id BIGINT NOT NULL,
 	reply_id BIGINT NOT NULL,
-	menu VARCHAR(50) NOT NULL,
+	menu BIGINT NOT NULL,
 	FOREIGN KEY (reporter_id) REFERENCES Member(id),
 	FOREIGN KEY (menu) REFERENCES report_kategories(id),
 	FOREIGN KEY (reply_id) REFERENCES Board_reply(id) ON DELETE CASCADE
@@ -287,3 +287,5 @@ VALUES
 ('댓글 내용 9', 2, 4),
 ('댓글 내용 10', 3, 5);
 
+-- 자동번호를 재시작하게 하는 쿼리문 예: 1부터 재생성
+-- ALTER TABLE Board AUTO_INCREMENT = 1;

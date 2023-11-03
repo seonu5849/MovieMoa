@@ -6,18 +6,21 @@
 <mapper namespace="org.zerock.myapp.mapper.BoardMapper">
 
     <!-- 게시판 목록 -->
-    <select id="findBoardList" resultType="org.zerock.myapp.domain.BoardVO">
+    <select id="findBoardList" resultType="org.zerock.myapp.domain.BoardAndReplyCntVO">
         SELECT
         Board.*,
         Movies.title AS movie_title,
         board_kategories.name AS kategorie_name,
-        Member.nickname
+        Member.nickname,
+        COALESCE(COUNT(Board_reply.id), 0) AS reply_count
         FROM
         Board
         LEFT JOIN Movies ON Board.movie_id = Movies.id
         LEFT JOIN board_kategories ON Board.kategorie_id = board_kategories.id
         LEFT JOIN Member ON Board.member_id = Member.id
-        ORDER BY board.id DESC
+        LEFT JOIN Board_reply ON Board.id = Board_reply.board_id
+        GROUP BY Board.id, Movies.title, board_kategories.name, Member.nickname
+        ORDER BY Board.id DESC
     </select>
 
     <!-- 게시글 작성 -->
@@ -33,7 +36,7 @@
             <when test="movieId != null">
                 , #{movieId}
             </when>
-        </choose>);
+        </choose>)
     </insert>
 
     <!-- 게시글 수정 -->
@@ -121,6 +124,25 @@
     <select id="getLikeCount" resultType="Integer">
         SELECT COUNT(id) FROM Likes WHERE board_id = #{boardId}
     </select>
+
+    <!-- 특정 게시글 삭제 -->
+    <delete id="deleteAPost">
+        DELETE FROM board WHERE id = #{id}
+    </delete>
+
+    <!-- 신고 카테고리 목록 -->
+    <select id="findReportKategoriesList" resultType="org.zerock.myapp.domain.ReportKategoriesVO">
+        SELECT
+        *
+        FROM
+        report_kategories
+    </select>
+
+    <!-- 신고글 작성 -->
+    <insert id="writingAReport">
+        INSERT INTO reportBoards (content, menu, board_id, reporter_id)
+        VALUES (#{content}, #{kategorieId}, #{boardId}, #{reporterId});
+    </insert>
 
     <!-- 게시글에 해당하는 댓글 목록 -->
     <select id="findBoardReplyList" resultType="org.zerock.myapp.domain.BoardReplyVO">

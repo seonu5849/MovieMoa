@@ -2,10 +2,7 @@ package org.zerock.myapp.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.zerock.myapp.domain.BoardKategoriesVO;
-import org.zerock.myapp.domain.BoardReplyVO;
-import org.zerock.myapp.domain.BoardVO;
-import org.zerock.myapp.domain.MovieVO;
+import org.zerock.myapp.domain.*;
 
 import java.util.List;
 
@@ -13,8 +10,8 @@ import java.util.List;
 @Mapper
 public interface BoardMapper {
 
-    // 게시글 조회
-    public abstract List<BoardVO> findBoardList();
+    // 게시글 전체 목록 조회
+    public abstract List<BoardAndReplyCntVO> findBoardList();
 
     // 게시글 작성
     public abstract Integer postWriting(@Param("title")String title, @Param("content")String content, @Param("kategorieId")Long kategorieId, @Param("movieId")Long movieId, @Param("memberId")Long memberId);
@@ -22,8 +19,17 @@ public interface BoardMapper {
     // 게시글 수정
     public abstract Integer updateBoard(@Param("id")Long id,@Param("title")String title, @Param("content")String content, @Param("kategorieId")Long kategorieId, @Param("movieId")Long movieId, @Param("memberId")Long memberId);
 
+    // 게시글 삭제
+    public abstract Integer deleteAPost(@Param("id")Long id);
+
     // 게시판 카테고리 조회
     public abstract List<BoardKategoriesVO> findBoardKategoriesList();
+
+    // 신고 카테고리 조회
+    public abstract List<ReportKategoriesVO> findReportKategoriesList();
+
+    // 신고글 작성
+    public abstract Integer writingAReport(@Param("content")String content, @Param("kategorieId")Long kategorieId, @Param("boardId")Long boardId, @Param("reporterId")Long reporterId);
 
     // 영화 목록 조회
     public abstract List<MovieVO> searchMovies(@Param("searchInput")String searchInput);

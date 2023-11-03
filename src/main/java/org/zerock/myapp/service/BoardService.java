@@ -1,17 +1,14 @@
 package org.zerock.myapp.service;
 
 import org.apache.ibatis.annotations.Param;
-import org.zerock.myapp.domain.BoardKategoriesVO;
-import org.zerock.myapp.domain.BoardReplyVO;
-import org.zerock.myapp.domain.BoardVO;
-import org.zerock.myapp.domain.MovieVO;
+import org.zerock.myapp.domain.*;
 
 import java.util.List;
 
 public interface BoardService {
 
     // 게시글 조회
-    public abstract List<BoardVO> findBoardList();
+    public abstract List<BoardAndReplyCntVO> findBoardList();
 
     // 게시글 작성
     public abstract Integer postWriting(String title, String content, Long kategorieId, Long movieId, Long memberId);
@@ -19,8 +16,17 @@ public interface BoardService {
     // 게시글 수정
     public abstract Integer updateBoard(Long id, String title, String content, Long kategorieId, Long movieId, Long memberId);
 
+    // 게시글 삭제
+    public abstract Integer deleteAPost(Long id);
+
     // 게시판 카테고리 조회
     public abstract List<BoardKategoriesVO> findBoardKategoriesList();
+
+    // 신고 카테고리 조회
+    public abstract List<ReportKategoriesVO> findReportKategoriesList();
+
+    // 신고글 작성
+    public abstract Integer writingAReport(String content, Long kategorieId, Long boardId, Long reporterId);
 
     // 영화 검색 목록 조회
     public abstract List<MovieVO> searchMovies(String searchInput);

@@ -42,7 +42,6 @@
         .board-list table {
             width: 100%;
             border-collapse: collapse;
-            text-align: left;
             margin-bottom: 20px;
         }
 
@@ -55,7 +54,18 @@
 
         .board-list td {
             border-bottom: 1px solid #ddd;
+            font-size: 14px;
             padding: 10px;
+            text-align: center;
+        }
+
+        .board-list .title {
+            text-align: left; /* 'title' 클래스를 가진 th 태그만 왼쪽 정렬합니다. */
+        }
+
+        .board-list .title:hover {
+            text-shadow: 0.5px 0.5px 0 #4caf50;
+            color: #4caf50;
         }
 
         .board-list .pagination {
@@ -95,16 +105,17 @@
                 <th>번호</th>
                 <th>카테고리</th>
                 <th>제목</th>
-                <th>좋아요 수</th>
+                <th>좋아요</th>
                 <th>조회수</th>
                 <th>등록일</th>
                 <th>수정일</th>
                 <th>작성자</th>
+                <th>댓글</th>
             </tr>
             <tr th:each="board : ${boards}">
                 <td th:text="${board.id}">1</td>
                 <td th:text="${board.kategorieName}">카테고리</td>
-                <td>
+                <td class="title">
                     <a th:href="@{'/board/detailBoard/' + ${board.id}}">
                         <span th:text="${board.movieTitle} != null ? '[' + ${board.movieTitle} + '] ' + ${board.title} : ${board.title}">[영화제목] 게시글 제목</span>
                     </a>
@@ -114,6 +125,7 @@
                 <td th:text="${#dates.format(board.createdAt, 'yyyy-MM-dd')}">2023-11-01</td>
                 <td th:text="${board.updatedAt != null ? #dates.format(board.updatedAt, 'yyyy-MM-dd') : ''}">2023-11-01</td>
                 <td th:text="${board.memberNickname}">작성자</td>
+                <td th:text="${board.replyCount}">10</td>
             </tr>
         </table>
         <div class="pagination">

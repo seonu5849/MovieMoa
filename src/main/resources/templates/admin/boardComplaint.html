@@ -52,6 +52,10 @@ th {
     background-color: #f2f2f2;
 }
 
+td {
+    font-size: 14px;
+}
+
 #inquiry > input[type="submit"]{
     padding: 10px;
     font-size: 16px;
@@ -175,13 +179,13 @@ th {
                     <tr th:each="reportBoard : ${reportBoards} ">
                         <input type="hidden" class="boardWriterId" th:value="${reportBoard.boardWriterId}">
                         <td th:text="${reportBoard.id}">번호</td>
-                        <td th:text="${reportBoard.menu}">카테고리</td>
+                        <td th:text="${reportBoard.categoryName}">카테고리</td>
                         <td th:text="${reportBoard.title}">제목</td>
                         <td th:text="${reportBoard.boardWriter}">작성자</td>
                         <td th:text="${reportBoard.content != null ? (#strings.length(reportBoard.content) > 8 ? #strings.substring(reportBoard.content, 0, 8) + '...' : reportBoard.content) : ''}">
                                 신고사유</td>
-                        <td th:text="${reportBoard.name}">신고자</td>
-                        <td th:text="${reportBoard.reportDate}">신고날짜</td>
+                        <td th:text="${reportBoard.reporterName}">신고자</td>
+                        <td th:text="${#dates.format(reportBoard.reportDate, 'yyyy-MM-dd HH:mm')}">신고날짜</td>
                         <td th:text="${reportBoard.status}" class="status">현재상태</td>
                         <td th:text="${#dates.format(reportBoard.suspensionPeriod, 'yyyy-MM-dd')}" class="suspensionPeriod">정지마감날짜</td>
                         <td>

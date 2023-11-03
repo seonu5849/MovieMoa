@@ -11,10 +11,11 @@ public class ReportReplyVO {
     private Timestamp reportDate;
     private Long reporterId;
     private Long replyId;
-    private String menu;
+    private Long menu;
     private String content;
-    private String name;
+    private String reporterName;
     private String status;
     private Timestamp suspensionPeriod;
     private String boardWriter;
+    private String categoryName;
 } // end class
