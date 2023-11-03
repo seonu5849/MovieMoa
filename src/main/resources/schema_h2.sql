@@ -103,7 +103,7 @@ CREATE TABLE Board (
 	updated_at TIMESTAMP,
 	kategorie_id BIGINT NOT NULL,
 	movie_id BIGINT,
-	member_id BIGINT NOT NULL,
+	member_id BIGINT,
 	FOREIGN KEY (kategorie_id) REFERENCES board_kategories(id),
 	FOREIGN KEY (movie_id) REFERENCES Movies(id),
 	FOREIGN KEY (member_id) REFERENCES Member(id)
@@ -115,7 +115,7 @@ CREATE TABLE Likes (
     member_id BIGINT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (board_id) REFERENCES Board(id) ON DELETE CASCADE,
-    FOREIGN KEY (member_id) REFERENCES Member(id)
+    FOREIGN KEY (member_id) REFERENCES Member(id) ON DELETE CASCADE
 );
 
 CREATE TABLE events (
@@ -127,7 +127,7 @@ CREATE TABLE events (
 	updated_at TIMESTAMP,
 	thumbnail_path VARCHAR(255) NOT NULL,
 	contents_path VARCHAR(255),
-	admin_id BIGINT NOT NULL,
+	admin_id BIGINT,
 	FOREIGN KEY (admin_id) REFERENCES Member(id)
 );
 
@@ -138,7 +138,7 @@ CREATE TABLE store_kategories (
 
 CREATE TABLE store (
 	id BIGINT AUTO_INCREMENT PRIMARY KEY,
-	admin_id BIGINT NOT NULL,
+	admin_id BIGINT,
 	title VARCHAR(50) NOT NULL,
 	content VARCHAR(255),
 	price VARCHAR(100),
@@ -157,14 +157,14 @@ CREATE TABLE inquiries (
 	content VARCHAR(255) NOT NULL,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	member_id BIGINT NOT NULL,
-	FOREIGN KEY (member_id) REFERENCES Member(id)
+	FOREIGN KEY (member_id) REFERENCES Member(id) ON DELETE CASCADE
 );
 
 CREATE TABLE inquiry_responses (
 	id BIGINT NOT NULL,
 	responses_content VARCHAR(255) NOT NULL,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	admin_id BIGINT NOT NULL,
+	admin_id BIGINT,
 	PRIMARY KEY (id),
 	FOREIGN KEY (id) REFERENCES inquiries(id),
 	FOREIGN KEY (admin_id) REFERENCES Member(id)
@@ -224,20 +224,17 @@ CREATE TABLE search_history (
 	movie_id BIGINT NOT NULL,
 	search_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	PRIMARY KEY (member_id, movie_id),
-	FOREIGN KEY (member_id) REFERENCES Member(id),
-	FOREIGN KEY (movie_id) REFERENCES Movies(id)
+	FOREIGN KEY (member_id) REFERENCES Member(id) ON DELETE CASCADE,
+	FOREIGN KEY (movie_id) REFERENCES Movies(id) ON DELETE CASCADE
 );
 
 CREATE TABLE wishlist (
 	member_id BIGINT NOT NULL,
 	movie_id BIGINT NOT NULL,
 	PRIMARY KEY (member_id, movie_id),
-	FOREIGN KEY (member_id) REFERENCES Member(id),
-	FOREIGN KEY (movie_id) REFERENCES Movies(id)
+	FOREIGN KEY (member_id) REFERENCES Member(id) ON DELETE CASCADE,
+	FOREIGN KEY (movie_id) REFERENCES Movies(id) ON DELETE CASCADE
 );
-
-alter table member
-add column suspension_period DATE;
 
 INSERT INTO Member (EMAIL, NAME, NICKNAME, PASSWORD, PHONE_NUM)
 VALUES('admin1@admin.com','adminName1','adminNickname1','admin1','010-1111-0001'),
@@ -272,37 +269,21 @@ VALUES
 INSERT INTO inquiries (title, content, member_id)
 VALUES
 ('문의 1', '이것은 문의 내용 1입니다.', 2),
-('문의 2', '이것은 문의 내용 2입니다.', 5),
+('문의 2', '이것은 문의 내용 2입니다.', 2),
 ('문의 3', '이것은 문의 내용 3입니다.', 2),
-('문의 4', '이것은 문의 내용 4입니다.', 5),
-('문의 5', '이것은 문의 내용 5입니다.', 2);
-
-INSERT INTO reportBoards (content, menu, board_id, reporter_id)
-VALUES
-('이 글은 부적절한 내용을 포함하고 있습니다.', '신고 메뉴 1', 6, 2),
-('이 글은 광고를 포함하고 있습니다.', '신고 메뉴 2', 7, 5),
-('이 글은 허위 정보를 포함하고 있습니다.', '신고 메뉴 3', 8, 2),
-('이 글은 저작권을 침해하고 있습니다.', '신고 메뉴 4', 9, 5),
-('이 글은 개인정보를 무단으로 사용하고 있습니다.', '신고 메뉴 1', 10, 2);
+('문의 4', '이것은 문의 내용 4입니다.', 3),
+('문의 5', '이것은 문의 내용 5입니다.', 3);
 
 INSERT INTO Board_reply (content, member_id, board_id)
 VALUES
-('댓글 내용 1', 2, 6),
-('댓글 내용 2', 3, 6),
-('댓글 내용 3', 5, 6),
-('댓글 내용 4', 2, 7),
-('댓글 내용 5', 3, 7),
-('댓글 내용 6', 5, 7),
-('댓글 내용 7', 2, 8),
-('댓글 내용 8', 3, 8),
-('댓글 내용 9', 5, 8),
-('댓글 내용 10', 2, 9);
-
-INSERT INTO reportReply (report_content, reporter_id, reply_id, menu)
-VALUES
-('이 댓글은 부적절한 내용을 포함하고 있습니다.', 2, 1, '신고 메뉴 1'),
-('이 댓글은 광고를 포함하고 있습니다.', 5, 2, '신고 메뉴 2'),
-('이 댓글은 허위 정보를 포함하고 있습니다.', 2, 3, '신고 메뉴 3'),
-('이 댓글은 저작권을 침해하고 있습니다.', 5, 4, '신고 메뉴 4'),
-('이 댓글은 개인정보를 무단으로 사용하고 있습니다.', 2, 5, '신고 메뉴 1');
+('댓글 내용 1', 2, 1),
+('댓글 내용 2', 3, 2),
+('댓글 내용 3', 2, 3),
+('댓글 내용 4', 3, 4),
+('댓글 내용 5', 2, 5),
+('댓글 내용 6', 3, 1),
+('댓글 내용 7', 2, 2),
+('댓글 내용 8', 3, 3),
+('댓글 내용 9', 2, 4),
+('댓글 내용 10', 3, 5);
 
