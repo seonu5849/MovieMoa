@@ -39,6 +39,8 @@ public class MemberUserDetailsService implements UserDetailsService {
 
         if (foundMember != null && foundMember.getRole() == ROLE_LOCKED) {
             throw new LockedException("Account is locked");
+        } else if(foundMember == null){
+            throw new UsernameNotFoundException("사용자의 정보가 없습니다.");
         }
 
         Integer lastLoginDate = this.memberMapper.lastLoginDate(email);

@@ -9,6 +9,9 @@ public interface AdminService {
     // 페이지 번호에 따른 데이터 시작점 계산
     public abstract Integer offset(Integer pageNum);
 
+    // 매개변수 없는 전체 회원 조회
+    public abstract List<MemberVO> findAllMember();
+
     // 전체 회원 조회: 페이징 처리를 포함해 전체 회원 목록을 조회
     public abstract List<MemberVO> findAllMember(Integer pageNum);
 
@@ -45,6 +48,9 @@ public interface AdminService {
 
     // 해당 페이지의 신고된 댓글 목록 조회
     public abstract List<ReportReplyVO> findReportedReply(Integer pageNum);
+
+    // 회원에 대한 처분(상태)를 업데이트
+    public abstract Integer editMemberStatus(Long memberId, String status);
 
 //    ====================================================================================================
     // 페이징 처리된 멤버의 게시글 출력

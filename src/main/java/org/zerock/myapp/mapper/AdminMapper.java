@@ -2,16 +2,21 @@ package org.zerock.myapp.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.security.core.parameters.P;
 import org.zerock.myapp.domain.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 @Mapper
 public interface AdminMapper {
 
+    // 전체 회원 조회: 단순 출력
+    public abstract List<MemberVO> selectAllMember();
+
     // 전체 회원 조회: 페이징 처리를 포함해 전체 회원 목록을 조회
-    public abstract List<MemberVO> selectAllMember(@Param("offset") Integer offset, @Param("perPage") Integer perPage);
+    public abstract List<MemberVO> selectAllMemberPaging(@Param("offset") Integer offset, @Param("perPage") Integer perPage);
 
     // 특정 이름 또는 이메일로 회원 검색: 이름 또는 이메일로 회원을 검색. 페이징 처리 포함.
     public abstract List<MemberVO> selectMemberNameOrEmail(@Param("params") Map<String, String> params,
@@ -49,6 +54,9 @@ public interface AdminMapper {
 
     // 해당 페이지의 신고된 댓글 목록 조회
     public abstract List<ReportReplyVO> selectReportedReply(@Param("offset") Integer offset, @Param("perPage") Integer perPage);
+
+    // 회원에 대한 처분(상태)를 업데이트
+    public abstract Integer updateMemberStatus(@Param("memberId") Long mmeberId, @Param("role") Role role, @Param("status") String Status, @Param("suspensionPeriod") LocalDate suspensionPeriod);
 
 //    ============================================================================================
 

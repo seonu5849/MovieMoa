@@ -5,8 +5,15 @@
 
 <mapper namespace="org.zerock.myapp.mapper.AdminMapper">
 
-    <!-- 전체 회원 조회: 페이징 처리를 포함 -->
+    <!-- 전체 회원 조회: 단순 출력 -->
     <select id="selectAllMember" resultType="org.zerock.myapp.domain.MemberVO">
+        SELECT *
+        FROM member
+        ORDER BY id DESC
+    </select>
+
+    <!-- 전체 회원 조회: 페이징 처리를 포함 -->
+    <select id="selectAllMemberPaging" resultType="org.zerock.myapp.domain.MemberVO">
         SELECT *
         FROM member
         ORDER BY id DESC
@@ -135,6 +142,16 @@
         ORDER BY br.id DESC
         OFFSET #{offset} ROW FETCH NEXT #{perPage} ROW ONLY
     </select>
+    
+    <update id="updateMemberStatus">
+        UPDATE member
+        SET
+            role = #{role},
+            status = #{status},
+            suspension_period = #{suspensionPeriod}
+        WHERE
+            id = #{memberId}
+    </update>
     
 <!--    =======================================================================================-->
     
