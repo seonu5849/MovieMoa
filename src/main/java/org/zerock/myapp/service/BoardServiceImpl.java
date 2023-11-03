@@ -52,6 +52,11 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    public Integer reportwriteAComment(String content, Long kategorieId, Long replyId, Long reporterId) {
+        return boardMapper.reportwriteAComment(content, kategorieId, replyId, reporterId);
+    }
+
+    @Override
     public List<MovieVO> searchMovies(String searchInput) {
         return boardMapper.searchMovies(searchInput);
     }

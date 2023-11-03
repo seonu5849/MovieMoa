@@ -28,6 +28,9 @@ public interface BoardService {
     // 신고글 작성
     public abstract Integer writingAReport(String content, Long kategorieId, Long boardId, Long reporterId);
 
+    // 신고댓글 작성
+    public abstract Integer reportwriteAComment(String content, Long kategorieId, Long replyId, Long reporterId);
+
     // 영화 검색 목록 조회
     public abstract List<MovieVO> searchMovies(String searchInput);
 

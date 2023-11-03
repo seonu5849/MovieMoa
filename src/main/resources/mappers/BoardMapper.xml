@@ -144,6 +144,12 @@
         VALUES (#{content}, #{kategorieId}, #{boardId}, #{reporterId});
     </insert>
 
+    <!-- 신고댓글 작성 -->
+    <insert id="reportwriteAComment">
+        INSERT INTO reportreply (report_content, menu, reply_id, reporter_id)
+        VALUES (#{content}, #{kategorieId}, #{replyId}, #{reporterId});
+    </insert>
+
     <!-- 게시글에 해당하는 댓글 목록 -->
     <select id="findBoardReplyList" resultType="org.zerock.myapp.domain.BoardReplyVO">
         SELECT

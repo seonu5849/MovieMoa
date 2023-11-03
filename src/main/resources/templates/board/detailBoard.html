@@ -206,8 +206,8 @@
             font-weight: bold;
         }
 
-        .close:hover,
-        .close:focus {
+        .reportClose:hover,
+        .reportClose:focus {
             color: black;
             text-decoration: none;
             cursor: pointer;
@@ -249,6 +249,85 @@
 
         /* 비활성화된 버튼 스타일 */
         .reportButton:disabled {
+            background-color: #ccc; /* 회색 톤 */
+            color: #666666; /* 어두운 회색 텍스트 */
+            cursor: not-allowed; /* 마우스 오버시 '금지' 아이콘 */
+        }
+
+        /* 댓글 신고 모달창 전체를 포함하는 배경 스타일 */
+        .reportReplyModal-backdrop {
+            display: none; /* 기본적으로는 숨김 */
+            position: fixed;
+            z-index: 1; /* 페이지 위에 표시 */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* 모달 내용이 너무 길 경우 스크롤 */
+            background-color: rgba(0, 0, 0, 0.4); /* 반투명 검은색 배경 */
+        }
+
+        /* 모달창 내용 스타일 */
+        .reportReplyModal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 페이지 중앙에 위치 */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 40%; /* 모달창의 폭 */
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        /* 모달창 닫기 버튼 스타일 */
+        .reportReplyClose {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .reportReplyClose:hover,
+        .reportReplyClose:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* 모달창 내부의 텍스트 입력란 및 버튼 스타일 */
+        .reportReply-form-header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .reportReply-form {
+            padding: 10px;
+        }
+        .reportReply-form label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .reportReply-form input[type=text],
+        .reportReply-form select,
+        .reportReply-form textarea {
+            width: 95%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+        }
+        .reportReply-form button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        .reportReply-form button:not(:disabled):hover {
+            background-color: #0056b3;
+        }
+
+        /* 비활성화된 버튼 스타일 */
+        .reportReplyButton:disabled {
             background-color: #ccc; /* 회색 톤 */
             color: #666666; /* 어두운 회색 텍스트 */
             cursor: not-allowed; /* 마우스 오버시 '금지' 아이콘 */
@@ -309,7 +388,7 @@
                     <div class="comment-buttons">
                         <button class="button replyModifyButton" th:if="${reply.memberId == currentUserId}" th:data-replyid="${reply.id}">수정</button>
                         <button class="button replyDeleteButton" th:if="${reply.memberId == currentUserId}" th:data-replyid="${reply.id}" th:data-boardid="${board.id}">삭제</button>
-                        <button class="button" id="replyButton" th:if="${reply.memberId != currentUserId}" sec:authorize="isAuthenticated()">신고</button>
+                        <button class="button boardReportReButton" id="replyButton" th:if="${reply.memberId != currentUserId}" sec:authorize="isAuthenticated()" th:data-replyid="${reply.id}" th:data-boardid="${board.id}">신고</button>
                     </div>
                 </div>
             </div>
@@ -342,6 +421,26 @@
                 <textarea id="reportContent" name="content" rows="5" required></textarea>
 
                 <button type="submit" class="reportButton" disabled>신고하기</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 댓글 신고 모달창 HTML -->
+    <div id="reportReplyModal" class="reportReplyModal-backdrop">
+        <div class="reportReplyModal-content">
+            <span class="reportReplyClose" onclick="closeReportReplyModal()">&times;</span>
+            <form class="reportReply-form" action="" method="post">
+                <label for="Rekategorie">신고 카테고리</label>
+                <select id="Rekategorie" name="Rekategorie">
+                    <option value="" selected>카테고리를 선택하세요</option>
+                </select>
+                <input type="hidden" id="hiddenReKategorieId" name="kategorieId">
+                <input type="hidden" id="boardId" name="boardId">
+
+                <label for="reportReplyContent">신고 내용</label>
+                <textarea id="reportReplyContent" name="content" rows="5" required></textarea>
+
+                <button type="submit" class="reportReplyButton" disabled>신고하기</button>
             </form>
         </div>
     </div>
@@ -573,6 +672,103 @@
             });
             console.log("Ajax 호출 후");
         });
+    });
+
+    // 댓글 신고 버튼에 이벤트 리스너 추가
+    $('.boardReportReButton').on('click', function() {
+        var replyId = $(this).data('replyid');
+        var boardId = $(this).data('boardid');
+
+        $.ajax({
+            url: `/board/reportReply/${replyId}`,
+            type: 'GET',
+            dataType: 'json',
+            data: { boardId: boardId },
+            success: function(data) {
+                // 카테고리 선택 옵션을 채움
+                var categoriesSelect = $('#Rekategorie');
+                categoriesSelect.empty(); // 기존의 옵션들을 비움
+                categoriesSelect.append('<option value="" selected>카테고리를 선택하세요</option>'); // 기본 옵션 추가
+                data.kategoriesList.forEach(function(kategorie) {
+                    categoriesSelect.append(new Option(kategorie.name, kategorie.id));
+                });
+
+                // Hidden input에 kategorieId 값을 설정
+                $('#hiddenReKategorieId').val('');
+
+                // Hidden input에 boardId 값을 설정
+                $('#boardId').val(data.board.id);
+
+                console.log("하이");
+                // 모달창을 보여줌
+                $('#reportReplyModal').show();
+
+                $('.reportReply-form').attr('action', '/board/reportReply/' + replyId);
+
+                // 신고하기 버튼 초기 비활성화
+                $('.reportReplyButton').prop('disabled', true);
+
+                // 신고 내용 입력란을 비움
+                $('#reportReplyContent').val('');
+            },
+            error: function(error) {
+                console.error('Error:', error);
+            }
+        });
+    });
+
+    // 카테고리 선택시 이벤트 리스너
+    $('#Rekategorie').on('change', function() {
+        // 선택된 옵션의 value를 hidden input에 설정하고 신고하기 버튼 활성화/비활성화
+        var selectedValue = $(this).val();
+        $('#hiddenReKategorieId').val(selectedValue);
+        $('.reportReplyButton').prop('disabled', selectedValue === '');
+    });
+
+    // 신고 폼에 이벤트 리스너 추가
+    $('.reportReply-form').on('submit', function(event) {
+        // 기본 이벤트를 방지하여 폼의 자동 제출을 막음
+        event.preventDefault();
+
+        // confirm 다이얼로그를 통해 사용자에게 확인을 요청
+        var confirmReport = confirm("정말로 신고하시겠습니까?");
+
+        // 사용자가 '확인'을 클릭하면 AJAX로 폼 데이터 제출
+        if (confirmReport) {
+            // FormData 객체를 사용하여 폼 데이터를 취득
+            var formData = new FormData(this);
+
+            // AJAX 요청
+            $.ajax({
+                url: $(this).attr('action'), // 폼의 action 속성 값으로 URL 설정
+                type: $(this).attr('method'), // 폼의 method 속성 값으로 HTTP 메소드 설정
+                data: formData,
+                processData: false, // jQuery가 데이터를 처리하지 않도록 설정
+                contentType: false, // jQuery가 Content-Type을 설정하지 않도록 설정
+                success: function(data) {
+                    // 성공 시, 사용자에게 완료되었다는 알림
+                    alert('신고가 완료되었습니다.');
+                    // 신고 완료 후 모달 창 닫기 또는 적절한 액션 수행
+                    $('#reportReplyModal').hide();
+                },
+                error: function(xhr, status, error) {
+                    // 오류 처리
+                    alert('신고 처리 중 문제가 발생했습니다.');
+                }
+            });
+        }
+    });
+
+    // 신고모달 창 닫기 함수
+    window.closeReportReplyModal = function() {
+        $('#reportReplyModal').hide();
+    }
+
+    // 신고모달창 밖을 클릭했을 때 모달창 닫기
+    $(window).on('click', function(event) {
+        if ($(event.target).is('#reportReplyModal')) {
+            closeReportReplyModal();
+        }
     });
 </script>
 </body>

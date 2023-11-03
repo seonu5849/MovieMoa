@@ -272,18 +272,41 @@ public class BoardController {
         return "redirect:/board/detailBoard/" + boardId;
     } // reportReplyWrite
 
-    @GetMapping("/reportReply")
-    public String reportReplyView() {
-        log.trace("reportReplyView() invoked.");
+    @GetMapping("/reportReply/{id}")
+    public ResponseEntity<?> reportReplyView(Model model, @PathVariable("id")Long id, Long boardId) {
+        log.trace("reportReplyView({}) invoked." , id);
 
-        return "/board/reportReply";
+        try{
+            BoardVO board = this.boardService.findBoard(boardId);
+            BoardReplyVO reply = this.boardService.findBoardReply(id);
+
+            List<ReportKategoriesVO> kategoriesList = this.boardService.findReportKategoriesList();
+
+            Map<String, Object> resultMap = new LinkedHashMap<>();
+            resultMap.put("kategoriesList", kategoriesList);
+            resultMap.put("board", board);
+            resultMap.put("reply", reply);
+
+            return ResponseEntity.ok().body(resultMap);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("내용을 불러오는데 실패했습니다.");
+        }
     } // reportReplyView
 
-    @PostMapping("/reportReply")
-    public String reportReplyWrite() {
-        log.trace("reportReplyWrite() invoked.");
+    @PostMapping("/reportReply/{replyId}")
+    public String reportReplyWrite(String content, Long kategorieId, @PathVariable("replyId")Long replyId, Long boardId) {
+        log.trace("reportReplyWrite({}, {}, {}) invoked.", content, kategorieId, replyId);
+        // 현재 인증된 사용자의 정보를 가져옵니다.
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // 인증된 사용자의 이름(여기서는 사용자 ID로 사용)을 가져옵니다.
+        String username = authentication.getName();
+        // 사용자 이름(아이디)를 Long 타입으로 변환합니다.
+        Long reporterId = Long.valueOf(username);
 
-        return "redirect:/board/detailBoard";
+        Integer writinged = this.boardService.reportwriteAComment(content, kategorieId, replyId, reporterId);
+        log.info("\t+ writinged: {}", writinged);
+
+        return "redirect:/board/detailBoard/" + boardId;
     } // reportReplyWrite
 
 } // end class

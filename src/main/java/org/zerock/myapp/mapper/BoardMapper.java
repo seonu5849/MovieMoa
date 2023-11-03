@@ -31,6 +31,9 @@ public interface BoardMapper {
     // 신고글 작성
     public abstract Integer writingAReport(@Param("content")String content, @Param("kategorieId")Long kategorieId, @Param("boardId")Long boardId, @Param("reporterId")Long reporterId);
 
+    // 신고글 작성
+    public abstract Integer reportwriteAComment(@Param("content")String content, @Param("kategorieId")Long kategorieId, @Param("replyId")Long replyId, @Param("reporterId")Long reporterId);
+
     // 영화 목록 조회
     public abstract List<MovieVO> searchMovies(@Param("searchInput")String searchInput);
 
