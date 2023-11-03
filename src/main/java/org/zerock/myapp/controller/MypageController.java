@@ -119,12 +119,16 @@ public class MypageController {
         // 사용자 ID를 사용하여 회원 정보를 조회합니다.
         MemberVO member = memberService.findUser(id);
         log.info("\t+ member: {}", member);
-
         model.addAttribute("member", member);
 
         // 주소를 결합합니다.
-        String fullAddress = String.join("", address[0], address[1], address[2]);
+        String fullAddress = String.join(",", address[0], address[1], address[2]);
+        log.info("fullAddress({})", fullAddress);
         Integer updated;
+        // 주소가
+        if(fullAddress.equals(",,")){
+            fullAddress=member.getAddress();
+        }
 
         if (passwordInput.isEmpty() && confirmPassword.isEmpty()) {
             // 비밀번호 입력이 둘 다 비어있는 경우
@@ -145,6 +149,7 @@ public class MypageController {
         }
 
         return "/mypage/changeInfo";
+
     } // mypageChangeInfo
 
 //    @DeleteMapping("/changeInfo")
