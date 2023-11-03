@@ -96,12 +96,12 @@ public class MainController {
     } // registrationView
 
     @PostMapping("/registration")
-    public String registration(MemberDTO dto ){
+    public String registration(MemberDTO dto){
         log.trace("registration() invoked.");
 
         this.memberService.saveMember(dto);
 
-        return "/login";
+        return "redirect:/login";
     } // registration
 
     @ResponseBody
