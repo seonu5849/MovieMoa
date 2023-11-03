@@ -60,8 +60,12 @@
             transition: background-color 0.3s ease;
         }
 
-        .form-group button:hover {
+        .form-group button:not(:disabled):hover {
             background-color: #4cae4c;
+        }
+
+        #selectedMovieTitle {
+            color: #4cae4c;
         }
 
         /* 자동완성 드롭다운 스타일 */
@@ -88,6 +92,12 @@
 
         .ui-autocomplete .ui-menu-item-wrapper.ui-state-active {
             background-color: #e6e6e6;
+        }
+
+        /* 게시글 등록 버튼 비활성화 상태 스타일 */
+        button:disabled {
+            background-color: #CCC;
+            cursor: not-allowed;
         }
     </style>
 
@@ -118,7 +128,7 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="movieTitle">영화 제목</label>
+                <label for="movieTitle">영화 제목: <span id="selectedMovieTitle">선택한 영화 제목</span></label>
                 <input type="text" id="movieTitle" name="movieTitle" required>
             </div>
                 <input type="hidden" id="movieId" name="movieId">
@@ -160,6 +170,46 @@
             }
         });
 
+        // 게시글 등록 버튼을 선택
+        var $submitButton = $('form button[type="submit"]');
+
+        // 영화 제목 입력 필드와 ID 필드에 이벤트 핸들러를 바인딩
+        $('#movieTitle').on('keyup', function() {
+            // 영화 제목이 입력되었는지 확인하고 버튼을 활성화 또는 비활성화
+            var isMovieSelected = $('#movieId').val().trim() !== '' && $(this).val().trim() !== '';
+            $submitButton.prop('disabled', !isMovieSelected);
+        });
+
+        // 카테고리 선택 시 이벤트 핸들러
+        $('#kategorieId').change(function() {
+            // '영화' 카테고리가 선택되면
+            if ($(this).find('option:selected').text() === '영화') {
+                // 영화 제목 입력 필드를 활성화
+                $('#movieTitle').prop('disabled', false);
+                // 영화 제목 입력 필드가 비어 있으면 버튼을 비활성화
+                $submitButton.prop('disabled', true);
+            } else {
+                // 그렇지 않으면 비활성화 및 초기화
+                $('#movieTitle').prop('disabled', true).val('');
+                $('#movieId').val('');
+                // 영화 카테고리가 아니면 버튼을 활성화
+                $submitButton.prop('disabled', false);
+            }
+        });
+
+        $('#movieTitle').on('keyup', function() {
+            // 영화 제목이 입력되었는지 확인하고 버튼을 활성화 또는 비활성화
+            var titleValue = $(this).val().trim();
+            var isMovieSelected = $('#movieId').val().trim() !== '' && titleValue !== '';
+            $submitButton.prop('disabled', !isMovieSelected);
+
+            // 자동완성으로 선택되지 않은 경우 span 태그 업데이트 및 movieId 초기화
+            if(!isMovieSelected) {
+                $('#selectedMovieTitle').text(titleValue);
+                $('#movieId').val('');
+            }
+        });
+
         // 영화 제목 자동완성 기능
         $( "#movieTitle" ).autocomplete({
             source: function( request, response ) {
@@ -192,14 +242,22 @@
                 });
             },
             minLength: 2, // 최소 글자 수
-            select: function( event, ui ) {
-                // 영화를 선택할 경우 해당 영화의 ID를 숨겨진 필드에 설정
+            select: function(event, ui) {
+                // 영화를 선택할 경우 해당 영화의 ID를 숨겨진 필드에 설정하고 span 태그의 내용을 업데이트
                 $('#movieId').val(ui.item.id);
                 if(ui.item.label === '존재하지 않는 영화입니다.') {
                     $('#movieId').val(''); // ID 필드를 비웁니다.
+                    $('#selectedMovieTitle').text('').hide(); // span 태그의 내용을 비우고 숨깁니다.
                     $(this).val(''); // 입력 필드를 비웁니다.
+                    $submitButton.prop('disabled', true); // 버튼 비활성화
                     event.preventDefault(); // 기본 이벤트 방지
+                } else {
+                    // 선택된 영화의 제목으로 span 태그의 텍스트를 업데이트
+                    $('#selectedMovieTitle').text(ui.item.label).show();
+                    $submitButton.prop('disabled', false); // 버튼 활성화
                 }
+                // 영화 제목 필드에 keyup 이벤트를 강제로 트리거하여 버튼 상태를 업데이트
+                $(this).trigger('keyup');
             },
             open: function() {
                 $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );

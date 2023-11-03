@@ -103,7 +103,7 @@ public class SecurityConfig {
                                 // 다음 경로들은 누구나 접근할 수 있음
                                  requestMatchers(antMatcher("/"), antMatcher("/main"), antMatcher("/registration"), antMatcher("/movie/movies"), antMatcher("/logout")).permitAll().
                                 // "/mypage/**" 경로는 인증된 사용자만 접근할 수 있음
-                                 requestMatchers(antMatcher("/mypage/**"), antMatcher("/board/writeBoard/**"), antMatcher("/board/updateBoard/**"), antMatcher("/event/eventUpdate/**"), antMatcher("/event/eventWrite/**"), antMatcher("/store/updateProduct/**"), antMatcher("/store/writeProduct/**")).authenticated().
+                                 requestMatchers(antMatcher("/mypage/**"), antMatcher("/board/writeBoard/**"), antMatcher("/board/updateBoard/**")).authenticated().
                                 // 'ADMIN' 역할을 가진 사용자만 접근할 수 있는 경로
                                  requestMatchers(antMatcher("/admin/**")).hasRole("ADMIN").
                                 // 위에서 정의되지 않은 나머지 모든 경로는 누구나 접근할 수 있음

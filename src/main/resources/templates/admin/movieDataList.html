@@ -16,6 +16,7 @@
 
 #notice > h1{
     font-size:36px;
+    margin-top:20px;
     margin-bottom:40px;
 }
 
@@ -51,15 +52,16 @@ td:last-child{/*마지막 td요소들은 가운데 정렬*/
     text-align: center;
 }
 /* back Button Styles */
+.backButton {
+    margin-left: 210px;
+    margin-top: 20px;
+}
+
 #back {
-    position: fixed;
-    bottom: 80px;
-    right: 30px;
-    z-index: 99;
     font-size: 18px;
     border: none;
     outline: none;
-    background-color: #00c3ff;
+    background-color: #007BFF;
     color: white;
     cursor: pointer;
     padding: 10px 20px;
@@ -97,6 +99,9 @@ td:last-child{/*마지막 td요소들은 가운데 정렬*/
 <body>
 <header th:replace="nav.html" />
 <main class="item">
+    <div class="backButton">
+        <a id="back" th:href="@{/admin/movieData}">BACK</a>
+    </div>
     <section id="notice">
         <h1>영화목록(<span th:text="${#lists.size(moviesList)}">0</span>개)</h1>
         <table>
@@ -111,7 +116,7 @@ td:last-child{/*마지막 td요소들은 가운데 정렬*/
         </table>
     </section>
     </main>
-<a id="back" th:href="@{/admin/movieData}">BACK</a>
+
 <button id="topButton">TOP</button>
 <footer th:replace="footer.html" />
 <script>
