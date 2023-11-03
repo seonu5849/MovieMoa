@@ -8,6 +8,7 @@ import org.zerock.myapp.mapper.AdminMapper;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.ZoneId;
 import java.util.*;
 
@@ -176,27 +177,48 @@ public class AdminServiceImpl implements AdminService {
 
         LocalDate currentDay = LocalDate.now();
 
-        LocalDate suspensionPeriod = null;
+        MemberDTO dto = new MemberDTO();
+        dto.setId(memberId);
+
+        MemberVO member = this.adminMapper.selectDetailMember(dto);
+        Date suspensionPeriod = member.getSuspensionPeriod();
+
+        LocalDate suspensionDate = null;
+        if (suspensionPeriod == null) {
+            suspensionDate = LocalDate.now();
+        } else {
+            Instant instant = suspensionPeriod.toInstant();
+            ZoneId zoneId = ZoneId.systemDefault();
+            suspensionDate = instant.atZone(zoneId).toLocalDate();
+        }
+
+        Period period;
         String modifyStatus = MemberStatus.ACTIVITY.getStatus();
         Role role = Role.ROLE_LOCKED;
 
         switch(status){
-            case "활동" -> role = Role.ROLE_MEMBER;
-            case "1일정지" -> {
-                modifyStatus = MemberStatus.ONE_DAY_SUSPENSTION.getStatus();
-                suspensionPeriod = currentDay.plusDays(1);
+            case "활동" -> {
+                role = Role.ROLE_MEMBER;
+                suspensionDate = null;
             }
-            case "7일정지" -> {
-                modifyStatus = MemberStatus.SEVEN_DAY_SUSPENTION.getStatus();
-                suspensionPeriod = currentDay.plusDays(7);
+            case "1일추가" -> {
+                suspensionDate = suspensionDate.plusDays(1);
+                period = Period.between(currentDay, suspensionDate);
+                modifyStatus = period.getDays() + "일 정지";
             }
-            case "30일정지" -> {
-                modifyStatus = MemberStatus.THIRTY_DAY_SUSPENTION.getStatus();
-                suspensionPeriod = currentDay.plusDays(30);
+            case "7일추가" -> {
+                suspensionDate = suspensionDate.plusDays(7);
+                period = Period.between(currentDay, suspensionDate);
+                modifyStatus = period.getDays() + "일 정지";
+            }
+            case "30일추가" -> {
+                suspensionDate = suspensionDate.plusDays(30);
+                period = Period.between(currentDay, suspensionDate);
+                modifyStatus = period.getDays() + "일 정지";
             }
         }
 
-        return this.adminMapper.updateMemberStatus(memberId, role, modifyStatus, suspensionPeriod);
+        return this.adminMapper.updateMemberStatus(memberId, role, modifyStatus, suspensionDate);
     }
 
     @Override

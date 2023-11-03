@@ -116,7 +116,7 @@
             <label for="phoneNum">휴대폰 번호</label>
             <input type="tel" id="phoneNum" name="phoneNum" th:placeholder="${member.phoneNum}" minlength="13" maxlength="13" pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}">
 
-            <label for="address">주소</label>
+            <label>주소</label>
             <input class="form-control" style="width: 40%; display: inline;" placeholder="우편번호" name="address" id="addr1" type="text" readonly="readonly" >
             <button type="button" class="btn btn-default" th:onclick="execPostCode();"><i class="fa fa-search"></i> 우편번호 찾기</button>
             <div>

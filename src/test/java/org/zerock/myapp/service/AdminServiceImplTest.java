@@ -8,6 +8,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.zerock.myapp.domain.ReportBoardsVO;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,12 +29,19 @@ class AdminServiceImplTest {
         log.trace("testEditMemberStatus() invoked");
 
         Long memberId = 2L;
-        String currentStatus = "1일정지";
+        String currentStatus = "1일추가";
 
         Integer affectedRows = adminService.editMemberStatus(memberId, currentStatus);
 
         Assertions.assertThat(affectedRows).isEqualTo(1);
 
+    }
+
+    @Test
+    @DisplayName("신고들어온 내용 확인")
+    void testFindReportedBoards(){
+        List<ReportBoardsVO> lists = this.adminService.findReportedBoards(1);
+        lists.forEach(log::info);
     }
 
 }

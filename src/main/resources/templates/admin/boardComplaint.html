@@ -161,24 +161,38 @@ th {
                         <th>번호</th>
                         <th>카테고리</th>
                         <th>제목</th>
+                        <th>작성자</th>
                         <th>신고사유</th>
                         <th>신고자</th>
                         <th>신고날짜</th>
+                        <th>현재상태</th>
+                        <th>정지마감날짜</th>
                         <th>처분</th>
                     </tr>
                     </thead>
                     <tbody>
                     <!-- 예시 데이터 -->
                     <tr th:each="reportBoard : ${reportBoards} ">
+                        <input type="hidden" class="boardWriterId" th:value="${reportBoard.boardWriterId}">
                         <td th:text="${reportBoard.id}">번호</td>
                         <td th:text="${reportBoard.menu}">카테고리</td>
                         <td th:text="${reportBoard.title}">제목</td>
+                        <td th:text="${reportBoard.boardWriter}">작성자</td>
                         <td th:text="${reportBoard.content != null ? (#strings.length(reportBoard.content) > 8 ? #strings.substring(reportBoard.content, 0, 8) + '...' : reportBoard.content) : ''}">
                                 신고사유</td>
                         <td th:text="${reportBoard.name}">신고자</td>
                         <td th:text="${reportBoard.reportDate}">신고날짜</td>
+                        <td th:text="${reportBoard.status}" class="status">현재상태</td>
+                        <td th:text="${#dates.format(reportBoard.suspensionPeriod, 'yyyy-MM-dd')}" class="suspensionPeriod">정지마감날짜</td>
                         <td>
-                            처분
+                            <select name="reportStatus", class="repootStatus" onchange="handleSelectChange(this)">
+                                <option selected>항목선택</option>
+                                <option value="활동">활동</option>
+                                <option value="1일추가">1일추가</option>
+                                <option value="7일추가">7일추가</option>
+                                <option value="30일추가">30일추가</option>
+                            </select>
+                            <div class="completionMessage" style="display: none;">처리완료</div>
                         </td>
                     </tr>
                     </tbody>
@@ -231,5 +245,48 @@ th {
     </div>
 </main>
 <footer th:replace="footer.html" />
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+
+function handleSelectChange(selectElement) {
+        // 선택한 옵션의 값을 가져오기
+        let selectedOption = $(selectElement).val();
+
+
+        // 선택한 select 요소의 부모 tr을 찾기
+        let row = $(selectElement).closest("tr");
+
+        // 선택한 행에서 .boardWriterId 클래스를 가진 hidden input 요소를 찾기
+        let boardWriterIdInput = row.find(".boardWriterId");
+
+        // hidden input 요소의 값을 가져오기
+        let boardWriterId = boardWriterIdInput.val();
+
+        let statusId = row.find(".status");
+        let suspensionPeriodId = row.find(".suspensionPeriod");
+
+        $.ajax({
+            type: "POST", // 또는 "GET" 등 적절한 HTTP 메서드 사용
+            url: "/admin/boardComplaint", // 서버의 엔드포인트 URL
+            data: { 
+                option: selectedOption,
+                boardWriterId: boardWriterId
+            }, // 선택된 옵션을 서버로 전달
+            success: function(response) {
+                let status = response.status;
+                let suspensionPeriod = response.suspensionPeriod;
+
+                statusId.html(status); // 서버에서 받은 응답을 업데이트
+                suspensionPeriodId.html(suspensionPeriod); // 서버에서 받은 응답을 업데이트
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX request failed: " + error);
+            }
+        });
+    }
+    
+</script>
+
 </body>
 </html>

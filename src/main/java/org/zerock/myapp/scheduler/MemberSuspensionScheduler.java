@@ -23,7 +23,7 @@ public class MemberSuspensionScheduler {
 
     private final AdminService adminService;
 
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(fixedRate = 86400000, initialDelay = 1L) // 서버를 구동시 1초후에 한번 실행하며, 하루마다 스케줄링을 구동시킴
     public void checkMemberSuspension(){
         log.trace("checkMemberSuspension() invoked.");
 

@@ -119,12 +119,16 @@
         SELECT
         rb.*,
         b.title,
-        m.name
+        m.name,
+        m1.status,
+        to_char(m1.suspension_period, 'yyyy-MM-dd'),
+        m1.id as "boardWriterId",
+        m1.name as "boardWriter"
         FROM
-        reportboards rb, member m, board b
-        WHERE
-        rb.reporter_id = m.id
-        AND rb.board_id = b.id
+        reportboards rb
+        JOIN member m ON rb.reporter_id = m.id
+        JOIN board b ON rb.board_id = b.id
+        JOIN member m1 ON b.member_id = m1.id
         OFFSET #{offset} ROW FETCH NEXT #{perPage} ROW ONLY
     </select>
 
@@ -133,12 +137,16 @@
         SELECT
         br.*,
         r.content,
-        m.name
+        m.name,
+        m1.status,
+        m1.suspension_period,
+        m1.id as "boardWriterId",
+        m1.name as "boardWriter"
         FROM
-        reportreply br, member m, board_reply r
-        WHERE
-        br.reporter_id = m.id
-        AND br.reply_id = r.id
+        reportreply br
+        JOIN member m on br.reporter_id = m.id
+        JOIN board_reply r on br.reply_id = r.id
+        JOIN member m1 ON r.member_id = m1.id
         ORDER BY br.id DESC
         OFFSET #{offset} ROW FETCH NEXT #{perPage} ROW ONLY
     </select>
