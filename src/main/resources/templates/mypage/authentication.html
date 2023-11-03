@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>authentication</title>
+<style>
+    .main{
+        grid-area: main;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+    .profile-section {
+        flex: none;
+        width: 400px;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    p {
+        text-align: center;
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+
+    .alert {
+        color: red;
+        margin-bottom: 15px;
+    }
+
+    input[type="password"] {
+        width: 90%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .buttons{
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .button-link{
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        background-color: #007BFF;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .button-link:hover {
+        background-color: #0056b3;
+    }
+
+    button {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        background-color: #007BFF;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-size: 1.0em;
+        font-weight: bold;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+</style>
+</head>
+
+<body>
+<header th:replace="nav.html" />
+<main>
+    <aside th:replace="mypageSide.html" />
+    <!-- 본인 인증 폼 -->
+    <div class="main">
+    <form class="profile-section" action="/mypage/authentication" method="post" id="authenticationForm">
+        <h1>본인 인증</h1>
+        <p>비밀번호를 입력하세요</p>
+        <div th:if="${error}">
+            <div class="alert alert-danger">
+                사용자 비밀번호를 확인해 주세요.
+            </div>
+        </div>
+        <input id="passwordInput" name="passwordInput" type="password" placeholder="••••••••">
+        <div class="buttons">
+            <button type="submit">확인</button>
+            <a th:href="@{/mypage/menu/myInfo}" class="button-link">취소</a>
+        </div>
+    </form>
+    </div>
+</main>
+<footer th:replace="footer.html" />
+</body>
+
+</html>

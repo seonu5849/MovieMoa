@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>ADMIN | MOVIE MOA</title>
+<style>
+    .admin-container{
+        grid-area: main;
+    }
+
+    /* 페이지 헤더 스타일 */
+    h1, h2 {
+        text-align: center;
+        margin-top: 30px;
+        color: #333; /* 글자색 */
+    }
+
+    /* 검색 폼 스타일 */
+    form {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    select, input[type="text"], #search > input[type="submit"] {
+        padding: 10px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        margin-right: 10px;
+    }
+
+    input[type="submit"], input[type="button"]{
+        background-color: #007BFF; /* 버튼 배경색 */
+        color: #fff; /* 버튼 글자색 */
+        cursor: pointer;
+    }
+
+    /* 테이블 스타일 */
+    table {
+        width: 70em;
+        border-collapse: collapse;
+        margin: 20px auto;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: center;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    #inquiry > input[type="submit"]{
+        padding: 10px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        margin-right: 10px;
+    }
+
+    .admin-container h1,
+    .admin-container h2 {
+    text-align: center;
+    margin-top: 30px;
+    color: #333;
+}
+
+.admin-container form {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.admin-container select,
+.admin-container input[type="text"],
+.admin-container #search > input[type="submit"] {
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.admin-container input[type="submit"],
+.admin-container input[type="button"] {
+    background-color: #007BFF;
+    color: #fff;
+    cursor: pointer;
+}
+
+.admin-container table {
+    width: 70em;
+    border-collapse: collapse;
+    margin: 20px auto;
+}
+
+.admin-container th,
+.admin-container td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+}
+
+.admin-container th {
+    background-color: #f2f2f2;
+}
+
+.admin-container #inquiry > input[type="submit"] {
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.admin-container ul {
+    list-style: none;
+    justify-content: center;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.admin-container .flex {
+    display: flex;
+    justify-content: center;
+}
+
+.admin-container li {
+    padding: 10px;
+    display: inline-block;
+}
+
+.admin-container a {
+    text-decoration: none;
+    color: #007BFF;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.admin-container a:hover {
+    background-color: #007BFF;
+    color: #fff;
+}
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+    }
+
+    .btn {
+        padding: 10px 15px;
+        margin-right: 10px;
+        border: none;
+        background-color: #333;
+        color: white;
+        cursor: pointer;
+    }
+    .btn-small{
+        float: right;
+        margin-left: 20px;
+        margin-bottom: 10px;
+        background-color: #3498db; /* 배경 색상 */
+        color: #fff; /* 텍스트 색상 */
+        border: none; /* 경계선 없음 */
+        border-radius: 4px; /* 둥근 모서리 */
+        padding: 10px 10px; /* 내부 여백 */
+        font-size: 15px; /* 텍스트 크기 */
+        cursor: pointer; /* 마우스 커서를 포인터로 변경 */
+    }
+
+</style>
+</head>
+
+<body>
+<header th:replace="nav.html" />
+<main class="main-content">
+<aside th:replace="adminSide.html" />
+    <div class="admin-container">
+
+
+        <div class="container">
+            <div class="content">
+                <h1>ADMIN</h1>
+                <form action="/admin/inquiryAnswer" method="post" onsubmit="return saveButton()">
+                    <p class="em-70" th:text="${inquirie.name}+'님의 문의입니다.'">• 특정회원의 문의입니다.</p>
+                    <input type="hidden" name="id" th:value="${inquirie.id}">
+                    <input type="hidden" name="memberId" th:value="${inquirie.memberId}">
+                    <div class="form-group">
+                        <label for="questionDate">문의일자</label>
+                        <input type="text" id="questionDate" th:value="${inquirie.createdAt}" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="questionTitle">문의제목</label>
+                        <input type="text" id="questionTitle" th:value="${inquirie.title}" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="content">문의내용</label>
+                        <textarea id="content" th:field="${inquirie.content}" disabled></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="responsesContent">답변내용</label>
+                        <textarea id="responsesContent" name="responsesContent" th:field="${inquirie.responsesContent}"></textarea>
+                    </div>
+                    <input type="submit" value="저장" class="btn-small">
+                    <button th:onclick="|location.href='/admin/inquiry/1'|" class="btn-small">취소</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+    <footer th:replace="footer.html" />
+<script>
+    function saveButton(){
+        var textarea = document.getElementById('responseContent');
+        var content = textarea.value.trim();
+    
+        if (content === '') {
+            alert("답변내용이 비어있습니다.");
+            return false;
+        }else{
+            const confirmation = confirm("답변을 저장하시겠습니까?");
+
+            if (confirmation) {
+                // 사용자가 확인을 선택한 경우에만 삭제 수행
+                // AJAX 요청 또는 HTML Form 제출 등을 여기에서 수행
+                return true;
+            } else {
+                return false; // 사용자가 취소를 선택한 경우
+            }
+        }    
+    }
+</script>
+</body>
+
+</html>

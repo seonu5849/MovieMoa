@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>boards</title>
+    <style>
+        /* 게시글 작성 폼 컨테이너 스타일 */
+        .board-form-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-width: 700px;
+            width: 100%;
+            margin: auto;
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+
+        /* 폼 타이틀 스타일 */
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        /* 입력 필드 및 라벨 스타일 */
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: block;
+            color: #555;
+        }
+
+        .form-group input[type="text"],
+        .form-group select,
+        .form-group textarea {
+            width: calc(100% - 24px);
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        /* 버튼 스타일 */
+        .form-group button {
+            width: 100%;
+            padding: 12px;
+            background-color: #5cb85c;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-group button:hover {
+            background-color: #4cae4c;
+        }
+
+        /* 자동완성 드롭다운 스타일 */
+        .ui-autocomplete {
+            position: absolute;
+            z-index: 1000;
+            cursor: default;
+            padding: 10px 0;
+            margin: 2px 0 0 0;
+            list-style: none;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 5px 15px rgba(0,0,0,.2);
+            overflow-y: auto; /* prevents horizontal scrollbar */
+            max-height: 200px; /* sets maximum height for dropdown */
+        }
+
+        .ui-autocomplete .ui-menu-item-wrapper {
+            padding: 10px;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .ui-autocomplete .ui-menu-item-wrapper.ui-state-active {
+            background-color: #e6e6e6;
+        }
+    </style>
+
+</head>
+<body>
+<header th:replace="nav.html" />
+<main class="main-container">
+    <div class="board-form-container">
+        <h1>게시글 등록</h1>
+        <!-- 게시글 등록 액션 URL과 HTTP 메서드를 정의 -->
+        <form th:action="@{/board/writeBoard}" method="post">
+
+            <div class="form-group">
+                <label for="kategorieId">카테고리</label>
+                <select id="kategorieId" name="kategorieId" required>
+                    <option value="">카테고리를 선택하세요</option>
+                    <!-- 카테고리 목록을 루프 돌며 옵션 태그로 추가 -->
+                    <th:block th:each="category : ${kategoriesList}">
+                        <div sec:authorize="hasRole('ADMIN')">
+                            <option th:if="${category.name} == '공지'"
+                                    th:value="${category.id}"
+                                    th:text="${category.name}">카테고리명</option>
+                        </div>
+                        <option th:if="${category.name} != '공지'"
+                                th:value="${category.id}"
+                                th:text="${category.name}">카테고리명</option>
+                    </th:block>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="movieTitle">영화 제목</label>
+                <input type="text" id="movieTitle" name="movieTitle" required>
+            </div>
+                <input type="hidden" id="movieId" name="movieId">
+
+            <div class="form-group">
+                <label for="title">제목</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+
+            <div class="form-group">
+                <label for="content">내용</label>
+                <textarea id="content" name="content" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <button type="submit">게시글 등록</button>
+            </div>
+        </form>
+    </div>
+</main>
+<footer th:replace="footer.html" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script>
+    $( function() {
+        // 영화 제목 입력 필드를 기본적으로 비활성화
+        $('#movieTitle').prop('disabled', true);
+
+        // 카테고리 선택 시 이벤트 핸들러
+        $('#kategorieId').change(function() {
+            // '영화' 카테고리가 선택되면
+            if ($(this).find('option:selected').text() === '영화') {
+                // 영화 제목 입력 필드를 활성화
+                $('#movieTitle').prop('disabled', false);
+            } else {
+                // 그렇지 않으면 비활성화 및 초기화
+                $('#movieTitle').prop('disabled', true).val('');
+                $('#movieId').val('');
+            }
+        });
+
+        // 영화 제목 자동완성 기능
+        $( "#movieTitle" ).autocomplete({
+            source: function( request, response ) {
+                $.ajax({
+                    url: "/board/search/movies", // 영화 데이터를 검색하는 서버의 URL
+                    dataType: "json",
+                    data: {
+                        term: request.term
+                    },
+                    success: function( data ) {
+                        if(!data.length){
+                            var result = [
+                                {
+                                    label: '존재하지 않는 영화입니다.',
+                                    value: request.term,
+                                    id: '' // 영화 ID가 없으므로 빈 문자열을 설정
+                                }
+                            ];
+                            response(result);
+                        } else {
+                            response($.map(data, function(item){
+                                return {
+                                    label: item.title, // 자동완성 목록에 표시될 영화 제목
+                                    value: item.title, // 사용자가 선택 시 입력 필드에 채워질 영화 제목
+                                    id: item.id // 숨겨진 필드에 설정할 영화 ID
+                                }
+                            }));
+                        }
+                    }
+                });
+            },
+            minLength: 2, // 최소 글자 수
+            select: function( event, ui ) {
+                // 영화를 선택할 경우 해당 영화의 ID를 숨겨진 필드에 설정
+                $('#movieId').val(ui.item.id);
+                if(ui.item.label === '존재하지 않는 영화입니다.') {
+                    $('#movieId').val(''); // ID 필드를 비웁니다.
+                    $(this).val(''); // 입력 필드를 비웁니다.
+                    event.preventDefault(); // 기본 이벤트 방지
+                }
+            },
+            open: function() {
+                $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+            },
+            close: function() {
+                $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+            }
+        });
+    });
+</script>
+</body>
+</html>

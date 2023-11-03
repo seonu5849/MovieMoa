@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>boards</title>
+    <style>
+        .board-details, .comments-section {
+            width: 80%;
+            margin: 30px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .board-header {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .board-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .board-info {
+            color: #888;
+            font-size: 14px;
+        }
+        .board-content-border {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        .board-content {
+            white-space: pre-wrap;
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+        .board-meta, .comment-meta {
+            font-size: 14px;
+            color: #666;
+        }
+        .board-meta span, .comment-meta span {
+            margin-right: 10px;
+        }
+        .comment-meta-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .comment-meta {
+            border-top: 1px dashed #ddd;
+            padding-top: 10px;
+            flex-grow: 1; /* 메타 정보가 공간을 채우도록 함 */
+        }
+        .comment-form {
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+        .comment-form textarea {
+            width: 98%;
+            height: 100px;
+            padding: 10px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .comment-form button {
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .comment-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .comment-content {
+            margin-bottom: 10px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            text-decoration: none; /* 링크인 경우 밑줄 제거 */
+        }
+
+        .board-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .board-buttons .button {
+            margin-right: 10px;
+        }
+
+        .comment-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+            flex-shrink: 0; /* 버튼이 줄어들지 않도록 함 */
+        }
+
+        .comment-buttons button {
+            margin-left: 10px;
+        }
+
+        /* 모달창 전체를 포함하는 배경 스타일 */
+        .modal-backdrop {
+            display: none; /* 기본적으로는 숨김 */
+            position: fixed;
+            z-index: 1; /* 페이지 위에 표시 */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* 모달 내용이 너무 길 경우 스크롤 */
+            background-color: rgba(0, 0, 0, 0.4); /* 반투명 검은색 배경 */
+        }
+
+        /* 모달창 내용 스타일 */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 페이지 중앙에 위치 */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* 모달창의 폭 */
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        /* 모달창 닫기 버튼 스타일 */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* 모달창 내부의 텍스트 입력란 및 버튼 스타일 */
+        .modal-content textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            box-sizing: border-box; /* 너비에 패딩과 테두리 포함 */
+        }
+
+        .modal-content button {
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .modal-content button:hover {
+            background-color: #45a049;
+        }
+
+        button:hover, .board-buttons a:hover {
+            background-color: #45a049;
+        }
+
+    </style>
+</head>
+<body>
+<header th:replace="nav.html" />
+<main>
+    <div class="board-details">
+        <div class="board-header">
+            <div class="board-title" th:text="${board.title}">게시글 제목</div>
+            <div class="board-info">작성자: <span th:text="${board.memberNickname}">작성자 닉네임</span></div>
+        </div>
+        <div class="board-meta">
+            <span>카테고리: <span th:text="${board.kategorieName}">영화</span></span>
+            <span>영화 제목: <span th:text="${board.movieTitle}">1</span></span>
+            <span>조회수: <span th:text="${board.viewCount}">0</span></span>
+            <span>작성일: <span th:text="${#dates.format(board.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2023-01-01 12:00:00</span></span>
+            <span th:if="${board.updatedAt}">수정일: <span th:text="${#dates.format(board.updatedAt, 'yyyy-MM-dd HH:mm:ss')}">2023-01-01 12:00:00</span></span>
+        </div>
+        <div class="board-content-border">
+            <div class="board-content" th:text="${board.content}">게시글 내용</div>
+        </div>
+        <button class="button likeButton" th:data-boardid="${board.id}" th:data-loggedin="${#authorization.expression('isAuthenticated()')}">
+            좋아요 <span class="likeCount" th:data-likecount-for="${board.id}" th:text="${board.favorites}">0</span>
+        </button>
+
+        <div class="board-buttons">
+            <a th:href="@{'/board/updateBoard/' + ${board.id}}" id="boardButton" th:if="${board.memberId == currentUserId}" class="button">수정</a>
+            <a th:href="@{'/board/updateBoard/' + ${board.id}}" id="boardButton" th:if="${board.memberId == currentUserId}" class="button">삭제</a>
+            <a th:href="@{'/board/updateBoard/' + ${board.id}}" id="boardButton" th:if="${board.memberId != currentUserId}" class="button">신고</a>
+            <a th:href="@{/board/boards}" class="button">목록으로</a>
+        </div>
+    </div>
+
+    <div class="comments-section">
+        <h3>댓글</h3>
+        <form th:action="@{/board/comment}" method="post">
+            <div class="comment-form">
+                <textarea name="content" placeholder="댓글을 입력하세요" required></textarea>
+                <input type="hidden" name="id" th:value="${board.id}">
+                <input type="hidden" name="memberId" th:value="${currentUserId}">
+                <button type="submit" id="replyWriteButton" class="button" th:data-loggedin="${#authorization.expression('isAuthenticated()')}">댓글 작성</button>
+            </div>
+        </form>
+
+        <div class="comment-list">
+            <div class="comment-item" th:each="reply : ${boardReplyList}">
+                <div class="comment-content" th:text="${reply.content}">댓글 내용</div>
+                <div class="comment-meta-buttons">
+                    <div class="comment-meta">
+                        <span th:text="${reply.nickname}">회원 닉네임</span>
+                        <span>작성일: <span th:text="${#dates.format(reply.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2023-01-01 12:00:00</span></span>
+                        <span  th:if="${reply.updatedAt}">수정일: <span th:text="${reply.updatedAt != null ? #dates.format(reply.updatedAt, 'yyyy-MM-dd HH:mm:ss') : ''}">2023-01-01 12:00:00</span></span>
+                    </div>
+                    <div class="comment-buttons">
+                        <button class="button replyModifyButton" th:if="${reply.memberId == currentUserId}" th:data-replyid="${reply.id}">수정</button>
+                        <button class="button replyDeleteButton" th:if="${reply.memberId == currentUserId}" th:data-replyid="${reply.id}" th:data-boardid="${board.id}">삭제</button>
+                        <button class="button" id="replyButton" th:if="${reply.memberId != currentUserId}">신고</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 모달창 HTML 추가 -->
+    <div id="editModal" class="modal-backdrop">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <form id="editModalForm" action="/board/commentEdit" method="post">
+                <input type="hidden" name="_method" value="PUT">
+                <input type="hidden" name="id" id="modalReplyId">
+                <textarea class="replyContent" id="replyModalContent" name="content" required></textarea>
+                <button type="submit">댓글 수정</button>
+            </form>
+        </div>
+    </div>
+</main>
+<footer th:replace="footer.html" />
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // 로그인 체크하는 공통 함수
+        function checkLogin($element) {
+            var loggedIn = $element.data('loggedin');
+            if (!loggedIn) {
+                alert('로그인이 필요한 서비스입니다.');
+                return false;
+            }
+            return true;
+        }
+
+        // 댓글 수정 버튼에 이벤트 리스너 추가
+        $('.replyModifyButton').on('click', function() {
+            var replyId = $(this).data('replyid'); // 버튼에 저장된 replyId 가져오기
+
+            // AJAX 요청으로 서버에 댓글 내용 요청
+            $.ajax({
+                url: `/board/getReplyContent/${replyId}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    // 서버에서 받은 댓글 내용을 모달 창의 textarea에 설정
+                    $('#replyModalContent').val(data.reply.content);
+                    // Hidden input에 replyId 값을 설정
+                    $('#modalReplyId').val(data.reply.id);
+                    // 모달 창 표시
+                    $('#editModal').show();
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+
+        // 모달 창 닫기 함수
+        window.closeModal = function() {
+            $('#editModal').hide();
+        }
+
+
+        // 모달창 밖을 클릭했을 때 모달창 닫기
+        $(window).on('click', function(event) {
+            if ($(event.target).is('#editModal')) {
+                closeModal();
+            }
+        });
+
+        // 댓글 삭제 버튼에 대한 이벤트 핸들러를 모든 버튼에 등록
+        $('.replyDeleteButton').on('click', function() {
+            var replyId = $(this).data('replyid');
+            var boardId = $(this).data('boardid');
+
+            if (confirm('정말로 삭제하시겠습니까?')) {
+                $.ajax({
+                    url: '/board/commentDelete/' + replyId,
+                    type: 'DELETE',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ boardId: boardId }),
+                    success: function(data) {
+                        if (data.redirectUrl) {
+                            window.location.href = data.redirectUrl;
+                        } else {
+                            console.log('Success:', data);
+                        }
+                    },
+                    error: function(error) {
+                        console.error('Error:', error);
+                    }
+                });
+            }
+        });
+
+        // 댓글 작성 버튼 클릭 이벤트
+        $('#replyWriteButton').on('click', function(e) {
+            if (!checkLogin($(this))) {
+                e.preventDefault();
+                return;
+            }
+        });
+
+        // 좋아요 버튼 클릭 이벤트
+        $('.likeButton').on('click', function() {
+            var $likeButton = $(this);
+            var boardId = $(this).data('boardid');
+            var $likeCount = $likeButton.find('.likeCount');
+
+            console.log("좋아요 버튼 클릭");
+            if (!checkLogin($(this))) {
+                console.log("비로그인");
+                e.preventDefault();
+                return;
+            }
+
+            $.ajax({
+                url: '/board/like/' + boardId,
+                type: 'POST',
+                success: function(response) {
+                    if(response.liked) {
+                        $likeButton.addClass('liked');
+                    } else {
+                        $likeButton.removeClass('liked');
+                    }
+                    $likeCount.text(response.likeCount);
+                },
+                error: function() {
+                    alert('오류가 발생했습니다. 다시 시도해주세요.');
+                }
+            });
+            console.log("Ajax 호출 후");
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <mappers>
+        <!--    main 관련    -->
+        <mapper resource="mappers/MemberMapper.xml"/>
+
+        <!--    movie 관련    -->
+        <mapper resource="mappers/MovieJsonMapper.xml"/>
+        <mapper resource="mappers/MovieMapper.xml"/>
+
+        <!--    admin 관련    -->
+        <mapper resource="mappers/AdminMapper.xml"/>
+
+        <!--    Event 관련    -->
+        <mapper resource="mappers/EventMapper.xml"/>
+        <mapper resource="mappers/ProductMapper.xml"/>
+
+        <!--    Board 관련    -->
+        <mapper resource="mappers/BoardMapper.xml"/>
+
+    </mappers>
+</configuration>

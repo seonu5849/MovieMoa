@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>ADMIN | MOVIE MOA</title>
+<style>
+    .admin-container {
+        grid-area: main;
+    }
+
+  /* 페이지 헤더 스타일 */
+  h1, h2 {
+      text-align: center;
+      margin-top: 30px;
+      color: #333; /* 글자색 */
+  }
+
+  /* 검색 폼 스타일 */
+  form {
+      text-align: center;
+      margin-top: 20px;
+  }
+
+  select, input[type="text"], #search > input[type="submit"] {
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      margin-right: 10px;
+  }
+
+  input[type="submit"], input[type="button"]{
+      background-color: #007BFF; /* 버튼 배경색 */
+      color: #fff; /* 버튼 글자색 */
+      cursor: pointer;
+  }
+
+  /* 테이블 스타일 */
+  table {
+      width: 70em;
+      border-collapse: collapse;
+      margin: 20px auto;
+  }
+
+  th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+  }
+
+  th {
+      background-color: #f2f2f2;
+  }
+
+  .admin-container h1,
+  .admin-container h2 {
+  text-align: center;
+  margin-top: 30px;
+  color: #333;
+}
+
+.admin-container form {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.admin-container select,
+.admin-container input[type="text"],
+.admin-container #search > input[type="submit"] {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.admin-container input[type="submit"],
+.admin-container input[type="button"] {
+    background-color: #007BFF;
+    color: #fff;
+    cursor: pointer;
+}
+
+.admin-container table {
+    width: 70em;
+    border-collapse: collapse;
+    margin: 20px auto;
+}
+
+.admin-container th,
+.admin-container td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+}
+
+.admin-container th {
+    background-color: #f2f2f2;
+}
+
+.admin-container #inquiry > input[type="submit"] {
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.admin-container ul {
+    list-style: none;
+    justify-content: center;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.admin-container .flex {
+    display: flex;
+    justify-content: center;
+}
+
+.admin-container li {
+    padding: 10px;
+    display: inline-block;
+}
+
+.admin-container a {
+    text-decoration: none;
+    color: #007BFF;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.admin-container a:hover {
+    background-color: #007BFF;
+    color: #fff;
+}
+
+.em-70{
+  width: 70em;
+  margin: 20px auto;
+}
+.btnflex{
+  float: left;
+  margin-left: 20px;
+  background-color: #3498db; /* 배경 색상 */
+  color: #fff; /* 텍스트 색상 */
+  border: none; /* 경계선 없음 */
+  border-radius: 4px; /* 둥근 모서리 */
+  padding: 10px 10px; /* 내부 여백 */
+  font-size: 16px; /* 텍스트 크기 */
+  cursor: pointer; /* 마우스 커서를 포인터로 변경 */
+}
+
+.btn-small{
+  float: left;
+  margin-left: 20px;
+  background-color: #3498db; /* 배경 색상 */
+  color: #fff; /* 텍스트 색상 */
+  border: none; /* 경계선 없음 */
+  border-radius: 4px; /* 둥근 모서리 */
+  padding: 10px 10px; /* 내부 여백 */
+  font-size: 10px; /* 텍스트 크기 */
+  cursor: pointer; /* 마우스 커서를 포인터로 변경 */
+}
+.button-container{
+  display: flex;
+}
+.button-container > button{
+  margin: 5px;
+  width: 50px;
+  height: 24px;
+}
+
+.text-center {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+}
+    </style>
+</head>
+<body>
+<header th:replace="nav.html" />
+<main class="main-content">
+<aside th:replace="adminSide.html" />
+    <div class="admin-container">
+      <div class="container">
+          <div class="content">
+              <h1><a th:href="@{/admin/memberList/1}">MOVIE MOA</a></h1>
+              <h2>관리자 전용 페이지</h2>
+
+              <form action="/admin/memberList/1" method="GET" onsubmit="return validateForm()", id="search">
+                  <select name="searchOption">
+                      <option value="email">이메일</option>
+                      <option value="name">이름</option>
+                      <option value="nickname">닉네임</option>
+                  </select>
+                  <input type="text" name="searchValue">
+                  <input type="submit" value="검색">
+              </form>
+
+              <form action="/admin/memberList" method="post" onsubmit="return deleteValidateForm()", id="member" >
+                  <table>
+                      <thead>
+                      <tr>
+                          <th><input type="checkbox" id="selectAll"></th>
+                          <th>회원번호</th>
+                          <th>이름</th>
+                          <th>닉네임</th>
+                          <th>아이디</th>
+                          <th>활동상태</th>
+                          <th>권한</th>
+                          <th>상세정보</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <!-- 예시 데이터 -->
+                      <tr th:each="member : ${members} ">
+                          <td><input type="checkbox" class="selectedCheckbox" name="selectedMembers" th:value="${member.id}"></td>
+                          <td th:text="${member.id}">회원번호</td>
+                          <td th:text="${member.name}">이름</td>
+                          <td th:text="${member.nickname}">닉네임</td>
+                          <td th:text="${member.email}">아이디</td>
+                          <td th:text="${member.status}">활동(?)상태</td>
+                          <td th:text="${member.role}">권한</td>
+                          <td><a th:href="@{'/admin/detailMember/'+${member.id}}">상세정보</a></td>
+                      </tr>
+                      </tbody>
+                  </table>
+                  <div class="em-70">
+                    <input class="btnflex" type="submit" value="일괄삭제">
+                  </div>
+              </form>
+
+              <ul class="right mm10">
+                  <!-- 이전 버튼 -->
+                  <li th:if="${currentPage > 1}">
+                      <!-- 현재 페이지가 1보다 크면 이전 페이지로 이동하는 링크를 표시합니다 -->
+                      <a th:if="${searchOption == null && searchValue == null}" th:href="@{|${currentPage - 1}|}" th:text="이전">이전</a>
+                      <a th:if="${searchOption != null && searchValue != null}" th:href="@{|${currentPage - 1}?searchOption=${searchOption}&searchValue=${searchValue}|}" th:text="이전">이전</a>
+                  </li>
+
+                  <!-- 페이지 번호 그룹 -->
+                  <th:block th:with="startPageNum=${(currentPage - 1) / 5 * 5 + 1}">
+                      <th:block th:with="endPageNum=${(startPageNum + 4) > totalPages ? totalPages : (startPageNum + 4)}">
+                          <!-- 페이지 번호 그룹을 계산합니다. 최대 페이지 번호를 초과하지 않도록 합니다 -->
+                          <th:block th:each="pageNumber : ${#numbers.sequence(startPageNum, endPageNum)}">
+                              <!-- 결과 값이 없을 때, 페이지 번호를 출력하지 않도록 조건문을 사용합니다 -->
+                              <!-- 각 페이지 번호를 나타내는 링크를 표시합니다 -->
+                              <li th:if="${totalPages > 1}" th:class="${pageNumber == currentPage} ? 'active' : ''">
+                                  <!-- 현재 페이지는 강조 표시됩니다 -->
+                                  <a th:if="${searchOption == null && searchValue == null}" th:href="@{|${pageNumber}|}" th:text="${pageNumber}">1</a>
+                                  <a th:if="${searchOption != null && searchValue != null}" th:href="@{|${pageNumber}?searchOption=${searchOption}&searchValue=${searchValue}|}" th:text="${pageNumber}">1</a>
+                              </li>
+                          </th:block>
+                      </th:block>
+                  </th:block>
+
+                  <!-- 다음 버튼 -->
+                  <li th:if="${currentPage < totalPages}">
+                      <!-- 현재 페이지가 총 페이지 수 미만이면 다음 페이지로 이동하는 링크를 표시합니다 -->
+                      <a th:if="${searchOption == null && searchValue == null}" th:href="@{|${currentPage + 1}|}" th:text="다음">다음</a>
+                      <a th:if="${searchOption != null && searchValue != null}" th:href="@{|${currentPage + 1}?searchOption=${searchOption}&searchValue=${searchValue}|}" th:text="다음">다음</a>
+                  </li>
+              </ul>
+          </div>
+      </div>
+    </div>
+  </main>
+  <footer th:replace="footer.html" />
+<script th:inline="javascript">
+
+    function validateForm() {
+        let searchOption = document.querySelector('select[name="searchOption"]').value;
+        let searchValue = document.querySelector('input[name="searchValue"]').value;
+
+        if (!searchValue) {
+            alert("검색 내용을 입력해주세요.");
+            return false;
+        }
+
+        return true;
+    }
+
+    // 전체 선택 체크박스 상태에 따라 모든 하위 체크박스 선택 또는 선택 해제
+    document.getElementById("selectAll").addEventListener("change", function () {
+        const checkboxes = document.querySelectorAll(".selectedCheckbox");
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+    });
+
+    function deleteValidateForm() {
+        const selectedCheckboxes = document.querySelectorAll('input.selectedCheckbox:checked');
+
+        if(selectedCheckboxes.length === 0){
+            alert("선택된 회원이 없습니다.");
+            return false;
+        }
+        
+        const confirmation = confirm("선택된 회원을 삭제하시겠습니까?");
+    
+        if (confirmation) {
+            // 사용자가 확인을 선택한 경우에만 삭제 수행
+            // AJAX 요청 또는 HTML Form 제출 등을 여기에서 수행
+            return true;
+        } else {
+            return false; // 사용자가 취소를 선택한 경우
+        }
+    }
+
+</script>
+</body>
+</html>
