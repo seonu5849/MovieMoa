@@ -85,6 +85,8 @@ CREATE TABLE Member (
 	suspension_period DATE
 );
 
+alter table member
+add column suspension_period DATE
 
 
 CREATE TABLE board_kategories (
