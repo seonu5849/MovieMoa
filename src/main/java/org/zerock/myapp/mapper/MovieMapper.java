@@ -69,4 +69,13 @@ public interface MovieMapper {
     // 전체 영화의 수를 반환
     public abstract Integer totalCount();
 
+    // 사용자가 해당 영화에 위시리스트를 추가했는지 확인
+    public abstract Integer WishlistCheck(@Param("movieId") Long movieId, @Param("memberId") Long memberId);
+
+    // 이미 위시리스트를 눌렀다면, 위시리스트 취소
+    public abstract Integer cancelWishlist(@Param("movieId") Long movieId, @Param("memberId") Long memberId);
+
+    // 위시리스트를 누르지 않았다면, 위시리스트 추가
+    public abstract Integer addWishlist(@Param("movieId") Long movieId, @Param("memberId") Long memberId);
+
 } // end interface

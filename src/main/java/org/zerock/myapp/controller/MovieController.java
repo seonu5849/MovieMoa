@@ -2,12 +2,13 @@ package org.zerock.myapp.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.zerock.myapp.domain.*;
 import org.zerock.myapp.service.MovieJsonService;
 import org.zerock.myapp.service.MovieService;
@@ -36,7 +37,32 @@ public class MovieController {
         List<MovieVO> allMovies = movieService.findAllMovies();
         allMovies.forEach(log::info);
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long memberId = null;
+        if (authentication != null && authentication.isAuthenticated() &&
+                !authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ANONYMOUS"))) {
+            log.info("\t+ 인증된 사용자");
+            String username = authentication.getName();
+            memberId = Long.valueOf(username);
+        }
+
+        // 여기서 위시리스트 체크 상태를 저장할 맵을 생성합니다.
+        Map<Long, Boolean> wishlistStatus = new HashMap<>();
+
+        if (memberId != null) {
+            for (MovieVO movie : allMovies) {
+                Long movieId = movie.getId(); // 여기서 영화 ID를 가져옵니다.
+                boolean wishCheck = movieService.WishlistCheck(movieId, memberId);
+                log.info("\t+ Movie ID: {}, wishCheck: {}", movieId, wishCheck);
+
+                // 위시리스트 체크 결과를 맵에 저장합니다.
+                wishlistStatus.put(movieId, wishCheck);
+            }
+        }
+
+        // 모델에 영화 목록과 위시리스트 체크 상태를 추가합니다.
         model.addAttribute("moviesList", allMovies);
+        model.addAttribute("wishlistStatus", wishlistStatus);
 
         return "movie/movies";
     } // movieView
@@ -105,5 +131,41 @@ public class MovieController {
 
         return "/movie/movieDetail";
     } // movieDetailView
+
+    @PostMapping("/wishlist/{movieId}")
+    public ResponseEntity<?> toggleWishlist(@PathVariable Long movieId) {
+        log.trace("toggleWishlist({}) invoked.", movieId);
+        // 현재 인증된 사용자의 정보를 가져옵니다.
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // 인증된 사용자의 이름(여기서는 사용자 ID로 사용)을 가져옵니다.
+        String username = authentication.getName();
+        // 사용자 이름(아이디)를 Long 타입으로 변환합니다.
+        Long memberId = Long.valueOf(username);
+
+        try {
+            // wishlist 상태 체크 (wishlist 안누른 상태 = false)
+            boolean wishCheck = movieService.WishlistCheck(movieId, memberId);
+            log.info("\t+ wishCheck: {}", wishCheck);
+
+            if (!wishCheck) {
+                log.info("\t+ wishlist 누르지 않음, wishlist 추가");
+                // wishlist 누르지 않았다면, wishlist 추가
+                movieService.addWishlist(movieId, memberId);
+            } else {
+                log.info("\t+ wishlist 이미 누름, wishlist 취소");
+                // wishlist 이미 눌렀다면, wishlist 취소
+                movieService.cancelWishlist(movieId, memberId);
+            }
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("wishlist", !wishCheck);
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            // 예외 처리
+            return ResponseEntity.status(500).body("Internal Server Error");
+        }
+    } // toggleWishlist
 
 } // end class

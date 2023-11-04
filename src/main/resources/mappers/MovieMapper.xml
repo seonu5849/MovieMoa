@@ -131,5 +131,20 @@
         FROM movies
     </select>
 
-    <!--DB에서 접근해서 뽑는 mapper-->
+    <!-- 사용자가 해당 영화에 위시리스트를 추가했는지 확인 -->
+    <select id="WishlistCheck" resultType="Integer">
+        SELECT COUNT(id) FROM wishlist WHERE movie_id = #{movieId} AND member_id = #{memberId}
+    </select>
+
+    <!-- 이미 위시리스트를 눌렀다면, 위시리스트 취소 -->
+    <delete id="cancelWishlist">
+        DELETE FROM wishlist WHERE movie_id = #{movieId} AND member_id = #{memberId}
+    </delete>
+
+    <!-- 위시리스트를 누르지 않았다면, 위시리스트 추가 -->
+    <insert id="addWishlist">
+        INSERT INTO wishlist (movie_id, member_id) VALUES (#{movieId}, #{memberId})
+    </insert>
+
+
 </mapper>

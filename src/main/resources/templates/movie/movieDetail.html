@@ -4,22 +4,193 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="movie-detail.css">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 <title>영화 상세 페이지</title>
 <style>
-    .myImg {
-      max-width: 20%;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: all 0.3s;
+    .movie-info {
+        display: flex; /* Flexbox 레이아웃을 활성화 */
+        align-items: center; /* 아이템들이 컨테이너의 가운데 정렬되도록 설정 */
+        justify-content: center; /* 중앙 정렬 */
+        gap: 20px; /* 아이템 사이의 간격 */
+        margin: 20px auto; /* 중앙 정렬 */
+    }
 
-      display: block;
-      margin: 0 auto;
-      /* 좌우 자동 마진을 통해 가로 방향 중앙 정렬 */
+    /* 이미지 스타일을 flex 아이템에 맞게 조정 */
+    .myImg {
+        max-width: 25%; /* 이미지 최대 너비 설정 */
+        height: auto; /* 이미지 높이 자동 조정 */
+        display: block; /* 블록 레벨 요소로 표시 */
+        margin: 0; /* 이미지에 대한 마진 제거 */
+        transition: opacity 0.3s ease; /* 부드러운 효과를 위한 transition 설정 */
     }
 
     .myImg:hover {
-      opacity: 0.7;
+        opacity: 0.7; /* 마우스 호버시 투명도 변경 */
+        cursor: pointer;
+    }
+
+    /* 테이블 스타일을 flex 아이템에 맞게 조정 */
+    .movie-summary {
+        max-width: 50%; /* 테이블 최대 너비 설정 */
+        width: 100%; /* 테이블 너비를 가능한 100%로 설정 */
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        border-collapse: collapse;
+        font-family: 'Noto Sans KR', sans-serif; /* 현대적인 한글 글꼴 */
+    }
+
+    /* 기존 스타일 */
+    .board {
+        max-width: 80%;
+        margin: 20px auto;
+        width: 100%;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        border-collapse: collapse;
+        font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    .boardTitle, .movie-summary-title {
+        background-color: #355c7d;
+        color: #fff;
+        border-bottom: 2px solid #2a3f54;
+    }
+
+    .board th, .movie-summary th, .board td, .movie-summary td {
+        padding: 15px;
+        border-bottom: 1px solid #e0e0e0;
+        font-size: 14px;
+    }
+
+    .board td:first-child {
+        padding-left: 30px;
+        text-align: left;
+    }
+
+    .movie-summary td:first-child {
+        padding-left: 30px;
+        text-align: center;
+    }
+
+    .board td:first-child::after, .movie-summary td:first-child::after {
+        display: none;
+    }
+
+    .board td:last-child, .movie-summary td:last-child {
+        text-align: center;
+    }
+
+    .board tr:hover,
+    .movie-summary tr:hover,
+    .movie-summary-credits tr:hover{
+        background-color: #f2f2f2;
+    }
+
+    .clickable-row:hover {
+        font-weight: bold;
+        color: #007BFF;
+        cursor: pointer;
+    }
+
+    /* 추가된 스타일 */
+    .board th {
+        text-align: center;
+    }
+
+    .board td {
+        text-align: center;
+    }
+
+    .board th:nth-child(1) {
+        width: 50%;
+        text-align: center;
+    }
+
+    .board th:nth-child(2) {
+        width: 10%;
+    }
+
+    .board th:nth-child(3) {
+        width: 10%;
+    }
+
+    .board th:nth-child(4) {
+        width: 15%;
+    }
+
+    .board th:nth-child(5) {
+        width: 15%;
+    }
+
+    .movie-credits-table {
+        width: 80%;
+        margin: 0 auto;
+    }
+
+    .movie-summary-credits {
+        max-width: 100%; /* 테이블 최대 너비 설정 */
+        width: 100%; /* 테이블 너비를 가능한 100%로 설정 */
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        border-collapse: collapse;
+        font-family: 'Noto Sans KR', sans-serif; /* 현대적인 한글 글꼴 */
+    }
+
+    .movie-summary-credits-title {
+        background-color: #355c7d; /* 어두운 파란색으로 조정 */
+        color: #fff;
+        border-bottom: 2px solid #2a3f54; /* 테두리 색상 조정 */
+    }
+
+    .movie-casts,
+    .movie-crews {
+        display: flex;
+        overflow-x: hidden;
+        gap: 20px;
+        padding: 20px 20px;
+        justify-content: flex-start;
+    }
+
+    .movie-item {
+        box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        padding: 10px;
+        border: 1px solid #e0e0e0;
+        border-radius: 5px;
+        text-align: center;
+        margin-right: 20px;
+        width: 160px;
+        flex: 0 0 auto;
+    }
+
+    .movie-item img {
+        width: 100%;
+        height: 240px;
+        object-fit: cover;
+    }
+
+    .movie-item:last-child {
+        margin-right: 0;
+    }
+
+    .scroll-buttons, .scroll-buttonss {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%; /* 부모 컨테이너의 너비에 맞춤 */
+        padding: 10px 0;
+    }
+
+    .scroll-left, .scroll-right,
+    .scroll-lefts, .scroll-rights {
+        cursor: pointer;
+        margin: 0 10px;
+        background-color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .scroll-left:hover, .scroll-right:hover,
+    .scroll-lefts:hover, .scroll-rights:hover {
+        background-color: #ccc;
     }
 
     .modal {
@@ -40,7 +211,6 @@
       margin: auto;
       display: block;
       width: 80%;
-      max-width: 700px;
     }
 
     .caption {
@@ -68,125 +238,6 @@
       color: #bbb;
     }
 
-    .movie-summary {
-      text-align: center;
-      /* 인라인 요소의 가로 중앙 정렬 */
-      display: block;
-      /* 이미지를 블록 요소로 만듭니다 */
-      margin: 0 auto;
-      /* 좌우 자동 마진을 통해 가로 방향 중앙 정렬 */
-      width: 70%;
-      border-collapse: collapse;
-      /* 셀 사이 여백 제거 */
-    }
-
-    .movie-summary-title {
-      background-color: #68a5e6;
-      color: #fff;
-    }
-
-    .movie-summary th {
-      border-top: 2px solid black;
-      border-bottom: 1px solid #000;
-      font-size: 16px;
-      height: 60px;
-    }
-
-    .movie-summary td {
-      border-bottom: 1px dotted #999;
-      font-size: 14px;
-    }
-
-    .movie-summary td:first-child {
-      padding: 20px 0 20px 44px;
-      position: relative;
-    }
-
-    .movie-summary td:first-child::after {
-      position: absolute;
-      width: 4px;
-      height: 4px;
-      background-color: #000;
-      border-radius: 50%;
-      left: 20px;
-      top: 50%;
-      margin-top: -2px;
-    }
-
-    .movie-summary td:last-child {
-      text-align: center;
-    }
-
-    .movie-credits {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-    }
-
-    .movie-item {
-      background-color: #fff;
-      padding: 10px;
-      border: 1px solid #e0e0e0;
-      border-radius: 5px;
-      text-align: center;
-    }
-
-    .movie-item img {
-      max-width: 50%;
-      height: auto;
-    }
-
-    .board {
-      width: 100%;
-      border-collapse: collapse;
-      /* 셀 사이 여백 제거 */
-    }
-
-    .boardTitle {
-      background-color: #68a5e6;
-      color: #fff;
-    }
-
-    .board th {
-      border-top: 2px solid black;
-      border-bottom: 1px solid #000;
-      font-size: 16px;
-      height: 60px;
-    }
-
-    .board td {
-      border-bottom: 1px dotted #999;
-      font-size: 14px;
-    }
-
-    .board td:first-child {
-      padding: 20px 0 20px 44px;
-      position: relative;
-    }
-
-    .board td:first-child::after {
-      content: "";
-      position: absolute;
-      width: 4px;
-      height: 4px;
-      background-color: #000;
-      border-radius: 50%;
-      left: 20px;
-      top: 50%;
-      margin-top: -2px;
-    }
-
-    .board td:last-child {
-      text-align: center;
-    }
-
-    footer {
-      text-align: center;
-      padding: 1rem 0;
-      background-color: #007BFF;
-      color: #fff;
-    }
-
     /* Top Button Styles */
     #topButton {
       display: none;
@@ -208,6 +259,7 @@
     #topButton:hover {
       background-color: #0056b3;
     }
+
 </style>
 
 </head>
@@ -218,58 +270,86 @@
     <!-- 영화 정보 -->
     <section class="movie-list" id="movieList">
         <div class="movie-info">
-            <img class="myImg" th:src="@{'https://image.tmdb.org/t/p/original'+${movie.posterPath}}" alt="${movie.title}">
-            <div class="movie-summary">
+
+            <img class="myImg" th:src="@{'https://image.tmdb.org/t/p/original'+${movie.posterPath}}" th:alt="${movie.title}">
 
                 <table class="movie-summary">
                     <tr class="movie-summary-title">
                         <th>Title</th>
                         <th th:text="${movie.title}">제목</th>
                     </tr>
-                    <tr>
+                    <tr th:if="${!movie.originalTitle.trim().isEmpty()}">
                         <td>Original title</td>
-                        <td th:text="${movie.originalTitle}">원제</td>
+                        <td  th:text="${movie.originalTitle}">원제</td>
                     </tr>
-                    <tr>
+                    <tr th:if="${certification?.certification != null}">
                         <td>Certification</td>
                         <td th:text="${certification?.certification} ?: ''">관람등급</td>
                     </tr>
-                    <tr>
+                    <tr th:if="${movie?.runtime != null}">
                         <td>Runtime</td>
-                        <td th:text="${movie.runtime}">상영 시간</td>
+                        <td th:text="${movie.runtime} + ' 분'">상영 시간</td>
                     </tr>
-                    <tr>
+                    <tr th:if="${movie?.releaseDate != null}">
                         <td>Release Date</td>
-                        <td th:text="${movie.releaseDate}">개봉일</td>
+                        <td th:text="${#dates.format(movie.releaseDate, 'yyyy년 MM월 dd일')}">개봉일</td>
                     </tr>
-                    <tr class="movie-genre" th:each="genre : ${genres}">
+                    <tr th:if="${genres != null && !genres.isEmpty()}" class="movie-genre">
                         <td>Genre</td>
-                        <td th:text="${genre.name}">장르</td>
+                        <td  th:text="${#strings.listJoin(genres.![name], ', ')}">장르</td>
                     </tr>
-                    <tr>
+                    <tr th:if="${!movie.tagline.trim().isEmpty()}">
                         <td>Tagline</td>
                         <td th:text="${movie.tagline}">영화 설명 또는 요약...</td>
                     </tr>
-                    <tr>
+                    <tr th:if="${!movie.overview.trim().isEmpty()}">
                         <td>Overview</td>
                         <td th:text="${movie.overview}">영화 줄거리</td>
                     </tr>
                 </table>
+        </div>
+
+        <div class="movie-credits-table">
+
+            <table class="movie-summary-credits">
+                <tr class="movie-summary-credits-title">
+                    <th>CASTS</th>
+                </tr>
+            </table>
+            <div class="scroll-buttonss">
+                <button class="scroll-lefts"> &lt; </button>
+
+                    <div class="movie-casts">
+                        <article class="movie-item" th:each="cast : ${casts}">
+                            <img th:if="${cast.profilePath != null}" th:src="@{'https://image.tmdb.org/t/p/original' + ${cast.profilePath}}" th:alt="${cast.name}">
+                            <h4 th:text="${cast.name}">이름</h4>
+                            <h6 th:text="${cast.character}">배역이름</h6>
+                        </article>
+                    </div>
+
+                <button class="scroll-rights"> &gt; </button>
             </div>
 
-            <div class="movie-credits">
-                <article class="movie-item" th:each="cast : ${casts}">
-                    <img th:if="${cast.profilePath != null}" th:src="@{'https://image.tmdb.org/t/p/original' + ${cast.profilePath}}" th:alt="${cast.name}">
-                    <h4 th:text="${cast.name}">이름</h4>
-                    <h6 th:text="${cast.character}">배역이름</h6>
-                </article>
-                <article class="movie-item" th:each="crew : ${crews}">
-                    <img th:if="${crew.profilePath != null}" th:src="@{'https://image.tmdb.org/t/p/original' + ${crew.profilePath}}" th:alt="${crew.name}">
-                    <h4 th:text="${crew.name}">이름</h4>
-                    <h6 th:text="${crew.department}">맡은일</h6>
-                </article>
+            <table class="movie-summary-credits">
+                <tr class="movie-summary-credits-title">
+                    <th>CREW</th>
+                </tr>
+            </table>
+            <div class="scroll-buttons">
+                <button class="scroll-left"> &lt; </button>
+
+                    <div class="movie-crews">
+                        <article class="movie-item" th:each="crew : ${crews}">
+                            <img th:if="${crew.profilePath != null}" th:src="@{'https://image.tmdb.org/t/p/original' + ${crew.profilePath}}" th:alt="${crew.name}">
+                            <h4 th:text="${crew.name}">이름</h4>
+                            <h6 th:text="${crew.department}">맡은일</h6>
+                        </article>
+                    </div>
+
+                <button class="scroll-right"> &gt; </button>
             </div>
         </div>
+
     </section>
 
     <div class="modal">
@@ -281,10 +361,16 @@
     <table class="board">
         <tr class="boardTitle">
             <th>게시글 제목</th>
+            <th>좋아요</th>
+            <th>조회수</th>
+            <th>등록일</th>
             <th>작성자</th>
         </tr>
-        <tr th:each="board : ${boards}">
+        <tr th:each="board : ${boards}" class="clickable-row" th:data-id="${board.id}">
             <td th:text="${board.title}">게시글 제목</td>
+            <td th:text="${board.favorites}">10</td>
+            <td th:text="${board.viewCount}">100</td>
+            <td th:text="${#dates.format(board.createdAt, 'yyyy-MM-dd')}">2023-11-01</td>
             <td th:text="${board.nickname}">작성자 이름</td>
         </tr>
     </table>
@@ -317,6 +403,42 @@
       if (e.target == modal || e.target == close) {
         modal.style.display = "none";
       }
+    });
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+      const scrollAmount = 300; // 스크롤 이동할 픽셀 값
+      const scrollContainer = document.querySelector('.movie-crews');
+
+      document.querySelector('.scroll-left').addEventListener('click', () => {
+        scrollContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+      });
+
+      document.querySelector('.scroll-right').addEventListener('click', () => {
+        scrollContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+      const scrollAmount = 300; // 스크롤 이동할 픽셀 값
+      const scrollContainer = document.querySelector('.movie-casts');
+
+      document.querySelector('.scroll-lefts').addEventListener('click', () => {
+        scrollContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+      });
+
+      document.querySelector('.scroll-rights').addEventListener('click', () => {
+        scrollContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        // 모든 clickable-row 클래스를 가진 테이블 행에 대해 이벤트 리스너를 추가합니다.
+        document.querySelectorAll('.clickable-row').forEach(row => {
+            row.addEventListener('click', () => {
+                const id = row.dataset.id; // 데이터 ID를 가져옵니다.
+                window.location.href = `/board/detailBoard/${id}`; // URL로 이동합니다.
+            });
+        });
     });
 
     window.onscroll = function () { scrollFunction() };

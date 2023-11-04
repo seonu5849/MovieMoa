@@ -18,6 +18,10 @@
             position: relative;
         }
 
+        .board-list tr:hover {
+            background-color: #f2f2f2;
+        }
+
         .board-list h1 {
             font-size: 28px;
             margin-bottom: 20px; /* 제목과 버튼 사이의 간격을 줄임 */
@@ -60,12 +64,12 @@
         }
 
         .board-list .title {
-            text-align: left; /* 'title' 클래스를 가진 th 태그만 왼쪽 정렬합니다. */
+            text-align: left;
         }
 
-        .board-list .title:hover {
-            text-shadow: 0.5px 0.5px 0 #4caf50;
+        .clickable-row:hover {
             color: #4caf50;
+            cursor: pointer;
         }
 
         .board-list .pagination {
@@ -90,6 +94,10 @@
         .board-list .pagination a:hover {
             background-color: #ddd;
         }
+
+        .create-button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
@@ -112,13 +120,11 @@
                 <th>작성자</th>
                 <th>댓글</th>
             </tr>
-            <tr th:each="board : ${boards}">
+            <tr th:each="board : ${boards}" class="clickable-row" th:data-id="${board.id}">
                 <td th:text="${board.id}">1</td>
                 <td th:text="${board.kategorieName}">카테고리</td>
-                <td class="title">
-                    <a th:href="@{'/board/detailBoard/' + ${board.id}}">
-                        <span th:text="${board.movieTitle} != null ? '[' + ${board.movieTitle} + '] ' + ${board.title} : ${board.title}">[영화제목] 게시글 제목</span>
-                    </a>
+                <td class="title" th:text="${board.movieTitle} != null ? '[' + ${board.movieTitle} + '] ' + ${board.title} : ${board.title}">
+                    [영화제목] 게시글 제목
                 </td>
                 <td th:text="${board.favorites}">10</td>
                 <td th:text="${board.viewCount}">100</td>
@@ -167,6 +173,16 @@
                 // 사용자가 로그인했다면 실제 게시글 작성 페이지로 이동
                 window.location.href = writeBoardUrl;
             }
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        // 모든 clickable-row 클래스를 가진 테이블 행에 대해 이벤트 리스너를 추가합니다.
+        document.querySelectorAll('.clickable-row').forEach(row => {
+            row.addEventListener('click', () => {
+                const id = row.dataset.id; // 데이터 ID를 가져옵니다.
+                window.location.href = `/board/detailBoard/${id}`; // URL로 이동합니다.
+            });
         });
     });
 </script>

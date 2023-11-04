@@ -84,4 +84,26 @@ public class MovieServiceImpl implements MovieService {
         return movieMapper.findBoardByMovie(memberId);
     } // findBoardByMovie
 
+    @Override
+    public Boolean WishlistCheck(Long movieId, Long memberId) {
+        Integer wishlistCheck = movieMapper.WishlistCheck(movieId, memberId);
+        if(wishlistCheck == 0){
+            // wishlist 누르지 않음
+            return false;
+        } else {
+            // wishlist 이미 누름
+            return true;
+        }
+    }
+
+    @Override
+    public Integer cancelWishlist(Long movieId, Long memberId) {
+        return movieMapper.cancelWishlist(movieId, memberId);
+    }
+
+    @Override
+    public Integer addWishlist(Long movieId, Long memberId) {
+        return movieMapper.addWishlist(movieId, memberId);
+    }
+
 } // end class

@@ -229,9 +229,10 @@ CREATE TABLE search_history (
 );
 
 CREATE TABLE wishlist (
-	member_id BIGINT NOT NULL,
-	movie_id BIGINT NOT NULL,
-	PRIMARY KEY (member_id, movie_id),
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    member_id BIGINT NOT NULL,
+    movie_id BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY (member_id) REFERENCES Member(id) ON DELETE CASCADE,
 	FOREIGN KEY (movie_id) REFERENCES Movies(id) ON DELETE CASCADE
 );

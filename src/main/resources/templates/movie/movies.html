@@ -11,29 +11,32 @@
         padding: 20px;
     }
 
-    /* 검색바 전체를 가로 방향의 플렉스로 만들어서 내부의 폼들이 가로로 나열되게 함 */
+    /* 검색바와 내부 폼 스타일링 */
     .search-bar {
         display: flex;
         justify-content: space-around;
         align-items: center;
         padding: 1rem 0;
+        border: 1px solid #ddd;
     }
 
-    form {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 1rem;
+    /* 공통 폼 스타일 */
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        padding-left: 10px;
     }
 
-    /* 각 검색 항목들의 간격 조정 */
-    .search-category select,
-    .search-category input,
-    .search-date input {
-        margin-right: 10px;
+    /* 공통 입력 컨트롤 스타일 */
+    .form-control {
+        width: 100%;
+        padding: 8px 10px;
+        border-radius: 4px;
+        box-sizing: border-box;
     }
 
+    /* 드롭다운 메뉴 스타일 */
     .dropdown {
         font-family: Arial, sans-serif;
         position: relative;
@@ -45,92 +48,147 @@
         position: absolute;
         background-color: #f9f9f9;
         min-width: 160px;
-        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        border-radius: 5px; /* 모서리를 둥글게 */
+        padding: 10px; /* 드롭다운 메뉴 내부 여백 */
         z-index: 1;
     }
 
-    .dropdown-content a {
-        color: black;
-        padding: 12px 16px;
-        text-decoration: none;
-        display: block;
+    /* 드롭다운 버튼 스타일 */
+    .dropdown-button {
+        background-color: #007BFF; /* 버튼 배경 색상 */
+        color: white; /* 버튼 글자 색상 */
+        padding: 10px 15px; /* 버튼 내부 여백 */
+        border: none; /* 테두리 없음 */
+        cursor: pointer; /* 마우스 오버시 커서 변경 */
+        border-radius: 5px; /* 버튼 모서리 둥글게 */
     }
 
-    .dropdown-content a:hover {
-        background-color: #f1f1f1;
-    }
-
+    /* 드롭다운 메뉴에 마우스를 올렸을 때 드롭다운 컨텐츠 표시 */
     .dropdown:hover .dropdown-content {
         display: block;
     }
 
-    .genre-list {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        z-index: 1000;
-        background-color: white;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        padding: 10px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    }
-
-    .form-group label {
+    /* 체크박스 레이블 스타일 */
+    .checkbox-label {
         display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-        padding-left: 10px;
+        margin: 5px;
+        cursor: pointer;
     }
 
-    .form-control {
-        width: 100%;
-        padding: 8px 10px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        box-sizing: border-box; /* 테두리와 패딩을 포함한 너비로 설정 */
-        display: inline-block; /* 폼을 inline-block 요소로 만듭니다. */
-    }
-
-    /* 날짜 선택 폼 */
-    #dateForm {
-        background-color: #f9f9f9;
-        padding: 15px;
-        border-radius: 5px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    #dateForm .form-control {
-        display: inline-block;
-        width: auto; /* 너비 자동 조절 */
+    /* 체크박스와 레이블 간격 */
+    .checkbox-label input[type="checkbox"] {
         margin-right: 10px;
     }
 
-    /* 장르 선택 폼 */
-    #genreForm {
-        background-color: #f2f2f2;
-        padding: 15px;
-        border-radius: 5px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* 검색 버튼 스타일 */
+    .genre-search-button {
+        background-color: #007BFF; /* 버튼 배경 색상 */
+        color: white; /* 버튼 글자 색상 */
+        padding: 10px 20px; /* 버튼 내부 여백 */
+        border: none; /* 테두리 없음 */
+        cursor: pointer; /* 마우스 오버시 커서 변경 */
+        border-radius: 5px; /* 버튼 모서리 둥글게 */
+        display: block; /* 블록 레벨 요소로 변경 */
+        width: 100%; /* 부모 요소에 꽉 차게 */
+        box-sizing: border-box; /* 테두리와 패딩을 너비에 포함 */
+        margin-top: 10px; /* 위쪽 마진 추가 */
     }
 
-    #genreForm select.form-control {
-        display: block;
-        width: 100%;
+    /* 호버 효과 */
+    .dropdown-button:hover,
+    .genre-search-button:hover {
+        background-color: #0056b3; /* 버튼 배경 색상 변경 */
     }
 
-    /* 영화 제목 검색 폼 */
-    #movieTitleForm {
+
+    /* 폼 박스 스타일 */
+    .form-box {
         background-color: #f9f9f9;
         padding: 15px;
         border-radius: 5px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
+    /* 개별 폼 스타일 */
+    #dateForm .form-control,
+    #genreForm select.form-control {
+        display: block;
+    }
+
+    /* 영화 제목 검색 폼 */
     #movieTitleForm .form-control {
         display: block;
-        width: 100%;
+    }
+
+    /* 검색 카테고리 스타일 */
+    .search-category {
+        display: flex;
+        gap: 0.5rem; /* 요소들 사이의 간격을 설정 */
+        align-items: center;
+        width: 100%; /* search-bar에 맞게 너비 조정 */
+    }
+
+    .search-category select,
+    .search-category input[type="text"],
+    .search-category button {
+        flex-grow: 1; /* 사용 가능한 공간에 맞게 요소들의 크기를 조정 */
+        padding: 0.5rem; /* 패딩을 추가하여 높이 조정 */
+        margin: 0; /* 기본 마진 제거 */
+        border-radius: 4px;
+        border: 1px solid #ddd;
+    }
+
+    .search-category button {
+        flex-grow: 0; /* 버튼은 컨텐츠 크기에 맞게 조정 */
+        padding-left: 1rem; /* 버튼 내부 패딩 조정 */
+        padding-right: 1rem; /* 버튼 내부 패딩 조정 */
+        background-color: #007BFF;
+        color: white;
+    }
+
+    .search-category button:hover {
+        background-color: #0056b3;
+    }
+
+    /* 장르별 검색 버튼 스타일 */
+    button[type="button"] {
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+    }
+
+    /* 검색 날짜 스타일 */
+    .search-date {
+        display: flex;
+        gap: 0.5rem; /* 요소들 사이의 간격을 설정 */
+        align-items: center;
+        width: 100%; /* search-bar에 맞게 너비 조정 */
+    }
+
+    .search-date input[type="date"],
+    .search-date button {
+        flex-grow: 1; /* 사용 가능한 공간에 맞게 요소들의 크기를 조정 */
+        padding: 0.5rem; /* 패딩을 추가하여 높이 조정 */
+        margin: 0; /* 기본 마진 제거 */
+        border-radius: 4px;
+        border: 1px solid #ddd;
+    }
+
+    .search-date span {
+        white-space: nowrap;
+    }
+
+    .search-date button {
+        flex-grow: 0; /* 버튼은 컨텐츠 크기에 맞게 조정 */
+        padding-left: 1rem; /* 버튼 내부 패딩 조정 */
+        padding-right: 1rem; /* 버튼 내부 패딩 조정 */
+        background-color: #007BFF;
+        color: white;
+    }
+
+    .search-date button:hover {
+        background-color: #0056b3;
     }
 
     /* 영화목록 스타일 */
@@ -142,10 +200,13 @@
 
     .movie-item {
         background-color: #fff;
-        padding: 10px;
+        padding: 20px 10px;
         border: 1px solid #e0e0e0;
         border-radius: 5px;
         text-align: center;
+        display: flex; /* flexbox 레이아웃 사용 */
+        flex-direction: column; /* 아이템을 세로로 정렬 */
+        justify-content: flex-end; /* 컨텐츠를 컨테이너의 끝(아래쪽)으로 정렬 */
     }
 
     .movie-item img {
@@ -159,22 +220,35 @@
     }
 
     .movie-item p {
-        margin: 10px 0;
+        margin: 15px 0;
         color: #666;
     }
 
-    .movie-item a {
+    /* 이미지 링크를 포함하고 있는 요소에 클래스를 추가합니다. 예를 들면, 'movie-link' */
+    .movie-link {
+        position: relative;
         display: inline-block;
-        margin-top: 10px;
-        padding: 5px 15px;
-        background-color: #007BFF;
-        color: #fff;
-        text-decoration: none;
-        border-radius: 5px;
     }
 
-    .movie-item a:hover {
-        background-color: #0056b3;
+    .movie-link:hover img {
+        opacity: 0.7; /* 호버 시 이미지의 불투명도를 줄여 어둡게 만듭니다. */
+    }
+
+    /* 선택적으로 호버 시의 추가 효과를 위한 가상 요소를 사용할 수 있습니다. */
+    .movie-link::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5); /* 검은색 반투명 배경 */
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    .movie-link:hover::after {
+        opacity: 1; /* 호버 시 가상 요소의 불투명도를 증가시켜 어둡게 만듭니다. */
     }
 
     /* 더보기 버튼 스타일 */
@@ -191,13 +265,6 @@
 
     .more-button:hover {
         background-color: #0056b3;
-    }
-
-    footer {
-        text-align: center;
-        padding: 1rem 0;
-        background-color: #007BFF;
-        color: #fff;
     }
 
     /* Top Button Styles */
@@ -221,6 +288,29 @@
     #topButton:hover {
         background-color: #0056b3;
     }
+
+    .wishlistButton {
+        padding: 5px 10px;
+        background-color: #CCC;
+        border: none;
+        border-radius: 5px;
+    }
+
+    .wishlistButton:hover {
+        background-color: #838383;
+    }
+
+    .active-wishlist {
+        padding: 5px 10px;
+        background-color: #007BFF;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+    }
+
+    .active-wishlist:hover {
+        background-color: #0056b3;
+    }
 </style>
 </head>
 
@@ -231,7 +321,7 @@
     <!-- 검색창 -->
     <div class="search-bar">
 
-        <div class="form-group">
+        <div class="form-group title">
         <!-- 제목과 배우/스태프명 검색 폼 -->
         <form action="/movie/searchMovies" method="get" id="movieTitleForm" class="form-control">
             <div class="search-category">
@@ -240,43 +330,45 @@
                     <option value="credits">배우/스태프명</option>
                 </select>
                 <input type="text" id="searchInput" name="searchInput" placeholder="검색어를 입력하세요.">
-                <button type="submit">검색</button>
+                <button type="submit" class="searchCategoryBotton">검색</button>
             </div>
         </form>
         </div>
 
-        <div class="form-group">
-        <!-- 장르별 영화 검색 폼 -->
-        <form action="/movie/searchByGenre" method="get" id="genreForm" class="form-control">
-            <div class="dropdown">
-                <button type="button">장르별 검색</button>
-                <div class="dropdown-content">
-                    <label><input type="checkbox" name="searchGenre" value="모험"> 모험</label>
-                    <label><input type="checkbox" name="searchGenre" value="판타지"> 판타지</label>
-                    <label><input type="checkbox" name="searchGenre" value="애니메이션"> 애니메이션</label>
-                    <label><input type="checkbox" name="searchGenre" value="드라마"> 드라마</label>
-                    <label><input type="checkbox" name="searchGenre" value="공포"> 공포</label>
-                    <label><input type="checkbox" name="searchGenre" value="액션"> 액션</label>
-                    <label><input type="checkbox" name="searchGenre" value="코미디"> 코미디</label>
-                    <label><input type="checkbox" name="searchGenre" value="역사"> 역사</label>
-                    <label><input type="checkbox" name="searchGenre" value="서부"> 서부</label>
-                    <label><input type="checkbox" name="searchGenre" value="스릴러"> 스릴러</label>
-                    <label><input type="checkbox" name="searchGenre" value="범죄"> 범죄</label>
-                    <label><input type="checkbox" name="searchGenre" value="다큐멘터리"> 다큐멘터리</label>
-                    <label><input type="checkbox" name="searchGenre" value="SF"> SF</label>
-                    <label><input type="checkbox" name="searchGenre" value="미스터리"> 미스터리</label>
-                    <label><input type="checkbox" name="searchGenre" value="음악"> 음악</label>
-                    <label><input type="checkbox" name="searchGenre" value="로맨스"> 로맨스</label>
-                    <label><input type="checkbox" name="searchGenre" value="가족"> 가족</label>
-                    <label><input type="checkbox" name="searchGenre" value="전쟁"> 전쟁</label>
-                    <label><input type="checkbox" name="searchGenre" value="TV 영화"> TV 영화</label>
-                    <button type="submit">검색</button>
+        <div class="form-group genre">
+            <!-- 장르별 영화 검색 폼 -->
+            <form action="/movie/searchByGenre" method="get" id="genreForm" class="form-control">
+                <div class="dropdown">
+                    <button type="button" class="dropdown-button">장르별 검색</button>
+                    <div class="dropdown-content">
+                        <div class="checkbox-group">
+                            <label class="checkbox-label"><input type="checkbox" name="searchGenre" value="모험"> 모험</label>
+                            <label class="checkbox-label"><input type="checkbox" name="searchGenre" value="판타지"> 판타지</label>
+                            <label class="checkbox-label"><input type="checkbox" name="searchGenre" value="애니메이션"> 애니메이션</label>
+                            <label class="checkbox-label"><input type="checkbox" name="searchGenre" value="드라마"> 드라마</label>
+                            <label class="checkbox-label"><input type="checkbox" name="searchGenre" value="공포"> 공포</label>
+                            <label class="checkbox-label"><input type="checkbox" name="searchGenre" value="액션"> 액션</label>
+                            <label class="checkbox-label"><input type="checkbox" name="searchGenre" value="코미디"> 코미디</label>
+                            <label class="checkbox-label"><input type="checkbox" name="searchGenre" value="역사"> 역사</label>
+                            <label class="checkbox-label"><input type="checkbox" name="searchGenre" value="서부"> 서부</label>
+                            <label class="checkbox-label"><input type="checkbox" name="searchGenre" value="스릴러"> 스릴러</label>
+                            <label class="checkbox-label"><input type="checkbox" name="searchGenre" value="범죄"> 범죄</label>
+                            <label class="checkbox-label"><input type="checkbox" name="searchGenre" value="다큐멘터리"> 다큐멘터리</label>
+                            <label class="checkbox-label"><input type="checkbox" name="searchGenre" value="SF"> SF</label>
+                            <label class="checkbox-label"><input type="checkbox" name="searchGenre" value="미스터리"> 미스터리</label>
+                            <label class="checkbox-label"><input type="checkbox" name="searchGenre" value="음악"> 음악</label>
+                            <label class="checkbox-label"><input type="checkbox" name="searchGenre" value="로맨스"> 로맨스</label>
+                            <label class="checkbox-label"><input type="checkbox" name="searchGenre" value="가족"> 가족</label>
+                            <label class="checkbox-label"><input type="checkbox" name="searchGenre" value="전쟁"> 전쟁</label>
+                            <label class="checkbox-label"><input type="checkbox" name="searchGenre" value="TV 영화"> TV 영화</label>
+                        </div>
+                        <button type="submit" class="genre-search-button">검색</button>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
         </div>
 
-        <div class="form-group">
+        <div class="form-group date">
         <!-- 개봉일자별 검색 -->
         <form action="/movie/searchByDate" method="get" id="dateForm" class="form-control">
             <div class="search-date">
@@ -292,7 +384,7 @@
     <!-- 영화 목록 -->
     <section class="movie-list" id="movieList">
         <article class="movie-item" th:each="movie : ${moviesList}">
-            <a th:href="@{'/movie/movieDetail?movieId=' + ${movie.id}}">
+            <a th:href="@{'/movie/movieDetail?movieId=' + ${movie.id}}" class="movie-link">
                 <img th:src="@{'https://image.tmdb.org/t/p/original'+${movie.posterPath}}" alt="${movie.title}">
             </a>
             <h3 th:text="${movie.title}">영화제목</h3>
@@ -301,8 +393,12 @@
                 th:text="${movie.overview != null ? (#strings.length(movie.overview) > 20 ? #strings.substring(movie.overview, 0, 20) + '...' : movie.overview) : ''}">
                 영화 설명 또는 요약...
             </p>
-            <a th:href="@{'/movie/addToWishlist?movieId=' + ${movie.id}}" data-movie-id="${movie.id}"
-                class="wishlist-button">위시리스트에 추가</a>
+            <button class="button wishlistButton"
+                    th:data-movieid="${movie.id}"
+                    th:data-loggedin="${#authorization.expression('isAuthenticated()')}"
+                    th:classappend="${wishlistStatus[movie.id]} ? 'active-wishlist' : ''">
+                위시리스트
+            </button>
         </article>
     </section>
 
@@ -313,7 +409,17 @@
 
 <footer th:replace="footer.html" />
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const dropdownButton = document.querySelector('.dropdown-button');
+        const dropdownContent = document.querySelector('.dropdown-content');
+
+        dropdownButton.onclick = function() {
+            dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+        };
+    });
+
     document.addEventListener("DOMContentLoaded", function () {
         // 처음 페이지 로딩 시 모든 영화 항목을 가져옴
         const movieItems = document.querySelectorAll('.movie-item');
@@ -335,7 +441,7 @@
             // 다음 4개의 영화 항목을 보여줌
             for (let i = countShown; i < countShown + 4; i++) {
                 if (movieItems[i]) {
-                    movieItems[i].style.display = 'block';
+                    movieItems[i].style.display = 'flex';
                 }
             }
 
@@ -345,24 +451,6 @@
             }
         });
     });
-
-    const wishList = [];
-
-    document.querySelectorAll('.wishlist-button').forEach(button => {
-        button.addEventListener('click', function (event) {
-            event.preventDefault(); // 기본 링크 동작 방지
-
-            const movieId = this.getAttribute('data-movie-id');
-
-            if (!wishList.includes(movieId)) {
-                wishList.push(movieId);
-                alert('위시리스트에 추가되었습니다.');
-            } else {
-                alert('이미 위시리스트에 추가된 영화입니다.');
-            }
-        });
-    });
-
 
     window.onscroll = function () { scrollFunction() };
 
@@ -380,37 +468,46 @@
         document.documentElement.scrollTop = 0;
     });
 
-    document.querySelectorAll('.wishlist-button').forEach(button => {
-        button.addEventListener('click', function (event) {
-            event.preventDefault(); // 기본 링크 동작 방지
-
-            const movieId = this.getAttribute('data-movie-id');
-            const memberId = '1'; // 사용자 ID 정보를 가져와야 함
-
-            if (!wishList.includes(movieId)) {
-                fetch('/movie/addToWishlist', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ movieId, memberId }),
-                })
-                    .then(response => response.json()) // 결과를 JSON 형태로 파싱
-                    .then(data => {
-                        if (data.success) { // 서버에서 성공적으로 처리된 경우
-                            alert('위시리스트에 추가되었습니다.');
-                            wishList.push(movieId);
-                        } else { // 서버에서 에러가 발생한 경우
-                            alert(data.message || '오류가 발생했습니다. 다시 시도해주세요.');
-                        }
-                    })
-                    .catch(error => { // 네트워크 에러나 다른 예외적인 상황에서의 처리
-                        console.error('Error:', error);
-                        alert('오류가 발생했습니다. 다시 시도해주세요.');
-                    });
-            } else {
-                alert('이미 위시리스트에 추가된 영화입니다.');
+    $(document).ready(function() {
+        // 로그인 체크하는 공통 함수
+        function checkLogin($element) {
+            var loggedIn = $element.data('loggedin');
+            if (!loggedIn) {
+                alert('로그인이 필요한 서비스입니다.');
+                return false;
             }
+            return true;
+        }
+
+        // 위시리스트 버튼 클릭 이벤트
+        $('.wishlistButton').on('click', function(e) { // 'e' 이벤트 객체를 추가
+            var $wishlistButton = $(this);
+            var movieId = $wishlistButton.data('movieid');
+
+            console.log("위시리스트 버튼 클릭");
+            if (!checkLogin($wishlistButton)) {
+                console.log("비로그인");
+                e.preventDefault(); // 이제 'e' 객체가 정의되어 있으므로 이를 사용할 수 있음
+                return;
+            }
+
+            $.ajax({
+                url: '/movie/wishlist/' + movieId,
+                type: 'POST',
+                success: function(response) {
+                    if(response.wishlist) {
+                        alert('위시리스트에 추가되었습니다.');
+                        $wishlistButton.removeClass('wishlistButton').addClass('active-wishlist'); // 클래스 변경
+                    } else {
+                        alert('위시리스트에서 삭제되었습니다.');
+                        $wishlistButton.removeClass('active-wishlist').addClass('wishlistButton'); // 클래스 변경
+                    }
+                },
+                error: function() {
+                    alert('오류가 발생했습니다. 다시 시도해주세요.');
+                }
+            });
+            console.log("Ajax 호출 후");
         });
     });
 

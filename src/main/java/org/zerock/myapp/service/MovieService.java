@@ -1,5 +1,6 @@
 package org.zerock.myapp.service;
 
+import org.apache.ibatis.annotations.Param;
 import org.zerock.myapp.domain.*;
 
 import java.util.List;
@@ -38,5 +39,14 @@ public interface MovieService {
 
     // 특정 영화의 게시글 조회
     public abstract List<authorOfBoardVO> findBoardByMovie(Long memberId);
+
+    // 사용자가 해당 영화에 위시리스트를 추가했는지 확인
+    public abstract Boolean WishlistCheck(Long movieId, Long memberId);
+
+    // 이미 위시리스트를 눌렀다면, 위시리스트 취소
+    public abstract Integer cancelWishlist(Long movieId, Long memberId);
+
+    // 위시리스트를 누르지 않았다면, 위시리스트 추가
+    public abstract Integer addWishlist(Long movieId, Long memberId);
 
 } // end interface
