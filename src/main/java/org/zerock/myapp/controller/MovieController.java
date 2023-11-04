@@ -75,7 +75,33 @@ public class MovieController {
         List<MovieVO> searchedMovies = movieService.searchMovies(searchInput, searchCategory);
         searchedMovies.forEach(log::info);
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long memberId = null;
+        if (authentication != null && authentication.isAuthenticated() &&
+                !authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ANONYMOUS"))) {
+            log.info("\t+ 인증된 사용자");
+            String username = authentication.getName();
+            memberId = Long.valueOf(username);
+        }
+
+        // 여기서 위시리스트 체크 상태를 저장할 맵을 생성합니다.
+        Map<Long, Boolean> wishlistStatus = new HashMap<>();
+
+        if (memberId != null) {
+            for (MovieVO movie : searchedMovies) {
+                Long movieId = movie.getId(); // 여기서 영화 ID를 가져옵니다.
+                boolean wishCheck = movieService.WishlistCheck(movieId, memberId);
+                log.info("\t+ Movie ID: {}, wishCheck: {}", movieId, wishCheck);
+
+                // 위시리스트 체크 결과를 맵에 저장합니다.
+                wishlistStatus.put(movieId, wishCheck);
+            }
+        }
+
+        // 모델에 영화 목록과 위시리스트 체크 상태를 추가합니다.
+        model.addAttribute("wishlistStatus", wishlistStatus);
         model.addAttribute("moviesList", searchedMovies);
+
         return "movie/movies";
     }
 
@@ -87,6 +113,31 @@ public class MovieController {
         List<MovieVO> searchedMovies = movieService.searchByGenre(searchGenre);
         searchedMovies.forEach(log::info);
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long memberId = null;
+        if (authentication != null && authentication.isAuthenticated() &&
+                !authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ANONYMOUS"))) {
+            log.info("\t+ 인증된 사용자");
+            String username = authentication.getName();
+            memberId = Long.valueOf(username);
+        }
+
+        // 여기서 위시리스트 체크 상태를 저장할 맵을 생성합니다.
+        Map<Long, Boolean> wishlistStatus = new HashMap<>();
+
+        if (memberId != null) {
+            for (MovieVO movie : searchedMovies) {
+                Long movieId = movie.getId(); // 여기서 영화 ID를 가져옵니다.
+                boolean wishCheck = movieService.WishlistCheck(movieId, memberId);
+                log.info("\t+ Movie ID: {}, wishCheck: {}", movieId, wishCheck);
+
+                // 위시리스트 체크 결과를 맵에 저장합니다.
+                wishlistStatus.put(movieId, wishCheck);
+            }
+        }
+
+        // 모델에 영화 목록과 위시리스트 체크 상태를 추가합니다.
+        model.addAttribute("wishlistStatus", wishlistStatus);
         model.addAttribute("moviesList", searchedMovies);
         return "movie/movies";
     } // searchByGenre
@@ -99,6 +150,31 @@ public class MovieController {
         List<MovieVO> searchedMovies = movieService.searchByDate(startDate, endDate);
         searchedMovies.forEach(log::info);
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long memberId = null;
+        if (authentication != null && authentication.isAuthenticated() &&
+                !authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ANONYMOUS"))) {
+            log.info("\t+ 인증된 사용자");
+            String username = authentication.getName();
+            memberId = Long.valueOf(username);
+        }
+
+        // 여기서 위시리스트 체크 상태를 저장할 맵을 생성합니다.
+        Map<Long, Boolean> wishlistStatus = new HashMap<>();
+
+        if (memberId != null) {
+            for (MovieVO movie : searchedMovies) {
+                Long movieId = movie.getId(); // 여기서 영화 ID를 가져옵니다.
+                boolean wishCheck = movieService.WishlistCheck(movieId, memberId);
+                log.info("\t+ Movie ID: {}, wishCheck: {}", movieId, wishCheck);
+
+                // 위시리스트 체크 결과를 맵에 저장합니다.
+                wishlistStatus.put(movieId, wishCheck);
+            }
+        }
+
+        // 모델에 영화 목록과 위시리스트 체크 상태를 추가합니다.
+        model.addAttribute("wishlistStatus", wishlistStatus);
         model.addAttribute("moviesList", searchedMovies);
         return "movie/movies";
     } // searchByDate
