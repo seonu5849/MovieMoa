@@ -202,14 +202,17 @@ CREATE TABLE reportBoards (
 	report_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	board_id BIGINT NOT NULL,
 	reporter_id BIGINT NOT NULL,
-	complete varchar(30)
+	complete varchar(30),
+	result varchar(20)
 	FOREIGN KEY (board_id) REFERENCES Board(id) ON DELETE CASCADE,
 	FOREIGN KEY (menu) REFERENCES report_kategories(id),
 	FOREIGN KEY (reporter_id) REFERENCES Member(id)
 );
 
 /*alter table reportBoards
-add column complete varchar(30);*/
+add column complete varchar(30);
+alter table reportBoards
+add column result varchar(20);*/
 
 CREATE TABLE reportReply (
 	id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -218,14 +221,17 @@ CREATE TABLE reportReply (
 	reporter_id BIGINT NOT NULL,
 	reply_id BIGINT NOT NULL,
 	menu BIGINT NOT NULL,
-	complete varchar(30)
+	complete varchar(30),
+	result varchar(20)
 	FOREIGN KEY (reporter_id) REFERENCES Member(id),
 	FOREIGN KEY (menu) REFERENCES report_kategories(id),
 	FOREIGN KEY (reply_id) REFERENCES Board_reply(id) ON DELETE CASCADE
 );
 
 /*alter table reportReply
-add column complete varchar(30);*/
+add column complete varchar(30);
+alter table reportReply
+add column result varchar(20);*/
 
 CREATE TABLE search_history (
 	member_id BIGINT NOT NULL,

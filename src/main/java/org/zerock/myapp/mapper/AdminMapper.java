@@ -63,8 +63,12 @@ public interface AdminMapper {
 
     // 신고 게시물 처리 유무 업데이트
     public abstract Integer updateReportBoardComplete(@Param("memberId") Long memberId, // 게시글 작성자 - 신고 받은 사람
-                                                      @Param("boardId") Long boardId // 신고받은 게시물의 번호
-                                                      );
+                                                      @Param("boardId") Long boardId, // 신고받은 게시물의 번호
+                                                      @Param("result") String status);
+    // 신고 댓글 처리 유무 업데이트
+    public abstract Integer updateReportReplyComplete(@Param("memberId") Long memberId,
+                                                      @Param("replyId") Long replyId,
+                                                      @Param("result") String status);
 
 //    ============================================================================================
 

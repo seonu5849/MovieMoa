@@ -243,7 +243,7 @@ public class AdminController {
         log.trace("boardComplaintTask({}, {}, {}) invoked.", selectOption, boardWriterId, boardId);
 
         Integer affectedRows = this.adminService.editMemberStatus(boardWriterId, selectOption);
-        this.adminService.editBoardComplete(boardWriterId, boardId);
+        this.adminService.editBoardComplete(boardWriterId, boardId, selectOption);
         MemberVO member = this.adminService.findDetailMember(boardWriterId);
 
         Date suspensionPeriod = member.getSuspensionPeriod();
@@ -280,11 +280,33 @@ public class AdminController {
         return "/admin/replyComplaint";
     } // replyComplaintView
 
+    @ResponseBody
     @PostMapping("/replyComplaint") // 신고 댓글
-    public String replyComplaintTask(){
-        log.trace("replyComplaintTask() invoked.");
+    public Map<String, Object> replyComplaintTask(@RequestParam("option") String selectOption,
+                                     @RequestParam("replyWriterId") Long replyWriterId,
+                                     @RequestParam("replyId") Long replyId){
+        log.trace("replyComplaintTask({}, {}, {}) invoked.", selectOption, replyWriterId, replyId);
 
-        return "redirect:/admin/replyComplaint";
+        Integer affectedRows = this.adminService.editMemberStatus(replyWriterId, selectOption);
+        this.adminService.editReplyComplete(replyWriterId, replyId, selectOption);
+        MemberVO member = this.adminService.findDetailMember(replyWriterId);
+
+        Date suspensionPeriod = member.getSuspensionPeriod();
+        Map<String, Object> response = new HashMap<>();
+
+        String formatDate = null;
+
+        if(suspensionPeriod != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            formatDate = sdf.format(suspensionPeriod);
+        }else{
+            formatDate = "";
+        }
+
+        response.put("status", member.getStatus());
+        response.put("suspensionPeriod", formatDate);
+
+        return response;
     } // replyComplaintTask
 
     // 영화 데이터 가져오기

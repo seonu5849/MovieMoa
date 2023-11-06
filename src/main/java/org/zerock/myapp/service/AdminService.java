@@ -53,7 +53,10 @@ public interface AdminService {
     public abstract Integer editMemberStatus(Long memberId, String status);
 
     // 신고게시글의 처분 여부를 업데이트
-    public abstract void editBoardComplete(Long memberId, Long boardId);
+    public abstract void editBoardComplete(Long memberId, Long boardId, String status);
+
+    // 신고댓글의 처분 여부를 업데이트
+    public abstract void editReplyComplete(Long memberId, Long replyId, String status);
 
 //    ====================================================================================================
     // 페이징 처리된 멤버의 게시글 출력

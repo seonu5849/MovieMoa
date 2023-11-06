@@ -13,6 +13,7 @@ public class ReportBoardsVO {
     private Long boardId;
     private Long reporterId;
     private String complete;
+    private String result;
     private String title;
     private String reporterName;
     private String status;

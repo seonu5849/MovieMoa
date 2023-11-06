@@ -182,7 +182,7 @@ td {
                         <input type="hidden" class="completeState" th:value="${reportBoard.complete}">
                         <td th:text="${reportBoard.id}">번호</td>
                         <td th:text="${reportBoard.categoryName}">카테고리</td>
-                        <td th:text="${reportBoard.title}">제목</td>
+                        <td><a th:href="@{'/board/detailBoard/'+${reportBoard.boardId}}" th:text="${reportBoard.title}">제목</a></td>
                         <td th:text="${reportBoard.boardWriter}">작성자</td>
                         <td th:text="${reportBoard.content != null ? (#strings.length(reportBoard.content) > 8 ? #strings.substring(reportBoard.content, 0, 8) + '...' : reportBoard.content) : ''}">
                                 신고사유</td>
@@ -192,7 +192,7 @@ td {
                         <td th:text="${#dates.format(reportBoard.suspensionPeriod, 'yyyy-MM-dd')}" class="suspensionPeriod">정지마감날짜</td>
                         <td>
                             <div th:if="${reportBoard.complete == 'completed'}">
-                                처리완료
+                                <span th:text="${reportBoard.result}">처리완료</span>
                             </div>
                             <div th:unless="${reportBoard.complete == 'completed'}">
                                 <select name="reportStatus" class="reportStatus" onchange="handleSelectChange(this)">
