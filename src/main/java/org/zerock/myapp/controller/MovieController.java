@@ -183,6 +183,12 @@ public class MovieController {
     @GetMapping("/movieDetail")
     public String movieDetail(Model model, @RequestParam Long movieId) {
         log.trace("movieDetail({}) invoked.", movieId);
+        // 현재 인증된 사용자의 정보를 가져옵니다.
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // 인증된 사용자의 이름(여기서는 사용자 ID로 사용)을 가져옵니다.
+        String username = authentication.getName();
+        // 사용자 이름(아이디)를 Long 타입으로 변환합니다.
+        Long memberId = Long.valueOf(username);
 
         MovieVO movie = movieService.findDetailMovie(movieId);
         List<MovieGenreVO> genres = movieService.genreOfMovies(movieId);
@@ -190,6 +196,7 @@ public class MovieController {
         List<CreditsVO> crews = movieService.crewsOfMovies(movieId);
         CertificationVO certification = movieService.certificationsOfMovies(movieId);
         List<authorOfBoardVO> boards = movieService.findBoardByMovie(movieId);
+        this.movieService.addSearchHistory(memberId, movieId);
 
         model.addAttribute("movie", movie);
         model.addAttribute("genres", genres);

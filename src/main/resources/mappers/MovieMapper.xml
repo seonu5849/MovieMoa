@@ -146,5 +146,15 @@
         INSERT INTO wishlist (movie_id, member_id) VALUES (#{movieId}, #{memberId})
     </insert>
 
+    <!--  디테일 페이지 클릭시 검색기록에 추가  -->
+    <insert id="insertSearchHistory">
+        MERGE INTO SEARCH_HISTORY AS target
+        USING (SELECT #{memberId, jdbcType=INTEGER} AS member_id, #{movieId, jdbcType=INTEGER} AS movie_id FROM dual) AS source
+        ON target.member_id = source.member_id AND target.movie_id = source.movie_id
+        WHEN MATCHED THEN
+        UPDATE SET target.member_id = source.member_id, target.movie_id = source.movie_id, target.search_date = CURRENT_TIMESTAMP
+        WHEN NOT MATCHED THEN
+        INSERT (member_id, movie_id) VALUES (source.member_id, source.movie_id)
+    </insert>
 
 </mapper>

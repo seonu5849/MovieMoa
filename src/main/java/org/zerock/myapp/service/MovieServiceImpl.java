@@ -106,4 +106,9 @@ public class MovieServiceImpl implements MovieService {
         return movieMapper.addWishlist(movieId, memberId);
     }
 
+    @Override
+    public Integer addSearchHistory(Long memberId, Long movieId) {
+        return this.movieMapper.insertSearchHistory(memberId, movieId);
+    }
+
 } // end class

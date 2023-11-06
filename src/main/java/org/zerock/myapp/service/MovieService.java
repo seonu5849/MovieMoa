@@ -49,4 +49,7 @@ public interface MovieService {
     // 위시리스트를 누르지 않았다면, 위시리스트 추가
     public abstract Integer addWishlist(Long movieId, Long memberId);
 
+    // 상세페이지 클릭 시 검색기록에 저장
+    public abstract Integer addSearchHistory(Long memberId, Long movieId);
+
 } // end interface

@@ -213,7 +213,7 @@ public class AdminController {
     } // inquiryAnswerView
 
     @PostMapping("/inquiryAnswer")
-    public String inquiryAnswerWrite(Long inquiryId, Long memberId,  @RequestParam("inquiryResponsesContent") String responseContent){ // 문의 답변
+    public String inquiryAnswerWrite(Long inquiryId, Long memberId,  @RequestParam("responsesContent") String responseContent){ // 문의 답변
         log.trace("inquiryAnswerWrite({}, {}, {}) invoked.",inquiryId, memberId, responseContent);
 
         Integer affectedRows = this.adminService.addInquiriesResponse(inquiryId, memberId, responseContent);

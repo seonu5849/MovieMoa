@@ -185,14 +185,14 @@ public class MypageController {
 //
 //        return "redirect:/board/mypageMyReply";
 //    } // mypageMyReply
-//
-//    @GetMapping("/searchList")
-//    public String mypageSearchList() {
-//        log.trace("mypageSearchList() invoked.");
-//
-//        return "redirect:/movie/movieDetail";
-//    } // mypageSearchList
-//
+
+    @GetMapping("/menu/searchList")
+    public String mypageSearchList() {
+        log.trace("mypageSearchList() invoked.");
+
+        return "/mypage/searchList";
+    } // mypageSearchList
+
 //    @PostMapping("/ask")
 //    public String mypageAsk() {
 //        log.trace("mypageAsk() invoked.");

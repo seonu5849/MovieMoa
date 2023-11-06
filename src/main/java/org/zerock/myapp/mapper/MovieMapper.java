@@ -78,4 +78,8 @@ public interface MovieMapper {
     // 위시리스트를 누르지 않았다면, 위시리스트 추가
     public abstract Integer addWishlist(@Param("movieId") Long movieId, @Param("memberId") Long memberId);
 
+    // 특정 영화 상세정보 클릭 시 검색기록에 추가
+    public abstract Integer insertSearchHistory(@Param("memberId") Long memberId,
+                                                @Param("movieId") Long movieId);
+
 } // end interface

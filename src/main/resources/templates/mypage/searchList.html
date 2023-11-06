@@ -1,41 +1,83 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>searchList</title>
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>MOVIE MOA</title>
+<style>
+    .mypage-container {
+        grid-area: main;
+        display: flex; /* Flexbox를 사용하도록 설정 */
+        justify-content: center; /* 가로 방향에서 중앙 정렬 */
+        align-items: center; /* 세로 방향에서 중앙 정렬 */
+    }
+
+    .profile-section {
+        width: 100%;
+        max-width: 600px; /* 최대 너비 설정 */
+        background-color: #fff;
+        margin: 0 auto; /* 수평 중앙 정렬 */
+    }
+
+    .profile-title {
+        text-align: center; /* 내부 텍스트 요소들을 중앙 정렬 */
+    }
+
+    .profile-pic img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+    }
+
+    .profile-info p {
+        margin-top: 20px;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 10px;
+    }
+
+    .nickname-info {
+        background-color: #007bff;
+        color: #fff;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+
+    .email-info {
+        margin-left: 20px;
+        /* 원하는 간격에 따라 값 조절 */
+    }
+</style>
 </head>
 <body>
+<header th:replace="nav.html" />
+<main>
+    <aside th:replace="mypageSide.html" />
     <h4>/templates/mypage/searchList.html</h4>
     <hr>
-    
+
     <h1>검색기록</h1>
-    
+
     <table>
         <tr>
             <td>내가 검색한 영화</td>
         </tr>
-        
+
         <tr>
             <td>영화1</td>
         </tr>
-        
+
         <tr>
             <td>영화2</td>
         </tr>
-        
+
         <tr>
             <td>영화3</td>
         </tr>
-    </table>    
+    </table>
+</main>
+<footer th:replace="footer.html" />
 </body>
 </html>
-
-<style>
-    table {
-        border-collapse:collapse;
-    }
-    td {
-        border:1px solid black;
-    }
-</style>
