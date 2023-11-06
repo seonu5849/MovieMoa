@@ -11,7 +11,7 @@
         *
         FROM
         store_kategories
-        ORDER BY id DESC
+        ORDER BY id ASC
     </select>
 
     <!-- 특정 카테고리의 제품 목록 조회: 지정된 카테고리에 속하는 모든 제품의 목록을 조회 -->
