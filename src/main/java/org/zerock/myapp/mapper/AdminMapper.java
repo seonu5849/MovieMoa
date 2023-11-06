@@ -56,7 +56,15 @@ public interface AdminMapper {
     public abstract List<ReportReplyVO> selectReportedReply(@Param("offset") Integer offset, @Param("perPage") Integer perPage);
 
     // 회원에 대한 처분(상태)를 업데이트
-    public abstract Integer updateMemberStatus(@Param("memberId") Long mmeberId, @Param("role") Role role, @Param("status") String Status, @Param("suspensionPeriod") LocalDate suspensionPeriod);
+    public abstract Integer updateMemberStatus(@Param("memberId") Long memberId, // 게시글 작성자 - 신고 받은 사람
+                                               @Param("role") Role role,
+                                               @Param("status") String Status,
+                                               @Param("suspensionPeriod") LocalDate suspensionPeriod);
+
+    // 신고 게시물 처리 유무 업데이트
+    public abstract Integer updateReportBoardComplete(@Param("memberId") Long memberId, // 게시글 작성자 - 신고 받은 사람
+                                                      @Param("boardId") Long boardId // 신고받은 게시물의 번호
+                                                      );
 
 //    ============================================================================================
 

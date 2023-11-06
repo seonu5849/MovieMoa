@@ -164,6 +164,12 @@
             id = #{memberId}
     </update>
     
+    <update id="updateReportBoardComplete">
+        UPDATE reportboards
+        SET complete = 'completed'
+        WHERE board_id = (select id from board where member_id = #{memberId} AND id = #{boardId});
+    </update>
+    
 <!--    =======================================================================================-->
     
     <!-- 특정 멤버의 게시글을 조회하여 페이징 처리된 결과를 반환 -->

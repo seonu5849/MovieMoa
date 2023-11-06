@@ -178,6 +178,8 @@ td {
                     <!-- 예시 데이터 -->
                     <tr th:each="reportBoard : ${reportBoards} ">
                         <input type="hidden" class="boardWriterId" th:value="${reportBoard.boardWriterId}">
+                        <input type="hidden" class="boardId" th:value="${reportBoard.boardId}">
+                        <input type="hidden" class="completeState" th:value="${reportBoard.complete}">
                         <td th:text="${reportBoard.id}">번호</td>
                         <td th:text="${reportBoard.categoryName}">카테고리</td>
                         <td th:text="${reportBoard.title}">제목</td>
@@ -189,14 +191,19 @@ td {
                         <td th:text="${reportBoard.status}" class="status">현재상태</td>
                         <td th:text="${#dates.format(reportBoard.suspensionPeriod, 'yyyy-MM-dd')}" class="suspensionPeriod">정지마감날짜</td>
                         <td>
-                            <select name="reportStatus", class="repootStatus" onchange="handleSelectChange(this)">
-                                <option selected>항목선택</option>
-                                <option value="활동">활동</option>
-                                <option value="1일추가">1일추가</option>
-                                <option value="7일추가">7일추가</option>
-                                <option value="30일추가">30일추가</option>
-                            </select>
-                            <div class="completionMessage" style="display: none;">처리완료</div>
+                            <div th:if="${reportBoard.complete == 'completed'}">
+                                처리완료
+                            </div>
+                            <div th:unless="${reportBoard.complete == 'completed'}">
+                                <select name="reportStatus" class="reportStatus" onchange="handleSelectChange(this)">
+                                    <option selected>항목선택</option>
+                                    <option value="활동">활동</option>
+                                    <option value="1일추가">1일추가</option>
+                                    <option value="7일추가">7일추가</option>
+                                    <option value="30일추가">30일추가</option>
+                                </select>
+                                <div class="completionMessage" style="display: none;">처리완료</div>
+                            </div>
                         </td>
                     </tr>
                     </tbody>
@@ -263,19 +270,43 @@ function handleSelectChange(selectElement) {
 
         // 선택한 행에서 .boardWriterId 클래스를 가진 hidden input 요소를 찾기
         let boardWriterIdInput = row.find(".boardWriterId");
+        let boardIdInput = row.find(".boardId");
+        let completeStateInput = row.find(".completeState"); // complete 상태를 나타내는 hidden input
 
         // hidden input 요소의 값을 가져오기
         let boardWriterId = boardWriterIdInput.val();
+        let boardId = boardIdInput.val();
+        let completeState = completeStateInput.val(); // complete 상태 값
 
         let statusId = row.find(".status");
         let suspensionPeriodId = row.find(".suspensionPeriod");
+        let selectElementId = row.find(".reportStatus");
+        
+        // 선택한 select 요소를 숨김
+        $(selectElement).hide();
+
+        // 선택한 행에서 "처리완료" 메시지를 표시
+        let completionMessage = $(selectElement).siblings(".completionMessage");
+
+        if (selectedOption === "1일추가") {
+            completionMessage.text("1일정지");
+        } else if (selectedOption === "7일추가") {
+            completionMessage.text("7일정지");
+        } else if (selectedOption === "활동") {
+            completionMessage.text("활동처리");
+        } else {
+            completionMessage.text("처리완료");
+        }
+
+        completionMessage.show();
 
         $.ajax({
             type: "POST", // 또는 "GET" 등 적절한 HTTP 메서드 사용
             url: "/admin/boardComplaint", // 서버의 엔드포인트 URL
             data: { 
                 option: selectedOption,
-                boardWriterId: boardWriterId
+                boardWriterId: boardWriterId,
+                boardId : boardId
             }, // 선택된 옵션을 서버로 전달
             success: function(response) {
                 let status = response.status;

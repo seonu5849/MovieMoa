@@ -162,21 +162,29 @@
 
                     <table>
                         <thead>
-                        <tr>
-                            <th>번호</th>
-                            <th>카테고리</th>
-                            <th>댓글내용</th>
-                            <th>신고사유</th>
-                            <th>신고자</th>
-                            <th>신고날짜</th>
-                            <th>처분</th>
-                        </tr>
+                            <tr>
+                                <th>번호</th>
+                                <th>카테고리</th>
+                                <th>제목</th>
+                                <th>작성자</th>
+                                <th>신고사유</th>
+                                <th>신고자</th>
+                                <th>신고날짜</th>
+                                <th>현재상태</th>
+                                <th>정지마감날짜</th>
+                                <th>처분</th>
+                            </tr>
                         </thead>
                         <tbody>
                         <!-- 예시 데이터 -->
                         <tr th:each="reportReply : ${reportReplys}">
+                            <input type="hidden" class="boardWriterId" th:value="${reportBoard.boardWriterId}">
+                            <input type="hidden" class="boardId" th:value="${reportBoard.boardId}">
+                            <input type="hidden" class="completeState" th:value="${reportBoard.complete}">
                             <td th:text="${reportReply.id}">번호</td>
                             <td th:text="${reportReply.categoryName}">카테고리</td>
+                            <td th:text="${reportBoard.title}">제목</td>
+                            <td th:text="${reportBoard.boardWriter}">작성자</td>
                             <td th:text="${reportReply.content}">댓글내용</td>
                             <td th:text="${reportReply.reportContent != null ? (#strings.length(reportReply.reportContent) > 8 ? #strings.substring(reportReply.reportContent, 0, 8) + '...' : reportReply.reportContent) : ''}">
                                     신고사유</td>

@@ -222,6 +222,12 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    public void editBoardComplete(Long memberId, Long boardId) {
+        this.adminMapper.updateReportBoardComplete(memberId, boardId);
+    }
+
+
+    @Override
     public List<BoardVO> findMemberByBoard(Long memberId, Integer pageNum) {
         log.trace("findMemberByBoard({}) invoked.", pageNum);
 

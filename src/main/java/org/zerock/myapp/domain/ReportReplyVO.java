@@ -12,6 +12,7 @@ public class ReportReplyVO {
     private Long reporterId;
     private Long replyId;
     private Long menu;
+    private String complete;
     private String content;
     private String reporterName;
     private String status;

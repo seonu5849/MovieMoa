@@ -237,10 +237,13 @@ public class AdminController {
 
     @ResponseBody
     @PostMapping("/boardComplaint") // 신고 게시글
-    public Map<String, Object> boardComplaintTask(@RequestParam("option") String selectOption, @RequestParam("boardWriterId") Long boardWriterId){
-        log.trace("boardComplaintTask({}, {}) invoked.", selectOption, boardWriterId);
+    public Map<String, Object> boardComplaintTask(@RequestParam("option") String selectOption,
+                                                  @RequestParam("boardWriterId") Long boardWriterId,
+                                                  @RequestParam("boardId") Long boardId){
+        log.trace("boardComplaintTask({}, {}, {}) invoked.", selectOption, boardWriterId, boardId);
 
         Integer affectedRows = this.adminService.editMemberStatus(boardWriterId, selectOption);
+        this.adminService.editBoardComplete(boardWriterId, boardId);
         MemberVO member = this.adminService.findDetailMember(boardWriterId);
 
         Date suspensionPeriod = member.getSuspensionPeriod();
