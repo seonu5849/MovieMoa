@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.zerock.myapp.domain.ReportBoardsVO;
+import org.zerock.myapp.domain.ReportReplyVO;
 
 import java.util.List;
 
@@ -42,6 +43,17 @@ class AdminServiceImplTest {
     void testFindReportedBoards(){
         List<ReportBoardsVO> lists = this.adminService.findReportedBoards(1);
         lists.forEach(log::info);
+    }
+
+    @Test
+    @DisplayName("신고 댓글 확인")
+    void testReportReply(){
+
+        List<ReportReplyVO> list = this.adminService.findReportedReply(1);
+
+        log.info("\t start");
+        list.forEach(log::info);
+
     }
 
 }

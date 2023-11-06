@@ -162,29 +162,50 @@
 
                     <table>
                         <thead>
-                        <tr>
-                            <th>번호</th>
-                            <th>카테고리</th>
-                            <th>댓글내용</th>
-                            <th>신고사유</th>
-                            <th>신고자</th>
-                            <th>신고날짜</th>
-                            <th>처분</th>
-                        </tr>
+                            <tr>
+                                <th>번호</th>
+                                <th>카테고리</th>
+                                <th>댓글내용</th>
+                                <th>작성자</th>
+                                <th>신고사유</th>
+                                <th>신고자</th>
+                                <th>신고날짜</th>
+                                <th>현재상태</th>
+                                <th>정지마감날짜</th>
+                                <th>처분</th>
+                            </tr>
                         </thead>
                         <tbody>
                         <!-- 예시 데이터 -->
                         <tr th:each="reportReply : ${reportReplys}">
+                            <input type="hidden" class="replyWriterId" th:value="${reportReply.replyWriterId}">
+                            <input type="hidden" class="replyId" th:value="${reportReply.replyId}">
+                            <input type="hidden" class="completeState" th:value="${reportReply.complete}">
                             <td th:text="${reportReply.id}">번호</td>
                             <td th:text="${reportReply.categoryName}">카테고리</td>
                             <td th:text="${reportReply.content}">댓글내용</td>
+                            <td th:text="${reportReply.replyWriter}">작성자</td>
                             <td th:text="${reportReply.reportContent != null ? (#strings.length(reportReply.reportContent) > 8 ? #strings.substring(reportReply.reportContent, 0, 8) + '...' : reportReply.reportContent) : ''}">
                                     신고사유</td>
                             <td th:text="${reportReply.reporterName}">신고자</td>
                             <td th:text="${#dates.format(reportReply.reportDate, 'yyyy-MM-dd HH:mm')}">신고날짜</td>
-                            <td>
-                                처분
-                            </td>
+                            <td th:text="${reportReply.status}" class="status">현재상태</td>
+                        <td th:text="${#dates.format(reportReply.suspensionPeriod, 'yyyy-MM-dd')}" class="suspensionPeriod">정지마감날짜</td>
+                        <td>
+                            <div th:if="${reportReply.complete == 'completed'}">
+                                <span th:text="${reportReply.result}">처리완료</span>
+                            </div>
+                            <div th:unless="${reportReply.complete == 'completed'}">
+                                <select name="reportStatus" class="reportStatus" onchange="handleSelectChange(this)">
+                                    <option selected>항목선택</option>
+                                    <option value="활동">활동</option>
+                                    <option value="1일추가">1일추가</option>
+                                    <option value="7일추가">7일추가</option>
+                                    <option value="30일추가">30일추가</option>
+                                </select>
+                                <div class="completionMessage" style="display: none;">처리완료</div>
+                            </div>
+                        </td>
                         </tr>
                         </tbody>
                     </table>
@@ -237,5 +258,71 @@
     </main>
 </main>
 <footer th:replace="footer.html" />
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+
+function handleSelectChange(selectElement) {
+        // 선택한 옵션의 값을 가져오기
+        let selectedOption = $(selectElement).val();
+
+
+        // 선택한 select 요소의 부모 tr을 찾기
+        let row = $(selectElement).closest("tr");
+
+        // 선택한 행에서 .boardWriterId 클래스를 가진 hidden input 요소를 찾기
+        let replyWriterIdInput = row.find(".replyWriterId");
+        let replyIdInput = row.find(".replyId");
+        let completeStateInput = row.find(".completeState"); // complete 상태를 나타내는 hidden input
+
+        // hidden input 요소의 값을 가져오기
+        let replyWriterId = replyWriterIdInput.val();
+        let replyId = replyIdInput.val();
+        let completeState = completeStateInput.val(); // complete 상태 값
+
+        let statusId = row.find(".status");
+        let suspensionPeriodId = row.find(".suspensionPeriod");
+        let selectElementId = row.find(".reportStatus");
+        
+        // 선택한 select 요소를 숨김
+        $(selectElement).hide();
+
+        // 선택한 행에서 "처리완료" 메시지를 표시
+        let completionMessage = $(selectElement).siblings(".completionMessage");
+
+        if (selectedOption === "1일추가") {
+            completionMessage.text("1일정지");
+        } else if (selectedOption === "7일추가") {
+            completionMessage.text("7일정지");
+        } else if (selectedOption === "활동") {
+            completionMessage.text("활동처리");
+        } else {
+            completionMessage.text("처리완료");
+        }
+
+        completionMessage.show();
+
+        $.ajax({
+            type: "POST", // 또는 "GET" 등 적절한 HTTP 메서드 사용
+            url: "/admin/replyComplaint", // 서버의 엔드포인트 URL
+            data: { 
+                option: selectedOption,
+                replyWriterId: replyWriterId,
+                replyId : replyId
+            }, // 선택된 옵션을 서버로 전달
+            success: function(response) {
+                let status = response.status;
+                let suspensionPeriod = response.suspensionPeriod;
+
+                statusId.html(status); // 서버에서 받은 응답을 업데이트
+                suspensionPeriodId.html(suspensionPeriod); // 서버에서 받은 응답을 업데이트
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX request failed: " + error);
+            }
+        });
+    }
+    
+</script>
 </body>
 </html>

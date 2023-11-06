@@ -142,7 +142,8 @@
         m.name as "reporterName", -- 리포터 이름을 'reporterName'으로 별칭 설정
         m1.status,
         m1.suspension_period as "suspensionPeriod", -- 정지 기간을 'suspensionPeriod'로 별칭 설정
-        m1.name as "boardWriter", -- 게시글 작성자 이름을 'boardWriter'로 별칭 설정
+        m1.id as "replyWriterId", -- 댓글 작성자 아이디를 'replyWriterId'로 별칭 설정
+        m1.name as "replyWriter", -- 댓글 작성자 이름을 'replyWriter'로 별칭 설정
         rk.name as "categoryName" -- 신고 카테고리 이름을 'categoryName'으로 별칭 설정
         FROM
         reportReply br
@@ -162,6 +163,22 @@
             suspension_period = #{suspensionPeriod}
         WHERE
             id = #{memberId}
+    </update>
+    
+    <update id="updateReportBoardComplete">
+        UPDATE reportboards
+        SET
+            complete = 'completed',
+            result = #{result}
+        WHERE board_id = (select id from board where member_id = #{memberId} AND id = #{boardId});
+    </update>
+
+    <update id="updateReportReplyComplete">
+        UPDATE reportreply
+        SET
+            complete = 'completed',
+            result = #{result}
+        WHERE reply_id = (select id from board_reply where member_id = #{memberId} AND id = #{replyId});
     </update>
     
 <!--    =======================================================================================-->

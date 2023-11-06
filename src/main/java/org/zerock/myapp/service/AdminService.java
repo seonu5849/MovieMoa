@@ -52,6 +52,12 @@ public interface AdminService {
     // 회원에 대한 처분(상태)를 업데이트
     public abstract Integer editMemberStatus(Long memberId, String status);
 
+    // 신고게시글의 처분 여부를 업데이트
+    public abstract void editBoardComplete(Long memberId, Long boardId, String status);
+
+    // 신고댓글의 처분 여부를 업데이트
+    public abstract void editReplyComplete(Long memberId, Long replyId, String status);
+
 //    ====================================================================================================
     // 페이징 처리된 멤버의 게시글 출력
     public abstract List<BoardVO> findMemberByBoard(Long memberId, Integer pageNum);
