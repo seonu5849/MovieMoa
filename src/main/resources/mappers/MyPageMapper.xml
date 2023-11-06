@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.zerock.myapp.mapper.MyPageMapper">
+
+<!-- 특정 회원의 게시글 조회 (마이페이지 나의 게시글) -->
+    <select id="findMyBoardList" resultType="org.zerock.myapp.domain.BoardVO">
+        SELECT
+        BOARD.*,
+        MOVIES.TITLE AS MOVIE_TITLE,
+        BOARD_KATEGORIES.NAME AS KATEGORIE_NAME,
+        MEMBER.NICKNAME
+        FROM
+            BOARD
+            LEFT JOIN Movies ON Board.movie_id = Movies.id
+            LEFT JOIN board_kategories ON Board.kategorie_id = board_kategories.id
+            LEFT JOIN Member ON Board.member_id = Member.id
+        WHERE
+            MEMBER_ID = #{MEMBER_ID}
+        ORDER BY
+            ID DESC
+        OFFSET #{offset} ROW FETCH NEXT #{perPage} ROW ONLY
+    </select>
+
+<!-- 특정 멤버가 작성한 게시글의 총 수를 반환 -->
+    <select id="totalMyBoardCount" resultType="Integer">
+        SELECT COUNT(id)
+        FROM board
+        WHERE member_id = #{memberId}
+    </select>
+
+
+</mapper>
