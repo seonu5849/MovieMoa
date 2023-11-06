@@ -20,5 +20,8 @@
         <!--    Board 관련    -->
         <mapper resource="mappers/BoardMapper.xml"/>
 
+        <!--    MyPage 관련    -->
+        <mapper resource="mappers/MyPageMapper.xml"/>
+
     </mappers>
 </configuration>

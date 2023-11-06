@@ -9,11 +9,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.zerock.myapp.domain.BoardVO;
 import org.zerock.myapp.domain.MemberVO;
+import org.zerock.myapp.service.AdminService;
 import org.zerock.myapp.service.MemberService;
+import org.zerock.myapp.service.MyPageService;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.List;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -25,6 +29,8 @@ public class MypageController {
     // http://localhost:8080/mypage/menu/myInfo
 
     private final MemberService memberService;
+    private final MyPageService myPageService;
+    private final AdminService adminService;
 
     @GetMapping("/menu/myInfo")
     public String myInfoView(Model model) {
@@ -39,9 +45,7 @@ public class MypageController {
 
         // 사용자 ID를 사용하여 회원 정보를 조회합니다.
         MemberVO member = memberService.findUser(id);
-
         log.info("\t+ member: {}", member);
-
         model.addAttribute("member", member);
 
         return "/mypage/myInfo";
@@ -84,7 +88,7 @@ public class MypageController {
 
     @GetMapping("/changeInfo")
     public String mypageChangeInfoView(Model model) {
-        log.trace("mypageChangeInfoView({}) invoked.");
+        log.trace("mypageChangeInfoView() invoked.");
 
         // 현재 인증된 사용자의 정보를 가져옵니다.
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -172,12 +176,26 @@ public class MypageController {
 
     } // DeleteMypageUser
 
-//    @PostMapping("/myBoard")
-//    public String mypageBoardView() {
-//        log.trace("mypageBoardView() invoked.");
-//
-//        return "redirect:/board/detailBoard";
-//    } // mypageBoardView
+    @GetMapping("/menu/myBoard/{pageNum}")
+    public String mypageBoardView(Model model, @PathVariable("pageNum") Integer pageNum) {
+        log.trace("mypageBoardView() invoked.");
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // 인증된 사용자의 이름(여기서는 사용자 ID로 사용)을 가져옵니다.
+        String username = authentication.getName();
+        // 사용자 이름(아이디)를 Long 타입으로 변환합니다.
+        Long id = Long.valueOf(username);
+
+        // 사용자 ID를 사용하여 회원 정보를 조회합니다.
+        List<BoardVO> boardList = myPageService.findMyPageBoardList(id, pageNum);
+        Integer totalPages = this.adminService.totalMemberByBoardCount(id);
+
+        model.addAttribute("boards", boardList);
+        model.addAttribute("currentPage", pageNum);
+        model.addAttribute("totalPages", totalPages);
+
+        return "/mypage/myBoard";
+    } // mypageBoardView
 //
 //    @PostMapping("/myReply")
 //    public String mypageMyReply() {
