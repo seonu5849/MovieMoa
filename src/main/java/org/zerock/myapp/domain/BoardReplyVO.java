@@ -12,5 +12,9 @@ public class BoardReplyVO {
     private Timestamp updatedAt;
     private Long memberId;
     private Long boardId;
+
+//    멤버테이블에서 leftjoin
     private String nickname;
+
+
 } // end class

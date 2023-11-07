@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.zerock.myapp.domain.BoardReplyVO;
 import org.zerock.myapp.domain.BoardVO;
 import org.zerock.myapp.domain.MemberVO;
 import org.zerock.myapp.service.AdminService;
@@ -188,7 +189,7 @@ public class MypageController {
 
         // 사용자 ID를 사용하여 회원 정보를 조회합니다.
         List<BoardVO> boardList = myPageService.findMyPageBoardList(id, pageNum);
-        Integer totalPages = this.adminService.totalMemberByBoardCount(id);
+        Integer totalPages = this.myPageService.totalMyBoardByBoardCount(id);
 
         model.addAttribute("boards", boardList);
         model.addAttribute("currentPage", pageNum);
@@ -197,12 +198,27 @@ public class MypageController {
         return "/mypage/myBoard";
     } // mypageBoardView
 //
-//    @PostMapping("/myReply")
-//    public String mypageMyReply() {
-//        log.trace("mypageMyReply() invoked.");
-//
-//        return "redirect:/board/mypageMyReply";
-//    } // mypageMyReply
+
+    @GetMapping("/menu/myReply/{pageNum}")
+    public String MypageMyReply(Model model, @PathVariable("pageNum") Integer pageNum) {
+        log.trace("MypageMyReply() invoked.");
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // 인증된 사용자의 이름(여기서는 사용자 ID로 사용)을 가져옵니다.
+        String username = authentication.getName();
+        // 사용자 이름(아이디)를 Long 타입으로 변환합니다.
+        Long id = Long.valueOf(username);
+
+        List<BoardReplyVO> replyList = myPageService.findMyPageReplyList(id,pageNum);
+        Integer totalPages = this.myPageService.totalMyReplyCount(id);
+
+        model.addAttribute("replies", replyList);
+        model.addAttribute("currentPage", pageNum);
+        model.addAttribute("totalPages", totalPages);
+
+        return "mypage/myReply";
+    } // mypageMyReply
+
 //
 //    @GetMapping("/searchList")
 //    public String mypageSearchList() {

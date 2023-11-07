@@ -79,13 +79,13 @@
             padding: 8px 16px;
             margin: 0 4px;
             border-radius: 4px;
-            background-color: #f9f9f9;
             color: #333;
             text-decoration: none;
         }
 
-        .board-list .pagination .active {
+        .board-list .active {
             background-color: #4caf50;
+            border-radius: 4px;
             color: white;
         }
 
@@ -102,7 +102,8 @@
             list-style: none;
             display: flex;
             justify-content: center;
-            margin: 20px 0;
+            margin: 20px 20px;
+
         }
 
         .pagination li {
@@ -112,7 +113,6 @@
         .pagination a {
             padding: 8px 16px;
             border-radius: 4px;
-            background-color: #f9f9f9;
             color: #333;
             text-decoration: none;
         }
@@ -128,7 +128,7 @@
 
 
         /* 활성화된 페이지 버튼 스타일 변경 */
-        .board-list .pagination .active {
+        .board-list .active {
             background-color: #4caf50;
             color: white;
         }
@@ -199,40 +199,9 @@
                 <a th:if="${searchOption != null && searchValue != null}" th:href="@{|${currentPage + 1}?searchOption=${searchOption}&searchValue=${searchValue}|}" th:text="다음">다음</a>
             </li>
         </ul>
-
-<!--        <ul>-->
-<!--            &lt;!&ndash; 이전 버튼 &ndash;&gt;-->
-<!--            <li th:if="${currentPage > 1}">-->
-<!--                &lt;!&ndash; 현재 페이지가 1보다 크면 이전 페이지로 이동하는 링크를 표시합니다 &ndash;&gt;-->
-<!--                <a th:if="${searchOption == null && searchValue == null}" th:href="@{|${currentPage - 1}|}" th:text="이전">이전</a>-->
-<!--                <a th:if="${searchOption != null && searchValue != null}" th:href="@{|${currentPage - 1}?searchOption=${searchOption}&searchValue=${searchValue}|}" th:text="이전">이전</a>-->
-<!--            </li>-->
-
-<!--            &lt;!&ndash; 페이지 번호 그룹 &ndash;&gt;-->
-<!--            <th:block th:with="startPageNum=${(currentPage - 1) / 5 * 5 + 1}">-->
-<!--                <th:block th:with="endPageNum=${(startPageNum + 4) > totalPages ? totalPages : (startPageNum + 4)}">-->
-<!--                    &lt;!&ndash; 페이지 번호 그룹을 계산합니다. 최대 페이지 번호를 초과하지 않도록 합니다 &ndash;&gt;-->
-<!--                    <th:block th:each="pageNumber : ${#numbers.sequence(startPageNum, endPageNum)}">-->
-<!--                        &lt;!&ndash; 결과 값이 없을 때, 페이지 번호를 출력하지 않도록 조건문을 사용합니다 &ndash;&gt;-->
-<!--                        &lt;!&ndash; 각 페이지 번호를 나타내는 링크를 표시합니다 &ndash;&gt;-->
-<!--                        <li th:if="${totalPages > 1}" th:class="${pageNumber == currentPage} ? 'active' : ''">-->
-<!--                            &lt;!&ndash; 현재 페이지는 강조 표시됩니다 &ndash;&gt;-->
-<!--                            <a th:if="${searchOption == null && searchValue == null}" th:href="@{|${pageNumber}|}" th:text="${pageNumber}">1</a>-->
-<!--                            <a th:if="${searchOption != null && searchValue != null}" th:href="@{|${pageNumber}?searchOption=${searchOption}&searchValue=${searchValue}|}" th:text="${pageNumber}">1</a>-->
-<!--                        </li>-->
-<!--                    </th:block>-->
-<!--                </th:block>-->
-<!--            </th:block>-->
-
-<!--            &lt;!&ndash; 다음 버튼 &ndash;&gt;-->
-<!--            <li th:if="${currentPage < totalPages}">-->
-<!--                &lt;!&ndash; 현재 페이지가 총 페이지 수 미만이면 다음 페이지로 이동하는 링크를 표시합니다 &ndash;&gt;-->
-<!--                <a th:if="${searchOption == null && searchValue == null}" th:href="@{|${currentPage + 1}|}" th:text="다음">다음</a>-->
-<!--                <a th:if="${searchOption != null && searchValue != null}" th:href="@{|${currentPage + 1}?searchOption=${searchOption}&searchValue=${searchValue}|}" th:text="다음">다음</a>-->
-<!--            </li>-->
-<!--        </ul>-->
     </section>
 </main>
+
     <footer th:replace="footer.html" />
 </body>
 <script th:inline="javascript">
