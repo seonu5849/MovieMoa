@@ -1,41 +1,199 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>searchList</title>
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>MOVIE MOA</title>
+    <style>
+        .main{
+            grid-area: main;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .title {
+            padding: 20px;
+        }
+
+        /* 영화목록 스타일 */
+        .movie-list {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .movie-item {
+            background-color: #fff;
+            padding: 20px 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            text-align: center;
+            display: flex; /* flexbox 레이아웃 사용 */
+            flex-direction: column; /* 아이템을 세로로 정렬 */
+            justify-content: flex-start; /* 컨텐츠를 컨테이너의 시작(위쪽)으로 정렬 */
+        }
+
+        .movie-item img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .movie-item h3,
+        .movie-item h4 {
+            margin-top: 10px;
+        }
+
+        .movie-item p {
+            margin: 15px 0;
+            color: #666;
+        }
+
+        /* 이미지 링크를 포함하고 있는 요소에 클래스를 추가합니다. 예를 들면, 'movie-link' */
+        .movie-link {
+            position: relative;
+            display: inline-block;
+        }
+
+        .movie-link:hover img {
+            opacity: 0.7; /* 호버 시 이미지의 불투명도를 줄여 어둡게 만듭니다. */
+        }
+
+        /* 선택적으로 호버 시의 추가 효과를 위한 가상 요소를 사용할 수 있습니다. */
+        .movie-link::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5); /* 검은색 반투명 배경 */
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .movie-link:hover::after {
+            opacity: 1; /* 호버 시 가상 요소의 불투명도를 증가시켜 어둡게 만듭니다. */
+        }
+
+        /* 더보기 버튼 스타일 */
+        .more-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 30px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .more-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Top Button Styles */
+        #topButton {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 99;
+            font-size: 18px;
+            border: none;
+            outline: none;
+            background-color: #00c3ff;
+            color: white;
+            cursor: pointer;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        #topButton:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h4>/templates/mypage/searchList.html</h4>
-    <hr>
-    
-    <h1>검색기록</h1>
-    
-    <table>
-        <tr>
-            <td>내가 검색한 영화</td>
-        </tr>
-        
-        <tr>
-            <td>영화1</td>
-        </tr>
-        
-        <tr>
-            <td>영화2</td>
-        </tr>
-        
-        <tr>
-            <td>영화3</td>
-        </tr>
-    </table>    
+<header th:replace="nav.html" />
+<main>
+    <aside th:replace="mypageSide.html" />
+    <div class="main">
+        <div class="title">
+            <h1>검색기록</h1>
+        </div>
+    <!-- 영화 목록 -->
+    <section class="movie-list" id="movieList">
+        <article class="movie-item" th:each="movie : ${movies}">
+            <a th:href="@{'/movie/movieDetail?movieId=' + ${movie.id}}" class="movie-link">
+                <img th:src="@{'https://image.tmdb.org/t/p/original'+${movie.posterPath}}" alt="${movie.title}">
+            </a>
+            <h3 th:text="${movie.title}">영화제목</h3>
+            <h4 th:text="${movie.originalTitle}">원제</h4>
+            <p
+                    th:text="${movie.overview != null ? (#strings.length(movie.overview) > 20 ? #strings.substring(movie.overview, 0, 20) + '...' : movie.overview) : ''}">
+                영화 설명 또는 요약...
+            </p>
+        </article>
+    </section>
+
+    <button class="more-button" id="loadMore">더보기</button>
+    <button id="topButton">TOP</button>
+
+    </div>
+</main>
+<footer th:replace="footer.html" />
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        // 처음 페이지 로딩 시 모든 영화 항목을 가져옴
+        const movieItems = document.querySelectorAll('.movie-item');
+
+        // 처음에는 4개의 영화 항목만 보여주기 위해 나머지를 숨김
+        for (let i = 4; i < movieItems.length; i++) {
+            movieItems[i].style.display = 'none';
+        }
+
+        document.getElementById('loadMore').addEventListener('click', function () {
+            // 현재 표시된 영화 항목 수를 확인
+            let countShown = 0;
+            movieItems.forEach(movie => {
+                if (movie.style.display !== 'none') {
+                    countShown++;
+                }
+            });
+
+            // 다음 4개의 영화 항목을 보여줌
+            for (let i = countShown; i < countShown + 4; i++) {
+                if (movieItems[i]) {
+                    movieItems[i].style.display = 'flex';
+                }
+            }
+
+            // 모든 영화 항목이 보여질 경우 더보기 버튼을 숨김
+            if (countShown + 4 >= movieItems.length) {
+                this.style.display = 'none';
+            }
+        });
+    });
+
+    window.onscroll = function () { scrollFunction() };
+
+    function scrollFunction() {
+        const topButton = document.getElementById("topButton");
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            topButton.style.display = "block";
+        } else {
+            topButton.style.display = "none";
+        }
+    }
+
+    document.getElementById('topButton').addEventListener('click', function () {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    });
+</script>
 </body>
 </html>
-
-<style>
-    table {
-        border-collapse:collapse;
-    }
-    td {
-        border:1px solid black;
-    }
-</style>

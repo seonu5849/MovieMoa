@@ -146,5 +146,11 @@
         INSERT INTO wishlist (movie_id, member_id) VALUES (#{movieId}, #{memberId})
     </insert>
 
+    <!-- 검색기록 추가 -->
+    <insert id="insertSearchHistory">
+        INSERT INTO search_history (member_id, movie_id)
+        VALUES (#{memberId}, #{movieId})
+    </insert>
+
 
 </mapper>

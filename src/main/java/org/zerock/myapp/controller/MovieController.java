@@ -184,6 +184,17 @@ public class MovieController {
     public String movieDetail(Model model, @RequestParam Long movieId) {
         log.trace("movieDetail({}) invoked.", movieId);
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long memberId = null;
+        if (authentication != null && authentication.isAuthenticated() &&
+                !authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ANONYMOUS"))) {
+            log.info("\t+ 인증된 사용자");
+            String username = authentication.getName();
+            memberId = Long.valueOf(username);
+            Integer insertSearchHistory = this.movieService.insertSearchHistory(memberId, movieId);
+            log.info("\t+ insertSearchHistory: {}", insertSearchHistory);
+        }
+
         MovieVO movie = movieService.findDetailMovie(movieId);
         List<MovieGenreVO> genres = movieService.genreOfMovies(movieId);
         List<CreditsVO> casts = movieService.castsOfMovies(movieId);

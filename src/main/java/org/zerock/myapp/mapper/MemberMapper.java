@@ -3,9 +3,9 @@ package org.zerock.myapp.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.zerock.myapp.domain.MemberDTO;
-import org.zerock.myapp.domain.MemberVO;
+import org.zerock.myapp.domain.*;
 
+import java.util.List;
 import java.util.Map;
 
 @Mapper
@@ -40,6 +40,25 @@ public interface MemberMapper {
 
     // 특정 회원 삭제(탈퇴)
     public abstract Integer deleteMyPageMember(@Param("id") Long id);
+
+    // 특정 회원 게시글 목록 조회
+    public abstract List<BoardVO> findMyBoardList(@Param("memberId") Long memberId,
+                                                  @Param("offset") Integer offset,
+                                                  @Param("perPage") Integer perPage);
+
+    // 특정 회원 게시글 수
+    public abstract Integer totalMyBoardCount(@Param("memberId") Long memberId);
+
+    // 특정 회원 댓글 목록 조회
+    public abstract List<BoardReplyVO> findMyReplyList(@Param("memberId") Long memberId,
+                                                       @Param("offset") Integer offset,
+                                                       @Param("perPage") Integer perPage);
+
+    // 특정 회원 댓글 수
+    public abstract Integer totalMyReplyCount(@Param("memberId") Long memberId);
+
+    // 특정 회원 영화 검색기록 조회
+    public abstract List<MovieVO> findSearchMovie(@Param("memberId") Long memberId);
 
 
 }// end interface

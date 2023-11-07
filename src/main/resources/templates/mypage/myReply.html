@@ -152,14 +152,18 @@
                 <tr>
                     <input type="hidden" name="id" th:value="${memberId}">
                     <th>댓글번호</th>
+                    <th>게시글 제목</th>
+                    <th>댓글 내용</th>
                     <th>등록일</th>
-                    <th>내용</th>
                 </tr>
 
                 <tr th:each="reply : ${replies}" class="clickable-row" th:data-id="${reply.boardId}">
                     <td th:text="${reply.id}">번호</td>
-                    <td th:text="${#dates.format(reply.createdAt, 'yyyy-MM-dd HH:MM:SS')}">등록일</td>
-                    <td th:text="${reply.content != null ? (#strings.length(reply.content) > 20 ? #strings.substring(reply.content, 0, 20) + '...' : reply.content) : ''}">내용</td>
+                    <td class="title" th:text="${reply.movieTitle} != null ? '[' + ${reply.movieTitle} + '] ' + ${reply.boardTitle} : ${reply.boardTitle}">
+                        [영화제목] 게시글 제목
+                    </td>
+                    <td class="title" th:text="${reply.content != null ? (#strings.length(reply.content) > 20 ? #strings.substring(reply.content, 0, 20) + '...' : reply.content) : ''}">내용</td>
+                    <td th:text="${#dates.format(reply.createdAt, 'yyyy-MM-dd HH:mm')}">등록일</td>
                 </tr>
             </table>
 

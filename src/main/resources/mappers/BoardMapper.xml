@@ -21,6 +21,15 @@
         LEFT JOIN Board_reply ON Board.id = Board_reply.board_id
         GROUP BY Board.id, Movies.title, board_kategories.name, Member.nickname
         ORDER BY Board.id DESC
+        OFFSET #{offset} ROW FETCH NEXT #{perPage} ROW ONLY
+    </select>
+
+    <!-- 게시판 수 조회 -->
+    <select id="totalBoardListCnt" resultType="Integer">
+        SELECT
+        COUNT(id)
+        FROM
+        Board
     </select>
 
     <!-- 게시글 작성 -->

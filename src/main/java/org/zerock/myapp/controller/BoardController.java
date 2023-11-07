@@ -24,13 +24,16 @@ public class BoardController {
 
     private final BoardService boardService;
 
-    @GetMapping("/boards")
-    public String boardView(Model model) {
-        log.trace("boardView() invoked.");
+    @GetMapping("/boards/{pageNum}")
+    public String boardView(Model model, @PathVariable("pageNum") Integer pageNum) {
+        log.trace("boardView({}) invoked.", pageNum);
 
-        List<BoardAndReplyCntVO> boardList = this.boardService.findBoardList();
+        List<BoardAndReplyCntVO> boardList = this.boardService.findBoardList(pageNum);
+        Integer totalPages = this.boardService.totalBoardListCnt();
 
         model.addAttribute("boards", boardList);
+        model.addAttribute("currentPage", pageNum);
+        model.addAttribute("totalPages", totalPages);
 
         return "/board/boards";
     } // boardView

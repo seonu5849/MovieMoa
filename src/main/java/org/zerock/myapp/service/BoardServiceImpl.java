@@ -2,6 +2,7 @@ package org.zerock.myapp.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import org.zerock.myapp.domain.*;
 import org.zerock.myapp.mapper.BoardMapper;
@@ -16,9 +17,17 @@ public class BoardServiceImpl implements BoardService {
 
     private final BoardMapper boardMapper;
 
+    private int perPage = 5;
+
     @Override
-    public List<BoardAndReplyCntVO> findBoardList() {
-        return boardMapper.findBoardList();
+    public Integer offset(Integer pageNum){ // 페이징 처리를 통해 해당되는 레코드를 출력
+        return (pageNum - 1) * perPage;
+    }
+
+    @Override
+    public List<BoardAndReplyCntVO> findBoardList(Integer pageNum) {
+        Integer offset = offset(pageNum);
+        return boardMapper.findBoardList(offset,perPage);
     }
 
     @Override
@@ -132,6 +141,17 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public Integer deleteBoardReply(Long replyId) {
         return boardMapper.deleteBoardReply(replyId);
+    }
+
+    @Override
+    public Integer totalBoardListCnt() {
+        Integer totalPages = this.boardMapper.totalBoardListCnt()/ perPage;
+
+        if(this.boardMapper.totalBoardListCnt() % perPage != 0){
+            totalPages++;
+        }
+
+        return totalPages;
     }
 
 } // end class

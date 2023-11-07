@@ -5,9 +5,10 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.zerock.myapp.domain.MemberDTO;
-import org.zerock.myapp.domain.MemberVO;
+import org.zerock.myapp.domain.*;
 import org.zerock.myapp.mapper.MemberMapper;
+
+import java.util.List;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -16,6 +17,13 @@ import org.zerock.myapp.mapper.MemberMapper;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberMapper memberMapper;
+
+    private int perPage = 10;
+
+    @Override
+    public Integer offset(Integer pageNum){ // 페이징 처리를 통해 해당되는 레코드를 출력
+        return (pageNum - 1) * perPage;
+    }
 
     @Override
     public Integer saveMember(MemberDTO dto) {
@@ -115,6 +123,55 @@ public class MemberServiceImpl implements MemberService {
         log.trace("deleteUser({}) invoked.", id);
 
         return memberMapper.deleteMyPageMember(id);
+    }
+
+    @Override
+    public List<BoardVO> findMyPageBoardList(Long memberId, Integer pageNum) {
+        log.trace("findMyPageBoardList({}, {}) invoked.", memberId, pageNum);
+
+        Integer offset = offset(pageNum);
+        return this.memberMapper.findMyBoardList(memberId, offset, perPage);
+
+    } //findMyPageBoardList
+
+    @Override
+    public Integer totalMyBoardByBoardCount(Long memberId) {
+        log.trace("totalEventCount({}) invoked.", memberId);
+
+        Integer totalPages = this.memberMapper.totalMyBoardCount(memberId) / perPage;
+
+        if(this.memberMapper.totalMyBoardCount(memberId) % perPage != 0){
+            totalPages++;
+        }
+
+        return totalPages;
+    } //totalMyBoardByBoardCount
+
+    @Override
+    public List<BoardReplyVO> findMyPageReplyList(Long memberId, Integer pageNum) {
+
+        Integer offset = offset(pageNum);
+
+        return this.memberMapper.findMyReplyList(memberId, offset, perPage);
+
+    }
+
+    @Override
+    public Integer totalMyReplyCount(Long memberId) {
+        log.trace("totalMyReplyCount({}) invoked.", memberId);
+
+        Integer totalPages = this.memberMapper.totalMyReplyCount(memberId) / perPage;
+
+        if(this.memberMapper.totalMyReplyCount(memberId) % perPage != 0){
+            totalPages++;
+        }
+
+        return totalPages;
+    }
+
+    @Override
+    public List<MovieVO> findSearchMovie(Long memberId) {
+        return memberMapper.findSearchMovie(memberId);
     }
 
 } // end class

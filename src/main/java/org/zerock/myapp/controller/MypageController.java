@@ -12,11 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import org.zerock.myapp.domain.BoardReplyVO;
 import org.zerock.myapp.domain.BoardVO;
 import org.zerock.myapp.domain.MemberVO;
-import org.zerock.myapp.service.AdminService;
+import org.zerock.myapp.domain.MovieVO;
 import org.zerock.myapp.service.MemberService;
-import org.zerock.myapp.service.MyPageService;
 
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,8 +28,6 @@ public class MypageController {
     // http://localhost:8080/mypage/menu/myInfo
 
     private final MemberService memberService;
-    private final MyPageService myPageService;
-    private final AdminService adminService;
 
     @GetMapping("/menu/myInfo")
     public String myInfoView(Model model) {
@@ -188,8 +184,8 @@ public class MypageController {
         Long id = Long.valueOf(username);
 
         // 사용자 ID를 사용하여 회원 정보를 조회합니다.
-        List<BoardVO> boardList = myPageService.findMyPageBoardList(id, pageNum);
-        Integer totalPages = this.myPageService.totalMyBoardByBoardCount(id);
+        List<BoardVO> boardList = memberService.findMyPageBoardList(id, pageNum);
+        Integer totalPages = this.memberService.totalMyBoardByBoardCount(id);
 
         model.addAttribute("boards", boardList);
         model.addAttribute("currentPage", pageNum);
@@ -209,8 +205,8 @@ public class MypageController {
         // 사용자 이름(아이디)를 Long 타입으로 변환합니다.
         Long id = Long.valueOf(username);
 
-        List<BoardReplyVO> replyList = myPageService.findMyPageReplyList(id,pageNum);
-        Integer totalPages = this.myPageService.totalMyReplyCount(id);
+        List<BoardReplyVO> replyList = memberService.findMyPageReplyList(id,pageNum);
+        Integer totalPages = this.memberService.totalMyReplyCount(id);
 
         model.addAttribute("replies", replyList);
         model.addAttribute("currentPage", pageNum);
@@ -219,14 +215,25 @@ public class MypageController {
         return "mypage/myReply";
     } // mypageMyReply
 
-//
-//    @GetMapping("/searchList")
-//    public String mypageSearchList() {
-//        log.trace("mypageSearchList() invoked.");
-//
-//        return "redirect:/movie/movieDetail";
-//    } // mypageSearchList
-//
+
+    @GetMapping("/searchList")
+    public String mypageSearchList(Model model) {
+        log.trace("mypageSearchList({}) invoked.");
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // 인증된 사용자의 이름(여기서는 사용자 ID로 사용)을 가져옵니다.
+        String username = authentication.getName();
+        // 사용자 이름(아이디)를 Long 타입으로 변환합니다.
+        Long id = Long.valueOf(username);
+
+        List<MovieVO> searchMovie = this.memberService.findSearchMovie(id);
+        log.info("\t+ searchMovie: {}", searchMovie);
+
+        model.addAttribute("movies", searchMovie);
+
+        return "mypage/searchList";
+    } // mypageSearchList
+
 //    @PostMapping("/ask")
 //    public String mypageAsk() {
 //        log.trace("mypageAsk() invoked.");

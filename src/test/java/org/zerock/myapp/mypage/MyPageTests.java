@@ -3,14 +3,12 @@ package org.zerock.myapp.mypage;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.zerock.myapp.domain.BoardReplyVO;
-import org.zerock.myapp.domain.BoardVO;
 import org.zerock.myapp.service.BoardServiceImpl;
-import org.zerock.myapp.service.MyPageServiceImpl;
+import org.zerock.myapp.service.MemberServiceImpl;
 
 import java.util.List;
 
@@ -24,7 +22,7 @@ import java.util.List;
 @SpringBootTest
 public class MyPageTests {
     @Setter(onMethod_ = @Autowired)
-    private MyPageServiceImpl myPageService;
+    private MemberServiceImpl memberService;
 
     @Setter(onMethod_ = @Autowired)
     private BoardServiceImpl boardService;
@@ -76,7 +74,7 @@ public class MyPageTests {
 
         Long memberid = 2L;
 
-        List<BoardReplyVO> findReply = this.myPageService.findMyPageReplyList(memberid, 1);
+        List<BoardReplyVO> findReply = this.memberService.findMyPageReplyList(memberid, 1);
         findReply.forEach(log::info);
 
 

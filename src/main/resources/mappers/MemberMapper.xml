@@ -108,9 +108,78 @@
         WHERE id = #{id}
     </update>
 
+    <!-- 회원탈퇴 -->
     <delete id="deleteMyPageMember">
         DELETE FROM member
         WHERE id = #{id}
     </delete>
+
+    <!-- 특정 회원의 게시글 조회 (마이페이지 나의 게시글) -->
+    <select id="findMyBoardList" resultType="org.zerock.myapp.domain.BoardAndReplyCntVO">
+        SELECT
+        Board.*,
+        Movies.title AS movie_title,
+        board_kategories.name AS kategorie_name,
+        Member.nickname,
+        COALESCE(COUNT(Board_reply.id), 0) AS reply_count
+        FROM
+        Board
+        LEFT JOIN Movies ON Board.movie_id = Movies.id
+        LEFT JOIN board_kategories ON Board.kategorie_id = board_kategories.id
+        LEFT JOIN Member ON Board.member_id = Member.id
+        LEFT JOIN Board_reply ON Board.id = Board_reply.board_id
+        WHERE
+        Board.member_id = #{memberId}
+        GROUP BY Board.id, Movies.title, board_kategories.name, Member.nickname
+        ORDER BY Board.id DESC
+        OFFSET #{offset} ROW FETCH NEXT #{perPage} ROW ONLY
+    </select>
+
+    <!-- 특정 멤버가 작성한 게시글의 총 수를 반환 -->
+    <select id="totalMyBoardCount" resultType="Integer">
+        SELECT COUNT(id)
+        FROM board
+        WHERE member_id = #{memberId}
+    </select>
+
+    <!-- 특정 회원의 댓글 조회 -->
+    <select id="findMyReplyList" resultType="org.zerock.myapp.domain.BoardReplyAndBoardTitleVO">
+        SELECT
+        board_reply.*,
+        member.nickname,
+        Board.title AS Board_title,
+        Movies.title AS movie_title
+        FROM
+        board_reply
+        LEFT JOIN member ON board_reply.member_id = member.id
+        LEFT JOIN Board ON Board_reply .board_id= Board.id
+        LEFT JOIN Movies ON Board.movie_id = Movies.id
+        WHERE
+        board_reply.member_id = #{memberId}
+        ORDER BY
+        ID DESC
+        OFFSET #{offset} ROW FETCH NEXT #{perPage} ROW ONLY
+    </select>
+
+    <!-- 특정 멤버가 작성한 게시글의 총 수를 반환 -->
+    <select id="totalMyReplyCount" resultType="Integer">
+        SELECT
+        COUNT(id)
+        FROM
+        board_reply
+        WHERE
+        member_id = #{memberId}
+    </select>
+
+    <!-- 특정 멤버가 검색한 영화기록 조회 -->
+    <select id="findSearchMovie" resultType="org.zerock.myapp.domain.MovieVO">
+        SELECT
+        movies.*
+        FROM
+        movies
+        LEFT JOIN search_history ON movies.id = search_history.movie_id
+        WHERE
+        search_history.member_id = #{memberId}
+    </select>
 
 </mapper>

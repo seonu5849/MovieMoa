@@ -11,7 +11,7 @@ import java.util.List;
 public interface BoardMapper {
 
     // 게시글 전체 목록 조회
-    public abstract List<BoardAndReplyCntVO> findBoardList();
+    public abstract List<BoardAndReplyCntVO> findBoardList(@Param("offset") Integer offset, @Param("perPage") Integer perPage);
 
     // 게시글 작성
     public abstract Integer postWriting(@Param("title")String title, @Param("content")String content, @Param("kategorieId")Long kategorieId, @Param("movieId")Long movieId, @Param("memberId")Long memberId);
@@ -75,5 +75,8 @@ public interface BoardMapper {
 
     // 댓글 삭제
     public abstract Integer deleteBoardReply(@Param("replyId")Long replyId);
+
+    // 게시판 수 조회
+    public abstract Integer totalBoardListCnt();
 
 } // end interface

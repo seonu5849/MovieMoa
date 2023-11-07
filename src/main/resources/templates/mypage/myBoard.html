@@ -27,20 +27,6 @@
             color: #333;
         }
 
-        .board-list .create-button {
-            display: block;
-            width: 100px; /* 버튼의 너비를 줄임 */
-            padding: 8px; /* 버튼의 높이를 줄임 */
-            background-color: #4caf50;
-            color: white;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 16px;
-            float: right; /* 오른쪽으로 이동 */
-            margin-bottom: 10px; /* 하단 여백 추가 */
-        }
-
         .board-list table {
             width: 100%;
             border-collapse: collapse;
@@ -61,7 +47,7 @@
             text-align: center;
         }
 
-        .board-list .title {
+        .board-list .title, .content {
             text-align: left;
         }
 
@@ -146,60 +132,71 @@
     <aside th:replace="mypageSide.html" />
     <div class="mypage-container">
 
-    <section id="notice" class="board-list">
-        <h1>나의 게시글</h1>
-        <table>
-            <tr>
-                <input type="hidden" name="id" th:value="${memberId}">
-                <th>번호</th>
-                <th>등록일</th>
-                <th>제목</th>
-                <th>내용</th>
-            </tr>
+        <section id="notice" class="board-list">
+            <h1>나의 게시글</h1>
+            <table>
+                <tr>
+                    <input type="hidden" name="id" th:value="${memberId}">
+                    <th>번호</th>
+                    <th>카테고리</th>
+                    <th>제목</th>
+                    <th>좋아요</th>
+                    <th>조회수</th>
+                    <th>등록일</th>
+                    <th>수정일</th>
+                    <th>댓글</th>
+                </tr>
 
-            <tr th:each="board : ${boards}" class="clickable-row" th:data-id="${board.id}">
-                <td th:text="${board.id}">번호</td>
-                <td th:text="${#dates.format(board.createdAt, 'yyyy-MM-dd HH:MM:SS')}">등록일</td>
-                <td th:text="${board.title != null ? (#strings.length(board.title) > 15 ? #strings.substring(board.title, 0, 15) + '...' : board.title) : ''}">제목</td>
-                <td th:text="${board.content != null ? (#strings.length(board.content) > 20 ? #strings.substring(board.content, 0, 20) + '...' : board.title) : ''}">내용</td>
-            </tr>
-        </table>
+                <tr th:each="board : ${boards}" class="clickable-row" th:data-id="${board.id}">
+                    <td th:text="${board.id}">번호</td>
+                    <td th:text="${board.kategorieName}">카테고리</td>
+                    <td class="title" th:text="${board.movieTitle} != null ? '[' + ${board.movieTitle} + '] ' + ${board.title} : ${board.title}">
+                        [영화제목] 게시글 제목
+                    </td>
+                    <td th:text="${board.favorites}">10</td>
+                    <td th:text="${board.viewCount}">100</td>
+                    <td th:text="${#dates.format(board.createdAt, 'yyyy-MM-dd HH:mm')}">등록일</td>
+                    <td th:text="${board.updatedAt != null ? #dates.format(board.updatedAt, 'yyyy-MM-dd HH:mm') : ''}">수정일</td>
+                    <td th:text="${board.replyCount}">10</td>
+                </tr>
+            </table>
 
-        <ul class="pagination">
-            <!-- '이전' 버튼을 표시합니다. 현재 페이지가 1보다 큰 경우에만 표시됩니다. -->
-            <li th:if="${currentPage > 1}">
-                <!-- 검색 옵션 및 값이 없는 경우, 이전 페이지로 이동하는 링크를 표시합니다. -->
-                <a th:if="${searchOption == null && searchValue == null}" th:href="@{|${currentPage - 1}|}" th:text="이전">이전</a>
-                <!-- 검색 옵션 및 값이 있는 경우, 이전 페이지로 이동하는 링크를 표시합니다. -->
-                <a th:if="${searchOption != null && searchValue != null}" th:href="@{|${currentPage - 1}?searchOption=${searchOption}&searchValue=${searchValue}|}" th:text="이전">이전</a>
-            </li>
+            <ul class="pagination">
+                <!-- '이전' 버튼을 표시합니다. 현재 페이지가 1보다 큰 경우에만 표시됩니다. -->
+                <li th:if="${currentPage > 1}">
+                    <!-- 검색 옵션 및 값이 없는 경우, 이전 페이지로 이동하는 링크를 표시합니다. -->
+                    <a th:if="${searchOption == null && searchValue == null}" th:href="@{|${currentPage - 1}|}" th:text="이전">이전</a>
+                    <!-- 검색 옵션 및 값이 있는 경우, 이전 페이지로 이동하는 링크를 표시합니다. -->
+                    <a th:if="${searchOption != null && searchValue != null}" th:href="@{|${currentPage - 1}?searchOption=${searchOption}&searchValue=${searchValue}|}" th:text="이전">이전</a>
+                </li>
 
-            <!-- 페이지 번호 그룹을 표시합니다. -->
-            <th:block th:with="startPageNum=${(currentPage - 1) / 5 * 5 + 1}">
-                <th:block th:with="endPageNum=${(startPageNum + 4) > totalPages ? totalPages : (startPageNum + 4)}">
-                    <!-- 페이지 번호 그룹을 계산하고 각 페이지 번호를 표시합니다. -->
-                    <th:block th:each="pageNumber : ${#numbers.sequence(startPageNum, endPageNum)}">
-                        <!-- 총 페이지 수가 1보다 큰 경우에만 페이지 번호를 출력합니다. -->
-                        <!-- 현재 페이지일 경우, 'active' 클래스를 적용하여 강조 표시합니다. -->
-                        <li th:if="${totalPages > 1}" th:class="${pageNumber == currentPage} ? 'active' : ''">
-                            <!-- 검색 옵션 및 값이 없는 경우, 페이지 번호로 이동하는 링크를 표시합니다. -->
-                            <a th:if="${searchOption == null && searchValue == null}" th:href="@{|${pageNumber}|}" th:text="${pageNumber}">1</a>
-                            <!-- 검색 옵션 및 값이 있는 경우, 페이지 번호로 이동하는 링크를 표시합니다. -->
-                            <a th:if="${searchOption != null && searchValue != null}" th:href="@{|${pageNumber}?searchOption=${searchOption}&searchValue=${searchValue}|}" th:text="${pageNumber}">1</a>
-                        </li>
+                <!-- 페이지 번호 그룹을 표시합니다. -->
+                <th:block th:with="startPageNum=${(currentPage - 1) / 5 * 5 + 1}">
+                    <th:block th:with="endPageNum=${(startPageNum + 4) > totalPages ? totalPages : (startPageNum + 4)}">
+                        <!-- 페이지 번호 그룹을 계산하고 각 페이지 번호를 표시합니다. -->
+                        <th:block th:each="pageNumber : ${#numbers.sequence(startPageNum, endPageNum)}">
+                            <!-- 총 페이지 수가 1보다 큰 경우에만 페이지 번호를 출력합니다. -->
+                            <!-- 현재 페이지일 경우, 'active' 클래스를 적용하여 강조 표시합니다. -->
+                            <li th:if="${totalPages > 1}" th:class="${pageNumber == currentPage} ? 'active' : ''">
+                                <!-- 검색 옵션 및 값이 없는 경우, 페이지 번호로 이동하는 링크를 표시합니다. -->
+                                <a th:if="${searchOption == null && searchValue == null}" th:href="@{|${pageNumber}|}" th:text="${pageNumber}">1</a>
+                                <!-- 검색 옵션 및 값이 있는 경우, 페이지 번호로 이동하는 링크를 표시합니다. -->
+                                <a th:if="${searchOption != null && searchValue != null}" th:href="@{|${pageNumber}?searchOption=${searchOption}&searchValue=${searchValue}|}" th:text="${pageNumber}">1</a>
+                            </li>
+                        </th:block>
                     </th:block>
                 </th:block>
-            </th:block>
 
-            <!-- '다음' 버튼을 표시합니다. 현재 페이지가 총 페이지 수 미만인 경우에만 표시됩니다. -->
-            <li th:if="${currentPage < totalPages}">
-                <!-- 검색 옵션 및 값이 없는 경우, 다음 페이지로 이동하는 링크를 표시합니다. -->
-                <a th:if="${searchOption == null && searchValue == null}" th:href="@{|${currentPage + 1}|}" th:text="다음">다음</a>
-                <!-- 검색 옵션 및 값이 있는 경우, 다음 페이지로 이동하는 링크를 표시합니다. -->
-                <a th:if="${searchOption != null && searchValue != null}" th:href="@{|${currentPage + 1}?searchOption=${searchOption}&searchValue=${searchValue}|}" th:text="다음">다음</a>
-            </li>
-        </ul>
-    </section>
+                <!-- '다음' 버튼을 표시합니다. 현재 페이지가 총 페이지 수 미만인 경우에만 표시됩니다. -->
+                <li th:if="${currentPage < totalPages}">
+                    <!-- 검색 옵션 및 값이 없는 경우, 다음 페이지로 이동하는 링크를 표시합니다. -->
+                    <a th:if="${searchOption == null && searchValue == null}" th:href="@{|${currentPage + 1}|}" th:text="다음">다음</a>
+                    <!-- 검색 옵션 및 값이 있는 경우, 다음 페이지로 이동하는 링크를 표시합니다. -->
+                    <a th:if="${searchOption != null && searchValue != null}" th:href="@{|${currentPage + 1}?searchOption=${searchOption}&searchValue=${searchValue}|}" th:text="다음">다음</a>
+                </li>
+            </ul>
+        </section>
+    </div>
 </main>
 
     <footer th:replace="footer.html" />

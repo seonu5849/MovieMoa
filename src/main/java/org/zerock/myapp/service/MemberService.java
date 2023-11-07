@@ -2,8 +2,9 @@ package org.zerock.myapp.service;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.zerock.myapp.domain.MemberDTO;
-import org.zerock.myapp.domain.MemberVO;
+import org.zerock.myapp.domain.*;
+
+import java.util.List;
 
 public interface MemberService {
 
@@ -36,5 +37,22 @@ public interface MemberService {
 
     // 특정 회원 삭제(탈퇴)
     public abstract Integer deleteUser(@Param("id") Long id);
+
+    public abstract Integer offset(Integer pageNum);
+
+    // 회원 ID를 이용한 특정 회원의 게시글 전체 조회
+    public abstract List<BoardVO> findMyPageBoardList(Long memberId, Integer pageNum);
+
+    // 페이징을 위한 특정 회원의 게시글 총 레코드 수 조회
+    public abstract Integer totalMyBoardByBoardCount(Long memberId);
+
+    // 회원 ID를 이용한 특정 회원의 리플 전체 조회
+    public abstract List<BoardReplyVO> findMyPageReplyList(Long memberId, Integer pageNum);
+
+    // 페이징을 위한 특정 회원의 리플 총 레코드 수 조회
+    public abstract Integer totalMyReplyCount(Long memberId);
+
+    // 특정 회원 영화 검색기록 조회
+    public abstract List<MovieVO> findSearchMovie(Long memberId);
 
 } // end interface
