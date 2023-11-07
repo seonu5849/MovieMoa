@@ -29,10 +29,13 @@ public class BoardController {
         log.trace("boardView({}) invoked.", pageNum);
 
         List<BoardAndReplyCntVO> boardList = this.boardService.findBoardList(pageNum);
-        Integer totalPages = this.boardService.totalBoardListCnt();
+        Map<String, Integer> paginationInfo = this.boardService.totalBoardListCnt();
+        int totalItems = paginationInfo.get("totalItems");
+        int totalPages = paginationInfo.get("totalPages");
 
         model.addAttribute("boards", boardList);
         model.addAttribute("currentPage", pageNum);
+        model.addAttribute("totalItems", totalItems);
         model.addAttribute("totalPages", totalPages);
 
         return "/board/boards";

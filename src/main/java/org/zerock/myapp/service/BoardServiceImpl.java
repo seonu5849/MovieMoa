@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import org.zerock.myapp.domain.*;
 import org.zerock.myapp.mapper.BoardMapper;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -144,14 +146,19 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Integer totalBoardListCnt() {
-        Integer totalPages = this.boardMapper.totalBoardListCnt()/ perPage;
+    public Map<String, Integer> totalBoardListCnt() {
+        int totalItems = this.boardMapper.totalBoardListCnt(); // 전체 게시글 수를 구합니다.
+        int totalPages = totalItems / perPage; // 전체 페이지 수를 계산합니다.
 
-        if(this.boardMapper.totalBoardListCnt() % perPage != 0){
-            totalPages++;
+        if(totalItems % perPage != 0){
+            totalPages++; // 나누어 떨어지지 않는 경우 페이지를 하나 추가합니다.
         }
 
-        return totalPages;
+        Map<String, Integer> resultMap = new HashMap<>();
+        resultMap.put("totalItems", totalItems);
+        resultMap.put("totalPages", totalPages);
+
+        return resultMap;
     }
 
 } // end class

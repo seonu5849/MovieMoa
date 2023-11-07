@@ -104,7 +104,7 @@
 <header th:replace="nav.html" />
 <main>
     <section id="notice" class="board-list">
-        <h1>게시판</h1>
+        <h1>게시판(<span th:text="${totalItems}">0</span>개)</h1>
         <!-- 로그인 여부를 'data-loggedin' 속성에 설정 -->
         <a href="javascript:void(0);" class="create-button" sec:authorize="isAuthenticated()" data-loggedin="true">게시글 작성</a>
         <a href="javascript:void(0);" class="create-button" sec:authorize="!isAuthenticated()" data-loggedin="false">게시글 작성</a>

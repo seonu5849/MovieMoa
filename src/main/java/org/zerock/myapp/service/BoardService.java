@@ -3,6 +3,7 @@ package org.zerock.myapp.service;
 import org.zerock.myapp.domain.*;
 
 import java.util.List;
+import java.util.Map;
 
 public interface BoardService {
 
@@ -76,6 +77,6 @@ public interface BoardService {
     public abstract Integer offset(Integer pageNum);
 
     // 게시판 수 조회
-    public abstract Integer totalBoardListCnt();
+    public abstract Map<String, Integer> totalBoardListCnt();
 
 } // end interface
