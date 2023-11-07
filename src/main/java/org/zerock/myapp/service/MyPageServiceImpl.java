@@ -3,8 +3,8 @@ package org.zerock.myapp.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.zerock.myapp.domain.BoardReplyVO;
 import org.zerock.myapp.domain.BoardVO;
-import org.zerock.myapp.domain.MemberVO;
 import org.zerock.myapp.mapper.MyPageMapper;
 
 import java.util.List;
@@ -34,7 +34,7 @@ public class MyPageServiceImpl implements MyPageService{
     } //findMyPageBoardList
 
     @Override
-    public Integer totalMemberByBoardCount(Long memberId) {
+    public Integer totalMyBoardByBoardCount(Long memberId) {
         log.trace("totalEventCount({}) invoked.", memberId);
 
         Integer totalPages = this.myPageMapper.totalMyBoardCount(memberId) / perPage;
@@ -44,6 +44,29 @@ public class MyPageServiceImpl implements MyPageService{
         }
 
         return totalPages;
-    } //totalMemberByBoardCount
+    } //totalMyBoardByBoardCount
+
+    @Override
+    public List<BoardReplyVO> findMyPageReplyList(Long memberId, Integer pageNum) {
+
+        Integer offset = offset(pageNum);
+
+        return this.myPageMapper.findMyReplyList(memberId, offset, perPage);
+
+    }
+
+    @Override
+    public Integer totalMyReplyCount(Long memberId) {
+        log.trace("totalMyReplyCount({}) invoked.", memberId);
+
+        Integer totalPages = this.myPageMapper.totalMyReplyCount(memberId) / perPage;
+
+        if(this.myPageMapper.totalMyReplyCount(memberId) % perPage != 0){
+            totalPages++;
+        }
+
+        return totalPages;
+    }
+
 
 } //MyPageServiceImpl

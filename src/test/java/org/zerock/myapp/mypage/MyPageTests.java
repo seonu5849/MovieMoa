@@ -7,6 +7,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.zerock.myapp.domain.BoardReplyVO;
 import org.zerock.myapp.domain.BoardVO;
 import org.zerock.myapp.service.BoardServiceImpl;
 import org.zerock.myapp.service.MyPageServiceImpl;
@@ -54,6 +55,31 @@ public class MyPageTests {
                     4L);
         }
 
-    }//
+    }// WritePost
+
+    @Test
+    @DisplayName("댓글 만들기")
+    void WriteReply(){
+        log.trace("WriteReply");
+
+        Long memberid = 2L;
+        for(int i = 0; i<100; i++){
+            this.boardService.insertReply("test를 위한 Reply입니다~"+i, memberid, 34L+i);
+        }
+
+    }//WriteReply
+
+    @Test
+    @DisplayName("아이디 댓글 조회")
+    void FindMemberReply(){
+        log.trace("FindMemberReply");
+
+        Long memberid = 2L;
+
+        List<BoardReplyVO> findReply = this.myPageService.findMyPageReplyList(memberid, 1);
+        findReply.forEach(log::info);
+
+
+    }//FindMemberReply
 
 } //MyPageTests

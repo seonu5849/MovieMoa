@@ -31,5 +31,31 @@
         WHERE member_id = #{memberId}
     </select>
 
+<!-- 특정 멤버가 작성한 게시글의 총 수를 반환 -->
+    <select id="findMyReplyList" resultType="org.zerock.myapp.domain.BoardReplyVO">
+        SELECT
+            BOARD_REPLY.*,
+            MEMBER.NICKNAME,
+        FROM
+            BOARD_REPLY
+            LEFT JOIN Member ON BOARD_REPLY.member_id = Member.id
+
+        WHERE
+            MEMBER_ID = #{MEMBER_ID}
+        ORDER BY
+            ID DESC
+        OFFSET #{offset} ROW FETCH NEXT #{perPage} ROW ONLY
+    </select>
+
+    <!-- 특정 멤버가 작성한 게시글의 총 수를 반환 -->
+    <select id="totalMyReplyCount" resultType="Integer">
+        SELECT
+            COUNT(id)
+        FROM
+            BOARD_REPLY
+        WHERE
+            MEMBER_ID = #{MEMBER_ID}
+    </select>
+
 
 </mapper>
