@@ -46,7 +46,6 @@
         #{event.title},
         #{event.thumbnailPath},
         #{event.contentsPath},
-        #{event.contentsPath},
         #{event.startAt},
         #{event.endAt})
     </insert>

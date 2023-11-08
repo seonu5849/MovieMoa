@@ -3,11 +3,14 @@ package org.zerock.myapp.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.zerock.myapp.domain.*;
 import org.zerock.myapp.service.AdminService;
+import org.zerock.myapp.service.EventService;
 import org.zerock.myapp.service.MovieJsonService;
 import org.zerock.myapp.service.MovieService;
 
@@ -25,6 +28,7 @@ public class AdminController {
     private final AdminService adminService;
     private final MovieService movieService;
     private final MovieJsonService movieJsonService;
+    private final EventService eventService;
 
     // 회원목록 및 검색을 위한 메소드
     @GetMapping("/memberList/{pageNum}")
@@ -346,17 +350,28 @@ public class AdminController {
     } // movieDataListView
 
     @GetMapping("/eventWrite")
-    public String eventWriteView() {
+    public String eventWriteView(Model model) {
         log.trace("eventWriteView() invoked.");
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // 인증된 사용자의 이름(여기서는 사용자 ID로 사용)을 가져옵니다.
+        String username = authentication.getName();
+        // 사용자 이름(아이디)를 Long 타입으로 변환합니다.
+        Long id = Long.valueOf(username);
+
+        model.addAttribute("adminId", id);
 
         return "/event/eventWrite";
     } // eventWriteView
 
     @PostMapping("/eventWrite")
-    public String eventWrite() {
-        log.trace("eventWrite() invoked.");
+    public String eventWrite(Model model, EventsVO event) {
+        log.trace("eventWrite({}) invoked.", event);
 
-        return "redirect:/event/detailEvent";
+        Integer addEvent = this.eventService.addEvent(event);
+        log.info("\t+ addEvent: {}", addEvent);
+
+        return "redirect:/event/currentEvents";
     } // eventWrite
 
     @GetMapping("/eventUpdate")

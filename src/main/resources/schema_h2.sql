@@ -209,6 +209,9 @@ CREATE TABLE reportBoards (
 	FOREIGN KEY (reporter_id) REFERENCES Member(id)
 );
 
+alter table reportBoards
+add column reason_for_change varchar(255);
+
 /*alter table reportBoards
 add column complete varchar(30);
 alter table reportBoards
@@ -227,6 +230,9 @@ CREATE TABLE reportReply (
 	FOREIGN KEY (menu) REFERENCES report_kategories(id),
 	FOREIGN KEY (reply_id) REFERENCES Board_reply(id) ON DELETE CASCADE
 );
+
+alter table reportReply
+drop column reason_for_change varchar(255);
 
 /*alter table reportReply
 add column complete varchar(30);

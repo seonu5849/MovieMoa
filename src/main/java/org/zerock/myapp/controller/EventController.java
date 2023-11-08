@@ -67,6 +67,4 @@ public class EventController {
         return "redirect:/event/currentEvents";
     } // detailEventDelete
 
-
-
 } // end class

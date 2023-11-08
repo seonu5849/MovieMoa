@@ -108,9 +108,11 @@
 <main>
     <aside th:replace="storeSide.html" />
     <div class="product-main-container">
+
         <div sec:authorize="hasRole('ADMIN')" class="bottom-right">
             <a class="register-button" th:href="@{/admin/writeProduct}">등록</a>
         </div>
+
         <ul class="product-list">
             <th:block th:each="product, stat : ${productList}">
                 <li class="product-container">
@@ -124,6 +126,7 @@
                 </li>
             </th:block>
         </ul>
+
     </div>
 </main>
 <footer th:replace="footer.html" />

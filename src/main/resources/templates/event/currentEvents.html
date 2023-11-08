@@ -124,15 +124,26 @@
                     </th:block>
                 </ul>
             </div>
-            <div>
-                <ul>
-                    <th:block th:each="pageNumber : ${#numbers.sequence(1, totalPages)}">
-                        <li th:class="${pageNumber == currentPage} ? 'active' : ''">
-                            <a th:href="@{'/event/currentEvents?proceedingYn='+${proceedingYn}+'&pageNum='+${pageNumber}}" th:text="${pageNumber}"></a>
-                        </li>
+
+            <div class="pagination">
+                <!-- 이전 페이지 링크 -->
+                <a th:if="${currentPage > 1}" th:href="@{'/event/currentEvents?proceedingYn='+${proceedingYn}+'&pageNum='+(currentPage - 1)}">&laquo;</a>
+
+                <!-- 페이지 번호 -->
+                <th:block th:with="startPageNum=${(currentPage - 1) div 5 * 5 + 1}, endPageNum=${(startPageNum + 4) > totalPages ? totalPages : (startPageNum + 4)}">
+                    <th:block th:each="pageNumber : ${#numbers.sequence(startPageNum, endPageNum)}">
+                        <a th:href="@{'/event/currentEvents?proceedingYn='+${proceedingYn}+'&pageNum='+${pageNumber}}"
+                           th:text="${pageNumber}"
+                           th:class="${pageNumber == currentPage} ? 'active' : ''"
+                           th:if="${totalPages > 1}"></a>
                     </th:block>
-                </ul>
+                </th:block>
+
+                <!-- 다음 페이지 링크 -->
+                <a th:if="${currentPage < totalPages}" th:href="@{'/event/currentEvents?proceedingYn='+${proceedingYn}+'&pageNum='+(currentPage + 1)}">&raquo;</a>
             </div>
+
+
         </div>
     </div>
 </main>
