@@ -33,6 +33,12 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    public List<BoardAndReplyCntVO> BoardSearchList(String category, String query, Integer pageNum) {
+        Integer offset = offset(pageNum);
+        return boardMapper.BoardSearchList(category, query, offset, perPage);
+    }
+
+    @Override
     public Integer postWriting(String title, String content, Long kategorieId, Long movieId, Long memberId) {
         return boardMapper.postWriting(title, content, kategorieId, movieId, memberId);
     }
@@ -148,6 +154,22 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public Map<String, Integer> totalBoardListCnt() {
         int totalItems = this.boardMapper.totalBoardListCnt(); // 전체 게시글 수를 구합니다.
+        int totalPages = totalItems / perPage; // 전체 페이지 수를 계산합니다.
+
+        if(totalItems % perPage != 0){
+            totalPages++; // 나누어 떨어지지 않는 경우 페이지를 하나 추가합니다.
+        }
+
+        Map<String, Integer> resultMap = new HashMap<>();
+        resultMap.put("totalItems", totalItems);
+        resultMap.put("totalPages", totalPages);
+
+        return resultMap;
+    }
+
+    @Override
+    public Map<String, Integer> boardSearchListCnt(String category, String query) {
+        int totalItems = this.boardMapper.boardSearchListCnt(category, query); // 전체 게시글 수를 구합니다.
         int totalPages = totalItems / perPage; // 전체 페이지 수를 계산합니다.
 
         if(totalItems % perPage != 0){

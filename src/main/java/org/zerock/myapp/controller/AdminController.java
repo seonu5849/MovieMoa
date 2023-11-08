@@ -2,12 +2,12 @@ package org.zerock.myapp.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.myapp.domain.*;
 import org.zerock.myapp.service.AdminService;
 import org.zerock.myapp.service.EventService;
@@ -365,12 +365,24 @@ public class AdminController {
     } // eventWriteView
 
     @PostMapping("/eventWrite")
-    public String eventWrite(Model model, EventsVO event) {
+    public String eventWrite(EventsVO event, RedirectAttributes redirectAttributes) {
         log.trace("eventWrite({}) invoked.", event);
 
-        Integer addEvent = this.eventService.addEvent(event);
-        log.info("\t+ addEvent: {}", addEvent);
+        try {
+            // EventsVO 객체를 이용해 이벤트를 추가하는 서비스 메서드 호출
+            Integer addEvent = this.eventService.addEvent(event);
+            log.info("\t+ addEvent: {}", addEvent);
 
+            // 이벤트 추가 성공 메시지를 리다이렉트 후 보여줄 수 있도록 설정
+            redirectAttributes.addFlashAttribute("message", "이벤트가 성공적으로 등록되었습니다.");
+        } catch (Exception e) {
+            log.error("Error adding event", e);
+            // 에러 메시지를 리다이렉트 후 보여줄 수 있도록 설정
+            redirectAttributes.addFlashAttribute("errorMessage", "이벤트 등록 중 오류가 발생했습니다.");
+            return "redirect:/event/eventWrite";
+        }
+
+        // 이벤트 추가 후 현재 이벤트 목록 페이지로 리다이렉트
         return "redirect:/event/currentEvents";
     } // eventWrite
 

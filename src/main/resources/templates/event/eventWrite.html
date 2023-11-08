@@ -76,7 +76,7 @@
     <article class="main-content">
         <div class="event-form-container">
             <h1>이벤트 작성</h1>
-            <form id="eventForm" th:action="@{/event/eventWrite}" method="post">
+            <form id="eventForm" action="/admin/eventWrite" method="post" name="event">
 
                 <input type="hidden" id="adminId" name="adminId" th:value="${adminId}">
 
@@ -96,8 +96,8 @@
                 </div>-->
 
                 <div class="form-group">
-                    <label for="thumbnail">썸네일 이미지:</label>
-                    <input type="text" id="thumbnail" name="thumbnail" required>
+                    <label for="thumbnailPath">썸네일 이미지:</label>
+                    <input type="text" id="thumbnailPath" name="thumbnailPath" required>
                 </div>
 
                 <div class="form-group">
@@ -106,16 +106,12 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="contents">이벤트 내용:</label>
-                    <textarea id="contents" name="contents" required></textarea>
-                </div>
-                <div class="form-group">
                     <label for="startAt">시작 날짜:</label>
-                    <input type="datetime-local" id="startAt" name="startAt" required>
+                    <input type="date" id="startAt" name="startAt" required>
                 </div>
                 <div class="form-group">
                     <label for="endAt">종료 날짜:</label>
-                    <input type="datetime-local" id="endAt" name="endAt" required>
+                    <input type="date" id="endAt" name="endAt" required>
                 </div>
                 <div class="form-group">
                     <button type="submit">이벤트 등록</button>

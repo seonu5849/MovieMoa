@@ -24,12 +24,24 @@ public class BoardController {
 
     private final BoardService boardService;
 
-    @GetMapping("/boards/{pageNum}")
-    public String boardView(Model model, @PathVariable("pageNum") Integer pageNum) {
-        log.trace("boardView({}) invoked.", pageNum);
+    @GetMapping("/boards")
+    public String boardView(Model model, @RequestParam(value="pageNum", required = false, defaultValue="1") Integer pageNum, String category, String query) {
+        log.trace("boardView({}, {}, {}) invoked.", category, query, pageNum);
 
-        List<BoardAndReplyCntVO> boardList = this.boardService.findBoardList(pageNum);
-        Map<String, Integer> paginationInfo = this.boardService.totalBoardListCnt();
+        List<BoardAndReplyCntVO> boardList = null;
+        Map<String, Integer> paginationInfo = null;
+
+        // 검색 옵션과 검색값이 모두 null인 경우 (검색하지 않았을 때)
+        if(category == null && query == null){
+            boardList = this.boardService.findBoardList(pageNum);
+            paginationInfo = this.boardService.totalBoardListCnt();
+        }
+        // 검색 옵션과 검색값이 모두 존재하는 경우 (검색을 했을 때)
+        if(category != null && query != null){
+            boardList = this.boardService.BoardSearchList(category, query, pageNum);
+            paginationInfo = this.boardService.boardSearchListCnt(category, query);
+        }
+
         int totalItems = paginationInfo.get("totalItems");
         int totalPages = paginationInfo.get("totalPages");
 
@@ -40,6 +52,23 @@ public class BoardController {
 
         return "/board/boards";
     } // boardView
+
+    @GetMapping("/search")
+    public String boardSearchView(Model model, String category, String query, @RequestParam(value="pageNum", required = false, defaultValue="1") Integer pageNum) {
+        log.trace("boardSearchView({}, {}, {}) invoked.", category, query, pageNum);
+
+        List<BoardAndReplyCntVO> boardSearchList = this.boardService.BoardSearchList(category, query, pageNum);
+        Map<String, Integer> paginationInfo = this.boardService.boardSearchListCnt(category, query);
+        int totalItems = paginationInfo.get("totalItems");
+        int totalPages = paginationInfo.get("totalPages");
+
+        model.addAttribute("boards", boardSearchList);
+        model.addAttribute("currentPage", pageNum);
+        model.addAttribute("totalItems", totalItems);
+        model.addAttribute("totalPages", totalPages);
+
+        return "/board/boards";
+    } // boardSearchView
 
     @GetMapping("/writeBoard")
     public String writeBoardView(Model model) {

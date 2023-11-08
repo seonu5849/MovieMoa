@@ -75,7 +75,7 @@ footer {
                 <li class="gnb-item"><a class="reset-link" th:href="@{'/movie/movies'}">영화</a></li>
                 <li class="gnb-item"><a class="reset-link" th:href="@{'/event/currentEvents'}">이벤트</a></li>
                 <li class="gnb-item"><a class="reset-link" th:href="@{'/store/tickets'}">스토어</a></li>
-                <li class="gnb-item"><a class="reset-link" th:href="@{'/board/boards/1'}">게시판</a></li>
+                <li class="gnb-item"><a class="reset-link" th:href="@{'/board/boards'}">게시판</a></li>
                 <li class="gnb-item" sec:authorize="!isAuthenticated()"><a class="reset-link" th:href="@{'/registration'}">회원가입</a></li>
                 <li class="gnb-item" sec:authorize="!isAuthenticated()"><a class="reset-link" th:href="@{'/login'}">로그인</a></li>
                 <li class="gnb-item" sec:authorize="isAuthenticated()"><a class="reset-link" th:href="@{'/mypage/menu/myInfo'}">마이페이지</a></li>

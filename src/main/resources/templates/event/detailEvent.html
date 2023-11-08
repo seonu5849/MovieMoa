@@ -73,7 +73,7 @@
     <div class="event-detail-container">
         <div>
             <h1 th:text="${event.title}" class="event-title"></h1>
-            <p th:text="'기간 | ' + ${event.startAt} + ' ~ ' + ${event.endAt}" class="event-period"></p>
+            <p th:text="'기간 | ' + ${event.startAt != null ? #dates.format(event.startAt, 'yyyy-MM-dd') : ''} + ' ~ ' + ${event.endAt != null ? #dates.format(event.endAt, 'yyyy-MM-dd') : ''}" class="event-period"></p>
         </div>
         <div>
             <img th:src="${event.contentsPath}" class="event-img" />

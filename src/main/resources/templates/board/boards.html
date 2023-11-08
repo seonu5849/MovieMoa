@@ -98,13 +98,76 @@
         .create-button:hover {
             background-color: #45a049;
         }
+
+        /* 검색창 전용 CSS */
+        .search-section {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .search-form {
+            display: inline-block;
+            position: relative;
+        }
+
+        .search-category {
+            padding: 8px 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .search-input {
+            padding: 8px 15px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+            width: 250px;
+        }
+
+        .search-button {
+            padding: 8px 15px;
+            font-size: 16px;
+            border: none;
+            background-color: #4caf50;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .search-button:hover {
+            background-color: #45a049;
+        }
+
     </style>
 </head>
 <body>
 <header th:replace="nav.html" />
 <main>
+
     <section id="notice" class="board-list">
         <h1>게시판(<span th:text="${totalItems}">0</span>개)</h1>
+
+        <!-- 검색창 섹션 추가 -->
+        <section class="search-section">
+            <form th:action="@{/board/boards}" method="get" class="search-form">
+                <!-- 카테고리 선택 드롭다운 -->
+                <select name="category" class="search-category">
+                    <option value="title">제목</option>
+                    <option value="content">내용</option>
+                    <option value="movieTitle">영화제목</option>
+                </select>
+                <!-- 검색창 입력 필드 -->
+                <input type="text" name="query" placeholder="검색어 입력" class="search-input"/>
+                <!-- 검색 버튼 -->
+                <button type="submit" class="search-button">검색</button>
+            </form>
+        </section>
+
         <!-- 로그인 여부를 'data-loggedin' 속성에 설정 -->
         <a href="javascript:void(0);" class="create-button" sec:authorize="isAuthenticated()" data-loggedin="true">게시글 작성</a>
         <a href="javascript:void(0);" class="create-button" sec:authorize="!isAuthenticated()" data-loggedin="false">게시글 작성</a>
@@ -134,22 +197,21 @@
                 <td th:text="${board.replyCount}">10</td>
             </tr>
         </table>
-            <div class="pagination">
-                <!-- 이전 페이지 링크 -->
-                <a th:if="${currentPage > 1}" th:href="@{'/board/boards/' + ${currentPage - 1}}">&laquo;</a>
+        <div class="pagination">
+            <!-- 이전 페이지 링크, 검색 조건 유지 -->
+            <a th:if="${currentPage > 1}" th:href="@{|/board/boards?pageNum=${currentPage - 1}${(category != null && !category.isEmpty()) ? '&category=' + category : ''}${(query != null && !query.isEmpty()) ? '&query=' + query : ''}|}">&laquo;</a>
 
-                <!-- 페이지 번호 -->
-                <th:block th:with="startPageNum=${(currentPage - 1) / 5 * 5 + 1}">
-                    <th:block th:with="endPageNum=${(startPageNum + 4) > totalPages ? totalPages : (startPageNum + 4)}">
-                        <th:block th:each="pageNumber : ${#numbers.sequence(startPageNum, endPageNum)}">
-                            <a th:href="@{'/board/boards/' + ${pageNumber}}" th:text="${pageNumber}" th:class="${pageNumber == currentPage} ? 'active' : ''" th:if="${totalPages > 1}"></a>
-                        </th:block>
-                    </th:block>
+            <!-- 페이지 번호, 검색 조건 유지 -->
+            <th:block th:with="startPageNum=${(currentPage - 1) / 5 * 5 + 1}, endPageNum=${(startPageNum + 4) > totalPages ? totalPages : (startPageNum + 4)}">
+                <th:block th:each="pageNumber : ${#numbers.sequence(startPageNum, endPageNum)}">
+                    <a th:href="@{|/board/boards?pageNum=${pageNumber}${(category != null && !category.isEmpty()) ? '&category=' + category : ''}${(query != null && !query.isEmpty()) ? '&query=' + query : ''}|}" th:text="${pageNumber}" th:class="${pageNumber == currentPage} ? 'active' : ''"></a>
                 </th:block>
+            </th:block>
 
-                <!-- 다음 페이지 링크 -->
-                <a th:if="${currentPage < totalPages}" th:href="@{'/board/boards/' + ${currentPage + 1}}">&raquo;</a>
-            </div>
+            <!-- 다음 페이지 링크, 검색 조건 유지 -->
+            <a th:if="${currentPage < totalPages}" th:href="@{|/board/boards?pageNum=${currentPage + 1}${(category != null && !category.isEmpty()) ? '&category=' + category : ''}${(query != null && !query.isEmpty()) ? '&query=' + query : ''}|}">&raquo;</a>
+        </div>
+
 
     </section>
 </main>

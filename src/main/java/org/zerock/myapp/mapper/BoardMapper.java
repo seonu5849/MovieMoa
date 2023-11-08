@@ -13,6 +13,9 @@ public interface BoardMapper {
     // 게시글 전체 목록 조회
     public abstract List<BoardAndReplyCntVO> findBoardList(@Param("offset") Integer offset, @Param("perPage") Integer perPage);
 
+    // 게시글 검색에 따른 목록 조회
+    public abstract List<BoardAndReplyCntVO> BoardSearchList(@Param("category")String category, @Param("query")String query, @Param("offset") Integer offset, @Param("perPage") Integer perPage);
+
     // 게시글 작성
     public abstract Integer postWriting(@Param("title")String title, @Param("content")String content, @Param("kategorieId")Long kategorieId, @Param("movieId")Long movieId, @Param("memberId")Long memberId);
 
@@ -78,5 +81,8 @@ public interface BoardMapper {
 
     // 게시판 수 조회
     public abstract Integer totalBoardListCnt();
+
+    // 게시판 검색된 게시글 수 조회
+    public abstract Integer boardSearchListCnt(@Param("category")String category, @Param("query")String query);
 
 } // end interface

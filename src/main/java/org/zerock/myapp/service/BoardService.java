@@ -1,5 +1,6 @@
 package org.zerock.myapp.service;
 
+import org.apache.ibatis.annotations.Param;
 import org.zerock.myapp.domain.*;
 
 import java.util.List;
@@ -9,6 +10,9 @@ public interface BoardService {
 
     // 게시글 조회
     public abstract List<BoardAndReplyCntVO> findBoardList(Integer pageNum);
+
+    // 게시글 검색에 따른 목록 조회
+    public abstract List<BoardAndReplyCntVO> BoardSearchList(String category, String query, Integer pageNum);
 
     // 게시글 작성
     public abstract Integer postWriting(String title, String content, Long kategorieId, Long movieId, Long memberId);
@@ -78,5 +82,8 @@ public interface BoardService {
 
     // 게시판 수 조회
     public abstract Map<String, Integer> totalBoardListCnt();
+
+    // 게시판 검색 된 게시글 수 조회
+    public abstract Map<String, Integer> boardSearchListCnt(String category, String query);
 
 } // end interface
