@@ -148,9 +148,23 @@
 
     <!-- 검색기록 추가 -->
     <insert id="insertSearchHistory">
-        INSERT INTO search_history (member_id, movie_id)
-        VALUES (#{memberId}, #{movieId})
+        INSERT INTO SEARCH_HISTORY(MEMBER_ID, MOVIE_ID, SEARCH_DATE)
+        VALUES (#{memberId}, #{movieId}, current_timestamp);
     </insert>
+
+    <!-- 검색기록 시간 업데이트 -->
+    <update id="updateSearchHistory">
+        UPDATE SEARCH_HISTORY
+        SET SEARCH_DATE = CURRENT_TIMESTAMP
+        WHERE MEMBER_ID = #{memberId} AND MOVIE_ID = #{movieId}
+    </update>
+
+    <!-- 검색기록 중복 확인 -->
+    <select id="checkDupleSearchHistory" resultType="integer">
+        SELECT COUNT(*)
+        FROM SEARCH_HISTORY
+        WHERE MEMBER_ID = #{memberId} AND MOVIE_ID = #{movieId}
+    </select>
 
 
 </mapper>

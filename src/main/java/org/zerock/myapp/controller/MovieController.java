@@ -191,7 +191,7 @@ public class MovieController {
             log.info("\t+ 인증된 사용자");
             String username = authentication.getName();
             memberId = Long.valueOf(username);
-            Integer insertSearchHistory = this.movieService.insertSearchHistory(memberId, movieId);
+            Integer insertSearchHistory = this.movieService.insertSearchMovieHistory(memberId, movieId);
             log.info("\t+ insertSearchHistory: {}", insertSearchHistory);
         }
 

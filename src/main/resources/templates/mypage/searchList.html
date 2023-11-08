@@ -123,8 +123,17 @@
         <div class="title">
             <h1>검색기록</h1>
         </div>
+
+
     <!-- 영화 목록 -->
-    <section class="movie-list" id="movieList">
+        <form action="/mypage/searchList" method="post" onsubmit="return deleteValidateForm()", id="member" >
+            <button class="button delete-All">
+                전체삭제
+            </button>
+            <div class="em-70">
+                <input class="btnflex" type="submit" value="일괄삭제">
+            </div>
+        <section class="movie-list" id="movieList">
         <article class="movie-item" th:each="movie : ${movies}">
             <a th:href="@{'/movie/movieDetail?movieId=' + ${movie.id}}" class="movie-link">
                 <img th:src="@{'https://image.tmdb.org/t/p/original'+${movie.posterPath}}" alt="${movie.title}">
@@ -135,10 +144,12 @@
                     th:text="${movie.overview != null ? (#strings.length(movie.overview) > 20 ? #strings.substring(movie.overview, 0, 20) + '...' : movie.overview) : ''}">
                 영화 설명 또는 요약...
             </p>
+            <input type="checkbox" class="selectedCheckbox" name="selectedMovies" th:value="${movie.id}">
         </article>
     </section>
+        </form>
 
-    <button class="more-button" id="loadMore">더보기</button>
+        <button class="more-button" id="loadMore">더보기</button>
     <button id="topButton">TOP</button>
 
     </div>
@@ -194,6 +205,53 @@
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
     });
+
+
+    function deleteValidateForm() {
+        const selectedCheckboxes = document.querySelectorAll('input.selectedCheckbox:checked');
+
+        if(selectedCheckboxes.length === 0){
+            alert("선택된 회원이 없습니다.");
+            return false;
+        }
+
+        const confirmation = confirm("선택된 회원을 삭제하시겠습니까?");
+
+        if (confirmation) {
+            // 사용자가 확인을 선택한 경우에만 삭제 수행
+            // AJAX 요청 또는 HTML Form 제출 등을 여기에서 수행
+            return true;
+        } else {
+            return false; // 사용자가 취소를 선택한 경우
+        }
+    }
+
+    $(document).ready(function() {
+    $('.delete-All').click(function(e) {
+        e.preventDefault(); // 기본 액션을 막습니다.
+
+        var confirmed = confirm('정말 삭제하시겠습니까?');
+
+        if(confirmed) {
+            // AJAX 요청을 설정합니다.
+            $.ajax({
+                url: /mypage/searchList,
+                type: 'DELETE',
+                success: function(result) {
+
+                    alert('전체 기록이 삭제되었습니다.');
+                    // 삭제 성공 시 리다이렉트합니다.
+                    window.location.href = '/mypage/searchList';
+                },
+                error: function(xhr, status, error) {
+                    // 에러 처리 로직
+                    alert("오류 발생: " + xhr.responseText);
+                }
+            });
+        }
+
+    });
+
 </script>
 </body>
 </html>

@@ -234,6 +234,36 @@ public class MypageController {
         return "mypage/searchList";
     } // mypageSearchList
 
+    @PostMapping("/searchList") // 회원 선택(일괄) 삭제
+    public String SearchListDelete(@RequestParam("selectedMovies") Long[] selectedMovies){
+        log.trace("SearchListDelete({}) invoked.", Arrays.toString(selectedMovies));
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // 인증된 사용자의 이름(여기서는 사용자 ID로 사용)을 가져옵니다.
+        String username = authentication.getName();
+        // 사용자 이름(아이디)를 Long 타입으로 변환합니다.
+        Long id = Long.valueOf(username);
+
+        this.memberService.deleteMyHistory(id, selectedMovies);
+
+        return "redirect:/mypage/searchList";
+
+    } // SearchListDelete
+
+    @DeleteMapping("/searchList")
+    public String SearchListDeleteAll(){
+        // 현재 인증된 사용자의 정보를 가져옵니다.
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // 인증된 사용자의 이름(여기서는 사용자 ID로 사용)을 가져옵니다.
+        String username = authentication.getName();
+        // 사용자 이름(아이디)를 Long 타입으로 변환합니다.
+        Long id = Long.valueOf(username);
+
+        this.memberService.deleteMyAllHistories(id);
+
+        return "redirect:/mypage/searchList";
+    } //SearchListDeleteAll
+
 //    @PostMapping("/ask")
 //    public String mypageAsk() {
 //        log.trace("mypageAsk() invoked.");
