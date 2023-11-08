@@ -10,6 +10,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Log4j2
@@ -192,33 +193,41 @@ public class AdminServiceImpl implements AdminService {
             suspensionDate = instant.atZone(zoneId).toLocalDate();
         }
 
-        Period period;
+        long daysDifference;
         String modifyStatus = MemberStatus.ACTIVITY.getStatus();
         Role role = Role.ROLE_LOCKED;
 
+        LocalDate memberPlusDate = null;
+        if(status.equals("활동")){
+            role = Role.ROLE_MEMBER;
+        }else {
+            memberPlusDate = suspensionDatePlusDays(status, suspensionDate);
+            log.info("\t+ memberPlusDate : {}", memberPlusDate);
+            // 날짜 차이 계산
+            daysDifference = ChronoUnit.DAYS.between(currentDay, memberPlusDate);
+            modifyStatus = daysDifference + "일 정지";
+        }
+
+        return this.adminMapper.updateMemberStatus(memberId, role, modifyStatus, memberPlusDate);
+    }
+
+    public LocalDate suspensionDatePlusDays(String status, LocalDate suspensionDate){
+        log.trace("suspensionDatePlusDays({}, {}) invoked.", status, suspensionDate);
+        LocalDate plusCurrentDate = null;
+
         switch(status){
-            case "활동" -> {
-                role = Role.ROLE_MEMBER;
-                suspensionDate = null;
-            }
             case "1일추가" -> {
-                suspensionDate = suspensionDate.plusDays(1);
-                period = Period.between(currentDay, suspensionDate);
-                modifyStatus = period.getDays() + "일 정지";
+                plusCurrentDate = suspensionDate.plusDays(1);
             }
             case "7일추가" -> {
-                suspensionDate = suspensionDate.plusDays(7);
-                period = Period.between(currentDay, suspensionDate);
-                modifyStatus = period.getDays() + "일 정지";
+                plusCurrentDate = suspensionDate.plusDays(7);
             }
             case "30일추가" -> {
-                suspensionDate = suspensionDate.plusDays(30);
-                period = Period.between(currentDay, suspensionDate);
-                modifyStatus = period.getDays() + "일 정지";
+                plusCurrentDate = suspensionDate.plusDays(30);
             }
         }
 
-        return this.adminMapper.updateMemberStatus(memberId, role, modifyStatus, suspensionDate);
+        return plusCurrentDate;
     }
 
     @Override
@@ -229,6 +238,81 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void editReplyComplete(Long memberId, Long replyId, String status) {
         this.adminMapper.updateReportReplyComplete(memberId, replyId, status);
+    }
+
+    @Override
+    public Integer modifyMemberAndReport(Long memberId, Long reportBoardId, String newResult, String reasonForChange) {
+        log.trace("modifyMemberAndReport({}, {}, {}, {}) invoked",memberId, reportBoardId, newResult, reasonForChange);
+
+        LocalDate currentDay = LocalDate.now();
+
+        MemberDTO dto = new MemberDTO();
+        dto.setId(memberId);
+
+        MemberVO member = this.adminMapper.selectDetailMember(dto);
+        ReportBoardsVO reportBoards = this.adminMapper.selectReportedBoardsResult(reportBoardId, memberId); // 회원번호와 신고번호에 따라 행을 출력
+
+        // 회원의 현재 정지마감날짜를 받아오고 LocalDate 타입으로 변경
+        Date suspensionPeriod = member.getSuspensionPeriod();
+        LocalDate suspensionDate = null;
+        if (suspensionPeriod == null) {
+            suspensionDate = LocalDate.now();
+        } else {
+            Instant instant = suspensionPeriod.toInstant();
+            ZoneId zoneId = ZoneId.systemDefault();
+            suspensionDate = instant.atZone(zoneId).toLocalDate();
+        }
+
+        // 사용자의 현재 상태 (바뀌기전) 과 현재 정지마감날짜 (바뀌기전) 을 넣어서 정지마감날짜를 바뀌기전 상태 만큼 다시 뺀다.
+        // 나온 결과는 관리자가 처음 조치를 하기 전 단계로 돌아왔기 때문에, 다시 suspension에 저장한다.
+
+        LocalDate previousSusPensionDate = currentDay;
+
+        if(!member.getStatus().equals("활동")){ // 처음 조치 되었을 때의 상태가 활동이 아니었을 경우
+            previousSusPensionDate = suspensionDateMinusDays(reportBoards.getResult(), suspensionDate);
+        }
+
+        // 이전 상태로 돌아갔기 때문에
+        // 이번에는 새로 적용하고자 하는 값으로 새로 넣어준다.
+        long daysDifference;
+        String modifyStatus = MemberStatus.ACTIVITY.getStatus();
+        Role role = Role.ROLE_LOCKED;
+
+        LocalDate memberPlusDate = null;
+        if(newResult.equals("활동")){
+            role = Role.ROLE_MEMBER;
+        }else {
+            memberPlusDate = suspensionDatePlusDays(newResult, previousSusPensionDate);
+            log.info("\t+ memberPlusDate : {}", memberPlusDate);
+            // 날짜 차이 계산
+            daysDifference = ChronoUnit.DAYS.between(currentDay, memberPlusDate);
+            modifyStatus = daysDifference + "일 정지";
+        }
+
+        this.adminMapper.updateMemberStatus(memberId, role, modifyStatus, memberPlusDate);
+
+        // 위에서는 회원의 정보를 변경하였고
+        // 이번에는 reportBoards의 id에 따라 변경사유와 새로운 result 를 update 해준다.
+        return this.adminMapper.updateReportBoardResult(reportBoardId, reasonForChange, newResult);
+
+    }
+
+    public LocalDate suspensionDateMinusDays(String status, LocalDate suspensionDate){
+        LocalDate minusCurrentDate = null;
+
+        switch (status){
+            case "1일추가" -> {
+                minusCurrentDate = suspensionDate.minusDays(1);
+            }
+            case "7일추가" -> {
+                minusCurrentDate = suspensionDate.minusDays(7);
+            }
+            case "30일추가" -> {
+                minusCurrentDate = suspensionDate.minusDays(30);
+            }
+        }
+
+        return minusCurrentDate;
     }
 
 

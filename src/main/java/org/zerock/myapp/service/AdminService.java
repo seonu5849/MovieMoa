@@ -58,6 +58,9 @@ public interface AdminService {
     // 신고댓글의 처분 여부를 업데이트
     public abstract void editReplyComplete(Long memberId, Long replyId, String status);
 
+    // 신고 게시글 한번 처분된것을 수정 업데이트
+    public abstract Integer modifyMemberAndReport(Long memberId, Long reportBoardId, String newResult, String reasonForChange);
+
 //    ====================================================================================================
     // 페이징 처리된 멤버의 게시글 출력
     public abstract List<BoardVO> findMemberByBoard(Long memberId, Integer pageNum);

@@ -238,13 +238,13 @@ public class AdminController {
     @ResponseBody
     @PostMapping("/boardComplaint") // 신고 게시글
     public Map<String, Object> boardComplaintTask(@RequestParam("option") String selectOption,
-                                                  @RequestParam("boardWriterId") Long boardWriterId,
+                                                  @RequestParam("writerId") Long writerId,
                                                   @RequestParam("boardId") Long boardId){
-        log.trace("boardComplaintTask({}, {}, {}) invoked.", selectOption, boardWriterId, boardId);
+        log.trace("boardComplaintTask({}, {}, {}) invoked.", selectOption, writerId, boardId);
 
-        Integer affectedRows = this.adminService.editMemberStatus(boardWriterId, selectOption);
-        this.adminService.editBoardComplete(boardWriterId, boardId, selectOption);
-        MemberVO member = this.adminService.findDetailMember(boardWriterId);
+        Integer affectedRows = this.adminService.editMemberStatus(writerId, selectOption);
+        this.adminService.editBoardComplete(writerId, boardId, selectOption);
+        MemberVO member = this.adminService.findDetailMember(writerId);
 
         Date suspensionPeriod = member.getSuspensionPeriod();
         Map<String, Object> response = new HashMap<>();
@@ -263,6 +263,36 @@ public class AdminController {
 
         return response;
     } // boardComplaintTask
+
+    @ResponseBody
+    @PostMapping("/boardComplaint/modal") // 신고 게시글
+    public Map<String, Object> boardComplaintModal(@RequestParam("writerId") Long memberId,
+                                                   @RequestParam("reportId") Long reportBoardId,
+                                                   @RequestParam("boardId") Long boardId,
+                                                   @RequestParam("newAction") String newResult,
+                                                   @RequestParam("changeReason") String reasonForChange){
+        log.trace("boardComplaintModal({}, {}, {}, {}) invoked",memberId, reportBoardId, newResult, reasonForChange);
+
+        this.adminService.modifyMemberAndReport(memberId,reportBoardId,newResult,reasonForChange); // 이전 기록 삭제
+        MemberVO member = this.adminService.findDetailMember(memberId);
+
+        Date suspensionPeriod = member.getSuspensionPeriod();
+        Map<String, Object> response = new HashMap<>();
+
+        String formatDate = null;
+
+        if(suspensionPeriod != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            formatDate = sdf.format(suspensionPeriod);
+        }else{
+            formatDate = "";
+        }
+
+        response.put("status", member.getStatus());
+        response.put("suspensionPeriod", formatDate);
+
+        return response;
+    }
 
     @GetMapping("/replyComplaint/{pageNum}") // 신고 댓글
     public String replyComplaintView(@PathVariable(value = "pageNum") Integer pageNum, Model model){

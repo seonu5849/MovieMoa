@@ -14,6 +14,7 @@ public class ReportReplyVO {
     private Long menu;
     private String complete;
     private String result;
+    private String reasonForChange;
     private String content;
     private String reporterName; // 신고자 이름
     private String status;

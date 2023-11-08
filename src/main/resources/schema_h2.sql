@@ -203,13 +203,17 @@ CREATE TABLE reportBoards (
 	board_id BIGINT NOT NULL,
 	reporter_id BIGINT NOT NULL,
 	complete varchar(30),
-	result varchar(20)
+	result varchar(20),
+	reason_for_change varchar(255)
 	FOREIGN KEY (board_id) REFERENCES Board(id) ON DELETE CASCADE,
 	FOREIGN KEY (menu) REFERENCES report_kategories(id),
 	FOREIGN KEY (reporter_id) REFERENCES Member(id)
 );
 
-/*alter table reportBoards
+/*
+alter table reportBoards
+add column reason_for_change varchar(255);
+alter table reportBoards
 add column complete varchar(30);
 alter table reportBoards
 add column result varchar(20);*/
@@ -222,13 +226,17 @@ CREATE TABLE reportReply (
 	reply_id BIGINT NOT NULL,
 	menu BIGINT NOT NULL,
 	complete varchar(30),
-	result varchar(20)
+	result varchar(20),
+	reason_for_change varchar(255)
 	FOREIGN KEY (reporter_id) REFERENCES Member(id),
 	FOREIGN KEY (menu) REFERENCES report_kategories(id),
 	FOREIGN KEY (reply_id) REFERENCES Board_reply(id) ON DELETE CASCADE
 );
 
-/*alter table reportReply
+/*
+alter table reportReply
+add column reason_for_change varchar(255);
+alter table reportReply
 add column complete varchar(30);
 alter table reportReply
 add column result varchar(20);*/

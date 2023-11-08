@@ -56,4 +56,13 @@ class AdminServiceImplTest {
 
     }
 
+    @Test
+    @DisplayName("신고 게시글 결과를 부여한 상태에서 만약 한번 더 수정하려 할때")
+    void testModifyMemberAndReport(){
+
+        Integer affectedRows = this.adminService.modifyMemberAndReport(2L, 33L, "1일추가", "qwer12");
+        Assertions.assertThat(affectedRows).isEqualTo(1);
+
+    }
+
 }

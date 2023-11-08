@@ -14,6 +14,7 @@ public class ReportBoardsVO {
     private Long reporterId;
     private String complete;
     private String result;
+    private String reasonForChange;
     private String title;
     private String reporterName;
     private String status;
