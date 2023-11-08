@@ -17,6 +17,7 @@
             margin: 0 auto;
             padding: 20px;
             box-sizing: border-box;
+            position: relative;
         }
 
         .event-bottom-right {
@@ -92,8 +93,9 @@
         }
 
         .bottom-right {
-            text-align: right;
-            margin: 10px 0;
+            position: absolute; /* 이미 absolute가 정의되어 있다면 이 줄은 생략 가능 */
+            right: 180px;
+            top: 100px; /* 원하는 경우 bottom 값을 조정하여 위치를 변경할 수 있음 */
         }
 
         @media screen and (max-width: 1024px) {
@@ -161,9 +163,6 @@
     <div class="outer-div">
         <div class="main-container">
             <div class="event-main-container">
-                <div sec:authorize="hasRole('ADMIN')" class="bottom-right">
-                    <a class="register-button" th:href="@{/admin/eventWrite}">등록</a>
-                </div>
                 <ul class="event-list">
                     <th:block th:each="event : ${eventList}">
                         <li class="event-container">
@@ -195,6 +194,10 @@
 
                 <!-- 다음 페이지 링크, 진행 여부(proceedingYn) 조건 유지 -->
                 <a th:if="${currentPage < totalPages}" th:href="@{|/event/currentEvents?pageNum=${currentPage + 1}&proceedingYn=${proceedingYn}|}">&raquo;</a>
+            </div>
+
+            <div sec:authorize="hasRole('ADMIN')" class="bottom-right">
+                <a class="register-button" th:href="@{/admin/eventWrite}">등록</a>
             </div>
 
         </div>

@@ -76,13 +76,14 @@
     <article class="main-content">
         <div class="event-form-container">
             <h1>이벤트 작성</h1>
-            <form id="eventForm" action="/admin/eventWrite" method="post" name="event">
+            <form id="eventForm" th:action="@{'/admin/eventUpdate/'+${event.id}}" method="post" name="event">
+                <input type="hidden" name="_method" value="PUT">
 
                 <input type="hidden" id="adminId" name="adminId" th:value="${adminId}">
 
                 <div class="form-group">
                     <label for="title">이벤트 제목:</label>
-                    <input type="text" id="title" name="title" required>
+                    <input type="text" id="title" name="title" th:value="${event.title}" required>
                 </div>
 
                 <!--<div class="form-group">
@@ -97,21 +98,21 @@
 
                 <div class="form-group">
                     <label for="thumbnailPath">썸네일 이미지:</label>
-                    <input type="text" id="thumbnailPath" name="thumbnailPath" required>
+                    <input type="text" id="thumbnailPath" name="thumbnailPath" th:value="${event.thumbnailPath}" required>
                 </div>
 
                 <div class="form-group">
                     <label for="contentsPath">포스터 이미지:</label>
-                    <input type="text" id="contentsPath" name="contentsPath" required>
+                    <input type="text" id="contentsPath" name="contentsPath" th:value="${event.contentsPath}" required>
                 </div>
 
                 <div class="form-group">
                     <label for="startAt">시작 날짜:</label>
-                    <input type="date" id="startAt" name="startAt" required>
+                    <input type="date" id="startAt" name="startAt" th:value="${#dates.format(event.startAt, 'yyyy-MM-dd')}" required>
                 </div>
                 <div class="form-group">
                     <label for="endAt">종료 날짜:</label>
-                    <input type="date" id="endAt" name="endAt" required>
+                    <input type="date" id="endAt" name="endAt" th:value="${#dates.format(event.endAt, 'yyyy-MM-dd')}" required>
                 </div>
                 <div class="form-group">
                     <button type="submit">이벤트 등록</button>

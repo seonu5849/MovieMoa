@@ -48,10 +48,10 @@ public class EventServiceImpl implements EventService {
     } // updateEvent
 
     @Override
-    public Integer deleteEvent(EventsVO event) {
-        log.trace("deleteEvent: {}", event);
+    public Integer deleteEvent(Long id) {
+        log.trace("deleteEvent: {}", id);
 
-        return eventMapper.deleteEvent(event);
+        return eventMapper.deleteEvent(id);
     } // deleteEvent
 
     @Override

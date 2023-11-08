@@ -386,18 +386,31 @@ public class AdminController {
         return "redirect:/event/currentEvents";
     } // eventWrite
 
-    @GetMapping("/eventUpdate")
-    public String eventUpdateView() {
-        log.trace("eventUpdateView() invoked.");
+    @GetMapping("/eventUpdate/{id}")
+    public String eventUpdateView(Model model, @PathVariable("id") Long id) {
+        log.trace("eventUpdateView({}) invoked.", id);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // 인증된 사용자의 이름(여기서는 사용자 ID로 사용)을 가져옵니다.
+        String username = authentication.getName();
+        // 사용자 이름(아이디)를 Long 타입으로 변환합니다.
+        Long adminId = Long.valueOf(username);
+
+        model.addAttribute("adminId", adminId);
+
+        EventsVO event = this.eventService.findEventById(id);
+        log.info("\t+ event: {}", event);
+
+        model.addAttribute("event", event);
 
         return "/event/eventUpdate";
     } // eventUpdateView
 
-    @PutMapping("/eventUpdate")
-    public String eventUpdate() {
-        log.trace("eventUpdate() invoked.");
+    @PutMapping("/eventUpdate/{id}")
+    public String eventUpdate(Model model, @PathVariable("id") Long id) {
+        log.trace("eventUpdate({}) invoked.", id);
 
-        return "redirect:/event/detailEvent";
+        return "redirect:/event/detailEvent/"+ id;
     } // eventUpdate
 
     @GetMapping("/writeProduct")

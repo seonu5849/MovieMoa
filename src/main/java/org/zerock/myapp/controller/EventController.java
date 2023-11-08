@@ -2,12 +2,15 @@ package org.zerock.myapp.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.zerock.myapp.domain.EventsVO;
 import org.zerock.myapp.service.EventService;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Log4j2
@@ -60,11 +63,24 @@ public class EventController {
         return "/event/detailEvent";
     } // detailEventView
 
-    @DeleteMapping("/detailEvent")
-    public String detailEventDelete() {
-        log.trace("detailEventDelete() invoked.");
+    @DeleteMapping("/detailEvent/{id}")
+    public ResponseEntity<?> detailEventDelete(@PathVariable Long id) {
+        log.trace("detailEventDelete({}) invoked.", id);
 
-        return "redirect:/event/currentEvents";
+        Integer deleteEvent = this.eventService.deleteEvent(id);
+        log.info("\t+ deleteEvent: {}", deleteEvent);
+
+        // AJAX 요청에 JSON 형식으로 응답을 반환합니다.
+        if (deleteEvent > 0) {
+            return ResponseEntity.ok().body(new HashMap<String, Object>() {{
+                put("redirectUrl", "/event/currentEvents");
+            }});
+        } else {
+            // 삭제가 실패하면 적절한 오류 메시지와 함께 상태 코드를 반환합니다.
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HashMap<String, Object>() {{
+                put("errorMessage", "Event could not be deleted.");
+            }});
+        }
     } // detailEventDelete
 
 } // end class

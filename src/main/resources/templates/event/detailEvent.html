@@ -37,6 +37,7 @@
 
         .center-text {
             text-align: center;
+            margin-bottom: 20px;
         }
 
         .btn {
@@ -93,6 +94,10 @@
 <main>
     <aside th:replace="eventSide.html" />
     <div class="event-detail-container">
+        <div class="center-text" sec:authorize="hasRole('ADMIN')">
+            <a class="btn btn-primary" th:href="@{'/admin/eventUpdate/'+${event.id}}">수정</a>
+            <button class="btn btn-primary btn-delete" th:data-url="@{'/event/detailEvent/'+${event.id}}">삭제</button>
+        </div>
         <div>
             <h1 th:text="${event.title}" class="event-title"></h1>
             <p th:text="'기간 | ' + ${event.startAt != null ? #dates.format(event.startAt, 'yyyy-MM-dd') : ''} + ' ~ ' + ${event.endAt != null ? #dates.format(event.endAt, 'yyyy-MM-dd') : ''}" class="event-period"></p>
@@ -100,14 +105,12 @@
         <div>
             <img th:src="${event.contentsPath}" class="event-img" />
         </div>
-        <div class="center-text" sec:authorize="hasRole('ADMIN')">
-            <a class="btn btn-primary">수정</a>
-            <a class="btn btn-primary btn-delete">삭제</a>
-        </div>
+
         <button id="topButton">TOP</button>
     </div>
 </main>
 <footer th:replace="footer.html" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
     window.onscroll = function () { scrollFunction() };
 
@@ -124,6 +127,35 @@
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
     });
+
+    $(document).ready(function() {
+        $('.btn-delete').on('click', function(e) {
+            e.preventDefault(); // 기본 액션을 막습니다.
+
+            if (confirm('정말 삭제하시겠습니까?')) {
+                var url = $(this).data('url'); // 버튼의 data-url 속성에서 URL을 가져옵니다.
+
+                // AJAX 요청을 설정합니다.
+                $.ajax({
+                    url: url,
+                    type: 'DELETE',
+                    contentType: 'application/json', // contentType 추가
+                    success: function(data) { // result 대신 data 사용
+                        alert('이벤트가 삭제되었습니다.'); // 사용자에게 성공 메시지 표시
+                        if (data && data.redirectUrl) { // 리다이렉트 URL을 확인합니다.
+                            window.location.href = data.redirectUrl;
+                        } else {
+                            window.location.href = '/event/currentEvents'; // 기본 리다이렉트
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert("오류 발생: " + xhr.responseText); // 오류 메시지 변경
+                    }
+                });
+            }
+        });
+    });
+
 </script>
 </body>
 </html>

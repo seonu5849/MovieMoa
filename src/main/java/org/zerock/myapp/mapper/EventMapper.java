@@ -20,7 +20,7 @@ public interface EventMapper {
     public abstract Integer updateEvent(@Param("event") EventsVO event);
 
     // 이벤트 삭제: 특정 이벤트 정보를 데이터베이스에서 삭제
-    public abstract Integer deleteEvent(@Param("event") EventsVO event);
+    public abstract Integer deleteEvent(@Param("id") Long id);
 
     // 이벤트 상세 조회: 특정 이벤트 ID에 해당하는 이벤트의 상세 정보 조회
     public abstract EventsVO findEventById(@Param("id") Long id);
