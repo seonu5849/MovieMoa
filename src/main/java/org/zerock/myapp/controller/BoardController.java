@@ -80,7 +80,7 @@ public class BoardController {
             Integer posted = this.boardService.postWriting(title, content, kategorieId, null, memberId);
         }
 
-        return "redirect:/board/boards";
+        return "redirect:/board/boards/1";
     } // writeBoard
 
     @GetMapping("/updateBoard/{id}")
@@ -123,7 +123,7 @@ public class BoardController {
         log.info("\t+ deleted: {}", deleted);
 
         // 리다이렉트할 URL을 JSON 객체로 반환
-        return ResponseEntity.ok(Collections.singletonMap("redirectUrl", "/board/boards"));
+        return ResponseEntity.ok(Collections.singletonMap("redirectUrl", "/board/boards/1"));
     }
 
     @GetMapping("/detailBoard/{id}") //{/detailBoard/boardNum}
