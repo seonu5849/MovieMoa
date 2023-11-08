@@ -107,8 +107,18 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public Integer insertSearchHistory(Long memberId, Long movieId) {
-        return movieMapper.insertSearchHistory(memberId, movieId);
-    }
+    public Integer insertSearchMovieHistory(Long memberId, Long movieId) {
+        log.trace("insertSearchMovieHistory({}, {}) invoked.", memberId, movieId);
+
+        Integer dupleHistory = movieMapper.checkDupleSearchHistory(memberId, movieId);
+        log.info("History duple check : ({})", dupleHistory);
+
+        if(dupleHistory == 1){
+            return movieMapper.updateSearchHistory(memberId, movieId);
+        } else {
+            return movieMapper.insertSearchHistory(memberId, movieId);
+        }
+
+    } // insertSearchMovieHistory
 
 } // end class

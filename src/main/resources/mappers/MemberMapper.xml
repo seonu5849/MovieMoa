@@ -180,6 +180,19 @@
         LEFT JOIN search_history ON movies.id = search_history.movie_id
         WHERE
         search_history.member_id = #{memberId}
+        ORDER BY
+        search_history.search_date desc
     </select>
+
+    <delete id="deleteHistory">
+        DELETE FROM SEARCH_HISTORY
+        WHERE member_id = #{memberId} AND movie_id = #{movieId}
+    </delete>
+
+    <delete id="deleteAllHistory">
+        DELETE FROM SEARCH_HISTORY
+        WHERE member_id = #{memberId}
+    </delete>
+
 
 </mapper>

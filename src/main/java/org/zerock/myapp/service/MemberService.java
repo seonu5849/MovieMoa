@@ -54,5 +54,12 @@ public interface MemberService {
 
     // 특정 회원 영화 검색기록 조회
     public abstract List<MovieVO> findSearchMovie(Long memberId);
+    
+    // 특정 회원 영화 검색기록 선택 삭제
+    public abstract Integer deleteMyHistory(Long memberId, Long[] selectedMovies);
+    
+    // 특정 회원 영화 검색기록 전체 삭제
+    public abstract Integer deleteMyAllHistories(Long memberId);
+    
 
 } // end interface

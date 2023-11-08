@@ -50,6 +50,7 @@ public interface MovieService {
     public abstract Integer addWishlist(Long movieId, Long memberId);
 
     // 검색기록 추가
-    public abstract Integer insertSearchHistory(Long memberId, Long movieId);
+    public abstract Integer insertSearchMovieHistory(Long memberId, Long movieId);
+
 
 } // end interface

@@ -174,4 +174,19 @@ public class MemberServiceImpl implements MemberService {
         return memberMapper.findSearchMovie(memberId);
     }
 
+    @Override
+    public Integer deleteMyHistory(Long memberId, Long[] selectedMovies) {
+        Integer affectedRows = null;
+        for(Long movieId : selectedMovies){
+            affectedRows = this.memberMapper.deleteHistory(memberId, movieId);
+        }
+        return affectedRows;
+    }
+
+    @Override
+    public Integer deleteMyAllHistories(Long memberId) {
+        return this.memberMapper.deleteAllHistory(memberId);
+    }
+
+
 } // end class
