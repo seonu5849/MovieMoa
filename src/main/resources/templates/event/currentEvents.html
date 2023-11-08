@@ -7,6 +7,11 @@
     <title>MOVIE MOA</title>
     <style>
         /* 이벤트 목록 페이지 전용 스타일 */
+        .outer-div {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
         .event-main-container {
             width: 100%;
             margin: 0 auto;
@@ -49,16 +54,21 @@
             margin: 10px;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            justify-content: space-between; /* 추가된 속성 */
+            align-items: flex-start;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s;
             padding: 10px;
             text-align: center;
             font-size: 1.1em;
+            position: relative; /* 상대 위치 설정 */
+            transition: opacity 0.3s ease; /* 부드러운 효과를 위한 transition 설정 */
         }
 
         .event-container:hover {
             transform: translateY(-5px);
+            opacity: 0.7; /* 마우스 호버시 투명도 변경 */
+            cursor: pointer;
         }
 
         .event-image {
@@ -75,6 +85,10 @@
 
         .event-container div {
             padding: 10px;
+            flex: 1; /* 추가된 속성 */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* 추가된 속성 */
         }
 
         .bottom-right {
@@ -99,8 +113,46 @@
                 width: calc(100% - 20px);
             }
         }
-    </style>
 
+        .main-container .pagination {
+            text-align: center;
+        }
+
+        .main-container .pagination a {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 0 4px;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .main-container .pagination .active {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .main-container .pagination a:hover {
+            background-color: #ddd;
+        }
+
+        .event-title {
+            font-weight: bold; /* 제목을 굵게 표시 */
+            margin-top: 10px; /* 제목 위의 여백 추가 */
+            color: #333; /* 제목의 글자 색상 */
+            text-align: left;
+        }
+
+        .event-period {
+            font-size: 0.9em; /* 기간의 폰트 크기를 조정 */
+            color: #666; /* 기간의 글자 색상 */
+            margin-top: 10px;
+            text-align: left;
+            align-self: center; /* 필요한 경우 .event-period만 다시 중앙 정렬 */
+            width: 95%; /* 왼쪽 정렬을 명확히 하기 위해 폭을 100%로 설정 */
+        }
+    </style>
 </head>
 <body>
 <header th:replace="nav.html" />
@@ -118,31 +170,32 @@
                             <div>
                                 <a th:href="@{'/event/detailEvent/'+${event.id}}">
                                     <img class="event-image" th:src="${event.thumbnailPath}" />
+                                    <p class="event-title" th:text="${event.title}">이벤트 제목</p>
                                 </a>
                             </div>
+                            <p class="event-period" th:text="'기간 | ' + ${event.startAt != null ? #dates.format(event.startAt, 'yyyy-MM-dd') : ''} + ' ~ ' + ${event.endAt != null ? #dates.format(event.endAt, 'yyyy-MM-dd') : ''}">이벤트 진행기간</p>
                         </li>
                     </th:block>
                 </ul>
             </div>
 
             <div class="pagination">
-                <!-- 이전 페이지 링크 -->
-                <a th:if="${currentPage > 1}" th:href="@{'/event/currentEvents?proceedingYn='+${proceedingYn}+'&pageNum='+(currentPage - 1)}">&laquo;</a>
+                <!-- 이전 페이지 링크, 진행 여부(proceedingYn) 조건 유지 -->
+                <a th:if="${currentPage > 1}" th:href="@{|/event/currentEvents?pageNum=${currentPage - 1}&proceedingYn=${proceedingYn}|}">&laquo;</a>
 
-                <!-- 페이지 번호 -->
+                <!-- 페이지 번호, 진행 여부(proceedingYn) 조건 유지 -->
                 <th:block th:with="startPageNum=${(currentPage - 1) div 5 * 5 + 1}, endPageNum=${(startPageNum + 4) > totalPages ? totalPages : (startPageNum + 4)}">
                     <th:block th:each="pageNumber : ${#numbers.sequence(startPageNum, endPageNum)}">
-                        <a th:href="@{'/event/currentEvents?proceedingYn='+${proceedingYn}+'&pageNum='+${pageNumber}}"
+                        <a th:href="@{|/event/currentEvents?pageNum=${pageNumber}&proceedingYn=${proceedingYn}|}"
                            th:text="${pageNumber}"
                            th:class="${pageNumber == currentPage} ? 'active' : ''"
                            th:if="${totalPages > 1}"></a>
                     </th:block>
                 </th:block>
 
-                <!-- 다음 페이지 링크 -->
-                <a th:if="${currentPage < totalPages}" th:href="@{'/event/currentEvents?proceedingYn='+${proceedingYn}+'&pageNum='+(currentPage + 1)}">&raquo;</a>
+                <!-- 다음 페이지 링크, 진행 여부(proceedingYn) 조건 유지 -->
+                <a th:if="${currentPage < totalPages}" th:href="@{|/event/currentEvents?pageNum=${currentPage + 1}&proceedingYn=${proceedingYn}|}">&raquo;</a>
             </div>
-
 
         </div>
     </div>

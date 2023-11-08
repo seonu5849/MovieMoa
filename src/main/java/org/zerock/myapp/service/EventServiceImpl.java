@@ -17,7 +17,7 @@ public class EventServiceImpl implements EventService {
 
     private final EventMapper eventMapper;
 
-    private Integer perPage = 4;
+    private Integer perPage = 3;
 
     @Override
     public Integer offset(Integer pageNum) {
