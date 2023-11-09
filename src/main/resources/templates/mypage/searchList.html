@@ -32,6 +32,7 @@
             display: flex; /* flexbox 레이아웃 사용 */
             flex-direction: column; /* 아이템을 세로로 정렬 */
             justify-content: flex-start; /* 컨텐츠를 컨테이너의 시작(위쪽)으로 정렬 */
+            position: relative;
         }
 
         .movie-item img {
@@ -113,6 +114,32 @@
         #topButton:hover {
             background-color: #0056b3;
         }
+
+        .selectedCheckbox {
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+    /* 체크박스 체크 시 article 배경 변경 */
+    .movie-item .selectedCheckbox:checked~ .movie-link::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5) !important; /* !important 추가 */
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+        z-index : 99;
+    }
+
+
     </style>
 </head>
 <body>
@@ -124,19 +151,20 @@
             <h1>검색기록</h1>
         </div>
 
-
+        <button id="deleteButton" class="btn btn-primary btn">삭제하기</button>
+        <button id="cancelButton" class="btn btn-primary btn" style="display: none;">삭제취소</button>
     <!-- 영화 목록 -->
         <form action="/mypage/searchList" method="post" onsubmit="return deleteValidateForm()", id="member" >
-            <button class="button delete-All">
-                전체삭제
-            </button>
+
+
             <div class="em-70">
-                <input class="btnflex" type="submit" value="일괄삭제">
+                <button id="AlldeleteButton" class="btn btn-primary btn-delete" style="display: none;" th:data-url="@{'/mypage/searchList'}">전체삭제</button>
+                <input id="SelectDeleteButton" class="btnflex" type="submit" value="선택삭제" style="display: none;";>
             </div>
         <section class="movie-list" id="movieList">
         <article class="movie-item" th:each="movie : ${movies}">
             <a th:href="@{'/movie/movieDetail?movieId=' + ${movie.id}}" class="movie-link">
-                <img th:src="@{'https://image.tmdb.org/t/p/original'+${movie.posterPath}}" alt="${movie.title}">
+                <img class="movieImg" th:src="@{'https://image.tmdb.org/t/p/original'+${movie.posterPath}}" alt="${movie.title}">
             </a>
             <h3 th:text="${movie.title}">영화제목</h3>
             <h4 th:text="${movie.originalTitle}">원제</h4>
@@ -144,10 +172,11 @@
                     th:text="${movie.overview != null ? (#strings.length(movie.overview) > 20 ? #strings.substring(movie.overview, 0, 20) + '...' : movie.overview) : ''}">
                 영화 설명 또는 요약...
             </p>
-            <input type="checkbox" class="selectedCheckbox" name="selectedMovies" th:value="${movie.id}">
+            <input type="checkbox" class="selectedCheckbox" name="selectedMovies" style="display: none;" th:value="${movie.id}">
         </article>
     </section>
         </form>
+
 
         <button class="more-button" id="loadMore">더보기</button>
     <button id="topButton">TOP</button>
@@ -158,99 +187,160 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script th:inline="javascript">
+
+
+<!--삭제하기 버튼 클릭 시 전체삭제, 선택삭제, 체크박스 활성화-->
     document.addEventListener("DOMContentLoaded", function () {
-        // 처음 페이지 로딩 시 모든 영화 항목을 가져옴
-        const movieItems = document.querySelectorAll('.movie-item');
+    const deleteButton = document.getElementById('deleteButton');
+    const cancelButton = document.getElementById('cancelButton');
+    const checkboxes = document.querySelectorAll('.selectedCheckbox');
+    const SelectDeleteButton = document.getElementById('SelectDeleteButton');
+    const AlldeleteButton = document.getElementById('AlldeleteButton');
 
-        // 처음에는 4개의 영화 항목만 보여주기 위해 나머지를 숨김
-        for (let i = 4; i < movieItems.length; i++) {
-            movieItems[i].style.display = 'none';
-        }
+    deleteButton.addEventListener('click', handleDeleteButtonClick);
+    cancelButton.addEventListener('click', handleCancelButtonClick);
 
-        document.getElementById('loadMore').addEventListener('click', function () {
-            // 현재 표시된 영화 항목 수를 확인
-            let countShown = 0;
-            movieItems.forEach(movie => {
-                if (movie.style.display !== 'none') {
-                    countShown++;
-                }
-            });
+    function handleDeleteButtonClick() {
+        console.log('Delete button clicked!');
+        toggleButtons(true);
+        toggleCheckboxes(true);
+    }
 
-            // 다음 4개의 영화 항목을 보여줌
-            for (let i = countShown; i < countShown + 4; i++) {
-                if (movieItems[i]) {
-                    movieItems[i].style.display = 'flex';
-                }
-            }
+    function handleCancelButtonClick() {
+        toggleButtons(false);
+        toggleCheckboxes(false);
+    }
 
-            // 모든 영화 항목이 보여질 경우 더보기 버튼을 숨김
-            if (countShown + 4 >= movieItems.length) {
-                this.style.display = 'none';
+    function toggleButtons(isDeleteClicked) {
+        cancelButton.style.display = isDeleteClicked ? 'inline-block' : 'none';
+        deleteButton.style.display = isDeleteClicked ? 'none' : 'inline-block';
+        SelectDeleteButton.style.display = isDeleteClicked ? 'inline-block' : 'none';
+        AlldeleteButton.style.display = isDeleteClicked ? 'inline-block' : 'none';
+    }
+
+    function toggleCheckboxes(isDeleteClicked) {
+        const displayStyle = isDeleteClicked ? 'inline-block' : 'none';
+        checkboxes.forEach(function (checkbox) {
+            checkbox.style.display = displayStyle;
+            checkbox.disabled = !isDeleteClicked;
+        });
+    }
+});
+
+// 처음 페이지 로딩 시 모든 영화 항목을 가져옴
+const movieItems = document.querySelectorAll('.movie-item');
+
+if (movieItems.length  <= 4 || movieItems.length === 0) {
+    document.getElementById('loadMore').style.display = 'none';
+}
+
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    // 처음에는 4개의 영화 항목만 보여주기 위해 나머지를 숨김
+    for (let i = 4; i < movieItems.length; i++) {
+        movieItems[i].style.display = 'none';
+    }
+
+    document.getElementById('loadMore').addEventListener('click', function () {
+        // 현재 표시된 영화 항목 수를 확인
+        let countShown = 0;
+        movieItems.forEach(movie => {
+            if (movie.style.display !== 'none') {
+                countShown++;
             }
         });
-    });
 
-    window.onscroll = function () { scrollFunction() };
-
-    function scrollFunction() {
-        const topButton = document.getElementById("topButton");
-        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-            topButton.style.display = "block";
-        } else {
-            topButton.style.display = "none";
+        // 다음 4개의 영화 항목을 보여줌
+        for (let i = countShown; i < countShown + 4; i++) {
+            if (movieItems[i]) {
+                movieItems[i].style.display = 'flex';
+            }
         }
+
+        // 모든 영화 항목이 보여질 경우 더보기 버튼을 숨김
+            // 모든 영화 항목이 보여질 경우 더보기 버튼을 숨김
+        if (countShown + 4 >= movieItems.length || countShown === 0) {
+            this.style.display = 'none';
+        }
+    });
+});
+
+$('.selectedCheckbox').on('change', function() {
+    if ($(this).prop('checked')) {
+        $('.movie-item').css('background-color', 'rgba(169, 169, 169, 0.5)');
+        $('.movieImg').css('background-color', 'rgba(169, 169, 169, 0.5)');
+    } else {
+        // 체크가 해제될 때의 동작 (원하는 동작을 여기에 추가)
+        $('.movie-item').css('background-color', ''); // 기본 색상으로 변경
+        $('.movieImg').css('background-color', ''); // 기본 색상으로 변경
+    }
+});
+
+
+window.onscroll = function () { scrollFunction() };
+
+function scrollFunction() {
+    const topButton = document.getElementById("topButton");
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        topButton.style.display = "block";
+    } else {
+        topButton.style.display = "none";
+    }
+}
+
+document.getElementById('topButton').addEventListener('click', function () {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+});
+
+
+function deleteValidateForm() {
+    const selectedCheckboxes = document.querySelectorAll('input.selectedCheckbox:checked');
+
+    if(selectedCheckboxes.length === 0){
+        alert("선택된 회원이 없습니다.");
+        return false;
     }
 
-    document.getElementById('topButton').addEventListener('click', function () {
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
-    });
+    const confirmation = confirm("선택된 회원을 삭제하시겠습니까?");
 
-
-    function deleteValidateForm() {
-        const selectedCheckboxes = document.querySelectorAll('input.selectedCheckbox:checked');
-
-        if(selectedCheckboxes.length === 0){
-            alert("선택된 회원이 없습니다.");
-            return false;
-        }
-
-        const confirmation = confirm("선택된 회원을 삭제하시겠습니까?");
-
-        if (confirmation) {
-            // 사용자가 확인을 선택한 경우에만 삭제 수행
-            // AJAX 요청 또는 HTML Form 제출 등을 여기에서 수행
-            return true;
-        } else {
-            return false; // 사용자가 취소를 선택한 경우
-        }
+    if (confirmation) {
+        // 사용자가 확인을 선택한 경우에만 삭제 수행
+        // AJAX 요청 또는 HTML Form 제출 등을 여기에서 수행
+        return true;
+    } else {
+        return false; // 사용자가 취소를 선택한 경우
     }
+}
 
-    $(document).ready(function() {
-    $('.delete-All').click(function(e) {
+$(document).ready(function() {
+    $('.btn-delete').on('click', function(e) {
         e.preventDefault(); // 기본 액션을 막습니다.
 
-        var confirmed = confirm('정말 삭제하시겠습니까?');
+        if (confirm('정말 삭제하시겠습니까?')) {
+            var url = $(this).data('url'); // 버튼의 data-url 속성에서 URL을 가져옵니다.
 
-        if(confirmed) {
             // AJAX 요청을 설정합니다.
             $.ajax({
-                url: /mypage/searchList,
+                url: url,
                 type: 'DELETE',
-                success: function(result) {
-
-                    alert('전체 기록이 삭제되었습니다.');
-                    // 삭제 성공 시 리다이렉트합니다.
-                    window.location.href = '/mypage/searchList';
+                contentType: 'application/json', // contentType 추가
+                success: function(data) { // result 대신 data 사용
+                    alert('전체기록이 삭제되었습니다.'); // 사용자에게 성공 메시지 표시
+                    if (data && data.redirectUrl) { // 리다이렉트 URL을 확인합니다.
+                        window.location.href = data.redirectUrl;
+                    } else {
+                        window.location.href = '/mypage/searchList'; // 기본 리다이렉트
+                    }
                 },
                 error: function(xhr, status, error) {
-                    // 에러 처리 로직
-                    alert("오류 발생: " + xhr.responseText);
+                    alert("오류 발생: " + xhr.responseText); // 오류 메시지 변경
                 }
             });
         }
-
     });
+});
 
 </script>
 </body>
