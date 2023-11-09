@@ -1,5 +1,6 @@
 package org.zerock.myapp.controller;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
@@ -246,11 +247,12 @@ public class AdminController {
                                                   @RequestParam("boardId") Long boardId){
         log.trace("boardComplaintTask({}, {}, {}) invoked.", selectOption, writerId, boardId);
 
-        Integer affectedRows = this.adminService.editMemberStatus(writerId, selectOption);
+        MemberVO beforeMemeber = this.adminService.findDetailMember(writerId);
+        this.adminService.editMemberStatus(beforeMemeber, selectOption);
         this.adminService.editBoardComplete(writerId, boardId, selectOption);
-        MemberVO member = this.adminService.findDetailMember(writerId);
+        MemberVO afeterMember = this.adminService.findDetailMember(writerId);
 
-        Date suspensionPeriod = member.getSuspensionPeriod();
+        Date suspensionPeriod = afeterMember.getSuspensionPeriod();
         Map<String, Object> response = new HashMap<>();
 
         String formatDate = null;
@@ -262,25 +264,55 @@ public class AdminController {
             formatDate = "";
         }
 
-        response.put("status", member.getStatus());
+        response.put("status", afeterMember.getStatus());
         response.put("suspensionPeriod", formatDate);
 
         return response;
     } // boardComplaintTask
 
-    @ResponseBody
-    @PostMapping("/boardComplaint/modal") // 신고 게시글
-    public Map<String, Object> boardComplaintModal(@RequestParam("writerId") Long memberId,
-                                                   @RequestParam("reportId") Long reportBoardId,
-                                                   @RequestParam("boardId") Long boardId,
+    @PostMapping("/boardComplaint/modify") // 신고 게시글
+    public String boardComplaintModal(@RequestParam("writerId") Long memberId,
+                                                   @RequestParam("reportId") Long reportId,
                                                    @RequestParam("newAction") String newResult,
-                                                   @RequestParam("changeReason") String reasonForChange){
-        log.trace("boardComplaintModal({}, {}, {}, {}) invoked",memberId, reportBoardId, newResult, reasonForChange);
+                                                   @RequestParam("changeReason") String reasonForChange,
+                                                    HttpSession session){
+        log.trace("boardComplaintModal({}, {}, {}, {}) invoked",memberId, reportId, newResult, reasonForChange);
 
-        this.adminService.modifyMemberAndReport(memberId,reportBoardId,newResult,reasonForChange); // 이전 기록 삭제
-        MemberVO member = this.adminService.findDetailMember(memberId);
+        MemberVO beforeMember = this.adminService.findDetailMember(memberId);
+        this.adminService.modifyMemberAndReportBoards(beforeMember, reportId, newResult, reasonForChange); // 이전 기록 삭제
+        MemberVO afterMember = this.adminService.findDetailMember(memberId);
 
-        Date suspensionPeriod = member.getSuspensionPeriod();
+        session.setAttribute("afterMember", afterMember);
+
+        return "redirect:/admin/complaint/modal";
+    } // boardComplaintModal
+
+    @PostMapping("/replyComplaint/modify") // 신고 댓글
+    public String replyComplaintModal(@RequestParam("writerId") Long memberId,
+                                      @RequestParam("reportId") Long reportId,
+                                      @RequestParam("newAction") String newResult,
+                                      @RequestParam("changeReason") String reasonForChange,
+                                      HttpSession session){
+        log.trace("replyComplaintModal({}, {}, {}, {}) invoked",memberId, reportId, newResult, reasonForChange);
+
+        MemberVO beforeMember = this.adminService.findDetailMember(memberId);
+        this.adminService.modifyMemberAndReportReply(beforeMember,reportId,newResult,reasonForChange); // 이전 기록 삭제
+        MemberVO afterMember = this.adminService.findDetailMember(memberId);
+
+        session.setAttribute("afterMember", afterMember);
+
+        return "redirect:/admin/complaint/modal";
+    } // replyComplaintModal
+
+    @ResponseBody
+    @GetMapping("/complaint/modal") // 신고 - 모달
+    public Map<String, Object> complainModal(HttpSession session){
+        log.trace("complainModal({}) invoked.", session);
+
+        MemberVO afterMember = (MemberVO) session.getAttribute("afterMember");
+        log.info("\t+ afterMember : {}", afterMember);
+
+        Date suspensionPeriod = afterMember.getSuspensionPeriod();
         Map<String, Object> response = new HashMap<>();
 
         String formatDate = null;
@@ -292,11 +324,12 @@ public class AdminController {
             formatDate = "";
         }
 
-        response.put("status", member.getStatus());
+        response.put("status", afterMember.getStatus());
         response.put("suspensionPeriod", formatDate);
 
         return response;
-    }
+    } // complainModal
+
 
     @GetMapping("/replyComplaint/{pageNum}") // 신고 댓글
     public String replyComplaintView(@PathVariable(value = "pageNum") Integer pageNum, Model model){
@@ -317,15 +350,16 @@ public class AdminController {
     @ResponseBody
     @PostMapping("/replyComplaint") // 신고 댓글
     public Map<String, Object> replyComplaintTask(@RequestParam("option") String selectOption,
-                                     @RequestParam("replyWriterId") Long replyWriterId,
+                                     @RequestParam("writerId") Long writerId,
                                      @RequestParam("replyId") Long replyId){
-        log.trace("replyComplaintTask({}, {}, {}) invoked.", selectOption, replyWriterId, replyId);
+        log.trace("replyComplaintTask({}, {}, {}) invoked.", selectOption, writerId, replyId);
 
-        Integer affectedRows = this.adminService.editMemberStatus(replyWriterId, selectOption);
-        this.adminService.editReplyComplete(replyWriterId, replyId, selectOption);
-        MemberVO member = this.adminService.findDetailMember(replyWriterId);
+        MemberVO beforeMemeber = this.adminService.findDetailMember(writerId);
+        this.adminService.editMemberStatus(beforeMemeber, selectOption);
+        this.adminService.editReplyComplete(writerId, replyId, selectOption);
+        MemberVO afterMember = this.adminService.findDetailMember(writerId);
 
-        Date suspensionPeriod = member.getSuspensionPeriod();
+        Date suspensionPeriod = afterMember.getSuspensionPeriod();
         Map<String, Object> response = new HashMap<>();
 
         String formatDate = null;
@@ -337,7 +371,7 @@ public class AdminController {
             formatDate = "";
         }
 
-        response.put("status", member.getStatus());
+        response.put("status", afterMember.getStatus());
         response.put("suspensionPeriod", formatDate);
 
         return response;

@@ -139,6 +139,7 @@
     <select id="selectReportedReply" resultType="org.zerock.myapp.domain.ReportReplyVO">
         SELECT
         br.*,
+        r.board_id,
         r.content,
         m.name as "reporterName", -- 리포터 이름을 'reporterName'으로 별칭 설정
         m1.status,
@@ -190,6 +191,14 @@
         WHERE id = #{reportId}
     </update>
 
+    <update id="updateReportReplyResult">
+        UPDATE reportreply
+        SET
+        result = #{result},
+        reason_for_change = #{reasonForChange}
+        WHERE id = #{reportId}
+    </update>
+
     <select id="selectReportedBoardsResult" resultType="org.zerock.myapp.domain.ReportBoardsVO">
         SELECT
         rb.*,
@@ -207,6 +216,26 @@
         JOIN member m1 ON b.member_id = m1.id
         JOIN report_kategories rk ON rb.menu = rk.id -- report_kategories 테이블을 조인
         WHERE rb.id = #{reportId} AND m1.id= #{writerId};
+    </select>
+
+    <select id="selectReportedReplyResult" resultType="org.zerock.myapp.domain.ReportReplyVO">
+        SELECT
+        br.*,
+        r.board_id,
+        r.content,
+        m.name as "reporterName", -- 리포터 이름을 'reporterName'으로 별칭 설정
+        m1.status,
+        m1.suspension_period as "suspensionPeriod", -- 정지 기간을 'suspensionPeriod'로 별칭 설정
+        m1.id as "replyWriterId", -- 댓글 작성자 아이디를 'replyWriterId'로 별칭 설정
+        m1.name as "replyWriter", -- 댓글 작성자 이름을 'replyWriter'로 별칭 설정
+        rk.name as "categoryName" -- 신고 카테고리 이름을 'categoryName'으로 별칭 설정
+        FROM
+        reportReply br
+        JOIN member m ON br.reporter_id = m.id
+        JOIN board_reply r ON br.reply_id = r.id
+        JOIN member m1 ON r.member_id = m1.id
+        JOIN report_kategories rk ON br.menu = rk.id -- report_kategories 테이블 조인
+        WHERE m1.id = #{writerId} AND br.id = #{reportId};
     </select>
     
 <!--    =======================================================================================-->
