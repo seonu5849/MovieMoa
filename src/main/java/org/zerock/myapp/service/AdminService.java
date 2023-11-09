@@ -50,7 +50,7 @@ public interface AdminService {
     public abstract List<ReportReplyVO> findReportedReply(Integer pageNum);
 
     // 회원에 대한 처분(상태)를 업데이트
-    public abstract Integer editMemberStatus(Long memberId, String status);
+    public abstract void editMemberStatus(MemberVO member, String status);
 
     // 신고게시글의 처분 여부를 업데이트
     public abstract void editBoardComplete(Long memberId, Long boardId, String status);
@@ -59,7 +59,10 @@ public interface AdminService {
     public abstract void editReplyComplete(Long memberId, Long replyId, String status);
 
     // 신고 게시글 한번 처분된것을 수정 업데이트
-    public abstract Integer modifyMemberAndReport(Long memberId, Long reportBoardId, String newResult, String reasonForChange);
+    public abstract Integer modifyMemberAndReportBoards(MemberVO member, Long reportId, String newResult, String reasonForChange);
+
+    // 신고 댓글 한번 처분된것을 수정 업데이트
+    public abstract Integer modifyMemberAndReportReply(MemberVO member, Long reportId, String newResult, String reasonForChange);
 
 //    ====================================================================================================
     // 페이징 처리된 멤버의 게시글 출력

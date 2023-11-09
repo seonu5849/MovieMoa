@@ -44,7 +44,7 @@ public class MemberSuspensionScheduler {
 
                 if (member.getRole() == Role.ROLE_LOCKED) {
                     if (suspensionDate.isBefore(currentDay)) {
-                        adminService.editMemberStatus(member.getId(), MemberStatus.ACTIVITY.getStatus());
+                        adminService.editMemberStatus(member, MemberStatus.ACTIVITY.getStatus());
                     } // if
                 } // if
             } // if

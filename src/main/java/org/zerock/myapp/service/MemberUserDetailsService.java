@@ -1,6 +1,7 @@
 package org.zerock.myapp.service;
 
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +20,12 @@ import java.util.Objects;
 import static org.zerock.myapp.domain.Role.ROLE_LOCKED;
 
 @Log4j2
-@NoArgsConstructor
+@RequiredArgsConstructor
 
 @Service
 public class MemberUserDetailsService implements UserDetailsService {
 
-    @Setter(onMethod_= @Autowired)
-    private MemberMapper memberMapper;
+    private final MemberMapper memberMapper;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

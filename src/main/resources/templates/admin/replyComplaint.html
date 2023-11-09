@@ -54,6 +54,10 @@
         background-color: #f2f2f2;
     }
 
+    td {
+        font-size: 14px;
+    }
+
     #inquiry > input[type="submit"]{
         padding: 10px;
         font-size: 16px;
@@ -92,7 +96,7 @@
 }
 
 .admin-container table {
-    width: 70em;
+    width: 80em;
     border-collapse: collapse;
     margin: 20px auto;
 }
@@ -145,6 +149,95 @@
     color: #fff;
 }
 
+.admin-container .ellipsis-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 8ch; /* 8자로 설정 */
+}
+
+.admin-container .tooltip {
+    display: none;
+    position: absolute;
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    overflow: auto;
+    max-height: 100px; /* 표시하고자 하는 최대 높이를 설정 */
+    white-space: pre-line;
+}
+
+/* 모달 스타일 */
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    width: 80%;
+    max-width: 500px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* 모달 내용 스타일 */
+.modal-content {
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+}
+
+/* 닫기 버튼 스타일 */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    color: #888;
+}
+
+.close:hover {
+    color: #333;
+}
+
+/* 입력 필드 스타일 */
+label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+input[type="text"], select {
+    width: 95%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* 확인 및 취소 버튼 스타일 */
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
 </style>
 </head>
 
@@ -178,33 +271,39 @@
                         <tbody>
                         <!-- 예시 데이터 -->
                         <tr th:each="reportReply : ${reportReplys}">
-                            <input type="hidden" class="replyWriterId" th:value="${reportReply.replyWriterId}">
+                            <input type="hidden" class="writerId" th:value="${reportReply.replyWriterId}">
                             <input type="hidden" class="replyId" th:value="${reportReply.replyId}">
                             <input type="hidden" class="completeState" th:value="${reportReply.complete}">
-                            <td th:text="${reportReply.id}">번호</td>
+                            <input type="hidden" class="reasonForChange" th:value="${reportReply.reasonForChange}">
+                            <td th:text="${reportReply.id}" class="reportId">번호</td>
                             <td th:text="${reportReply.categoryName}">카테고리</td>
-                            <td th:text="${reportReply.content}">댓글내용</td>
-                            <td th:text="${reportReply.replyWriter}">작성자</td>
-                            <td th:text="${reportReply.reportContent != null ? (#strings.length(reportReply.reportContent) > 8 ? #strings.substring(reportReply.reportContent, 0, 8) + '...' : reportReply.reportContent) : ''}">
-                                    신고사유</td>
+                            <td><a th:href="@{'/board/detailBoard/'+${reportReply.boardId}}" th:text="${reportReply.content != null ? (#strings.length(reportReply.content) > 8 ? #strings.substring(reportReply.content, 0, 8) + '...' : reportReply.content) : ''}">
+                                댓글내용</a></td>
+                            <td th:text="${reportReply.replyWriter}" class="writer">작성자</td>
+                            <td class="ellipsis-text">
+                                <span th:text="${reportReply.reportContent}" onmouseover="showTooltip(this)" onmouseout="hideTooltip(this)">
+                                    신고사유kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+                                </span>
+                                <div class="content tooltip" th:text="${reportReply.reportContent}">
+                                    신고사유kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+                                </div>
+                            </td>
                             <td th:text="${reportReply.reporterName}">신고자</td>
                             <td th:text="${#dates.format(reportReply.reportDate, 'yyyy-MM-dd HH:mm')}">신고날짜</td>
                             <td th:text="${reportReply.status}" class="status">현재상태</td>
                         <td th:text="${#dates.format(reportReply.suspensionPeriod, 'yyyy-MM-dd')}" class="suspensionPeriod">정지마감날짜</td>
-                        <td>
-                            <div th:if="${reportReply.complete == 'completed'}">
-                                <span th:text="${reportReply.result}">처리완료</span>
-                            </div>
-                            <div th:unless="${reportReply.complete == 'completed'}">
-                                <select name="reportStatus" class="reportStatus" onchange="handleSelectChange(this)">
-                                    <option selected>항목선택</option>
-                                    <option value="활동">활동</option>
-                                    <option value="1일추가">1일추가</option>
-                                    <option value="7일추가">7일추가</option>
-                                    <option value="30일추가">30일추가</option>
-                                </select>
-                                <div class="completionMessage" style="display: none;">처리완료</div>
-                            </div>
+                        <td th:if="${reportReply.complete == 'completed'}">
+                            <span th:text="${reportReply.result}" class="result">처리완료</span><p>
+                            <button class="modify" onclick="selectedOptionModify(this)">수정</button>
+                        </td>
+                        <td th:unless="${reportReply.complete == 'completed'}">
+                            <select name="reportStatus" class="reportStatus" onchange="handleSelectChange(this)">
+                                <option selected>항목선택</option>
+                                <option value="활동">활동</option>
+                                <option value="1일추가">1일추가</option>
+                                <option value="7일추가">7일추가</option>
+                                <option value="30일추가">30일추가</option>
+                            </select>
                         </td>
                         </tr>
                         </tbody>
@@ -257,10 +356,61 @@
         </div>
     </main>
 </main>
+<!-- 모달 창 -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <input type="hidden" id="reportId">
+        <input type="hidden" id="writerId">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <label for="name">작성자:</label>
+        <input type="text" id="name" readonly>
+        <label for="reason">신고사유:</label>
+        <input  type="text" id="reason" readonly>
+        <label for="previousAction">이전 조치:</label>
+        <input type="text" id="previousAction" readonly>
+        <label for="newAction">변경 조치:</label>
+        <select name="reportStatus" id="reportStatus">
+            <option selected>항목선택</option>
+            <option value="활동">활동</option>
+            <option value="1일추가">1일추가</option>
+            <option value="7일추가">7일추가</option>
+            <option value="30일추가">30일추가</option>
+        </select>
+        <label for="changeReason">변경 사유:</label>
+        <input type="text" id="changeReason">
+        <button id="confirm" onclick="confirmChanges()">확인</button>
+        <button id="cancel" onclick="closeModal()">취소</button>
+    </div>
+</div>
+
 <footer th:replace="footer.html" />
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+
+// ------------- 툴팁 관련 ----------------------------
+
+function showTooltip(element) {
+    var tooltip = element.nextElementSibling;
+    tooltip.style.display = 'block';
+}
+
+function hideTooltip(element) {
+    var tooltip = element.nextElementSibling;
+    tooltip.style.display = 'none';
+}
+
+// ----------------------------------------------------
+
+// 현재 페이지 URL 저장
+var currentPage = window.location.href;
+
+// 세션 스토리지에 현재 페이지 저장
+sessionStorage.setItem('currentPage', currentPage);
+
+// 다른 페이지로 이동 후, 세션 스토리지에서 현재 페이지를 가져옴
+var storedPage = sessionStorage.getItem('currentPage');
+
 
 function handleSelectChange(selectElement) {
         // 선택한 옵션의 값을 가져오기
@@ -271,12 +421,12 @@ function handleSelectChange(selectElement) {
         let row = $(selectElement).closest("tr");
 
         // 선택한 행에서 .boardWriterId 클래스를 가진 hidden input 요소를 찾기
-        let replyWriterIdInput = row.find(".replyWriterId");
+        let writerIdInput = row.find(".writerId");
         let replyIdInput = row.find(".replyId");
         let completeStateInput = row.find(".completeState"); // complete 상태를 나타내는 hidden input
 
         // hidden input 요소의 값을 가져오기
-        let replyWriterId = replyWriterIdInput.val();
+        let writerId = writerIdInput.val();
         let replyId = replyIdInput.val();
         let completeState = completeStateInput.val(); // complete 상태 값
 
@@ -287,27 +437,12 @@ function handleSelectChange(selectElement) {
         // 선택한 select 요소를 숨김
         $(selectElement).hide();
 
-        // 선택한 행에서 "처리완료" 메시지를 표시
-        let completionMessage = $(selectElement).siblings(".completionMessage");
-
-        if (selectedOption === "1일추가") {
-            completionMessage.text("1일정지");
-        } else if (selectedOption === "7일추가") {
-            completionMessage.text("7일정지");
-        } else if (selectedOption === "활동") {
-            completionMessage.text("활동처리");
-        } else {
-            completionMessage.text("처리완료");
-        }
-
-        completionMessage.show();
-
         $.ajax({
             type: "POST", // 또는 "GET" 등 적절한 HTTP 메서드 사용
             url: "/admin/replyComplaint", // 서버의 엔드포인트 URL
             data: { 
                 option: selectedOption,
-                replyWriterId: replyWriterId,
+                writerId: writerId,
                 replyId : replyId
             }, // 선택된 옵션을 서버로 전달
             success: function(response) {
@@ -316,11 +451,117 @@ function handleSelectChange(selectElement) {
 
                 statusId.html(status); // 서버에서 받은 응답을 업데이트
                 suspensionPeriodId.html(suspensionPeriod); // 서버에서 받은 응답을 업데이트
+
+                // storedPage를 사용하여 필요한 작업 수행 (예: 페이지 리다이렉션)
+                if (storedPage) {
+                    window.location.href = storedPage;
+                }
             },
             error: function(xhr, status, error) {
                 console.error("AJAX request failed: " + error);
             }
         });
+    }
+
+    function selectedOptionModify(button){
+        // 모달 열기
+        var modal = document.getElementById("myModal");
+        modal.style.display = "block";
+
+        // 선택한 행에서 데이터 가져오기
+        var row = button.closest("tr");
+        // "selected-row" 클래스를 추가합니다.
+        row.classList.add("selected-row");
+
+        var reasonForChange = row.querySelector(".reasonForChange").value;
+
+        if(reasonForChange){
+            // 데이터가 있으면 이미 수정을 한 경우입니다.
+            alert("이미 수정을 하였습니다.");
+            closeModal();
+        }else{
+            var reportId = row.querySelector(".reportId").textContent;
+            var writerId = row.querySelector(".writerId").value;
+            var writer = row.querySelector(".writer").textContent;
+            var reason = row.querySelector(".content").textContent;
+            var result = row.querySelector(".result").textContent;
+
+            // 모달 내부의 입력 필드에 데이터 설정
+            document.getElementById("reportId").value = reportId;
+            document.getElementById("writerId").value = writerId;
+            document.getElementById("name").value = writer;
+            document.getElementById("reason").value = reason;
+            document.getElementById("previousAction").value = result;
+        }
+    }
+
+    // 모달을 닫는 함수
+    function closeModal() {
+        // 모달 요소를 가져옵니다.
+        var modal = document.getElementById("myModal");
+        
+        // 모달을 숨깁니다.
+        modal.style.display = "none";
+    }
+
+    // 확인 버튼을 눌렀을 때의 처리 함수
+    function confirmChanges() {
+        // 행을 인식 하도록 selected-row 라는 클래스가 적힌 행을 가져온다.
+        var row = $("tr.selected-row");
+
+        // 입력된 값을 가져옵니다.
+        var reportId = $("#reportId").val();
+        var writerId = $("#writerId").val();
+        var newAction = $("#reportStatus").val();
+        var changeReason = $("#changeReason").val();
+
+        var resultElement = row.find(".result");
+
+        if (newAction === "활동") {
+            // 처리가 "활동"으로 선택되었을 때 처리 완료 부분을 업데이트합니다.
+            // 여기에서 .result 엘리먼트를 찾아서 텍스트를 변경하실 수 있습니다.
+            resultElement.text("활동");
+        } else if (newAction === "1일추가") {
+            resultElement.text("1일추가");
+        } else if (newAction === "7일추가") {
+            resultElement.text("7일추가");
+        } else if (newAction === "30일추가") {
+            resultElement.text("30일추가");
+        }
+
+        $.ajax({
+            type: "POST", // 또는 "GET" 등 적절한 HTTP 메서드 사용
+            url: "/admin/replyComplaint/modify", // 서버의 엔드포인트 URL
+            data: { 
+                reportId: reportId,
+                writerId: writerId,
+                newAction : newAction,
+                changeReason : changeReason
+            }, // 선택된 옵션을 서버로 전달
+            success: function(response) {
+                let status = response.status;
+                let suspensionPeriod = response.suspensionPeriod;
+
+                // 서버에서 받은 응답을 업데이트
+                let statusId = row.find(".status"); // .status 클래스를 가진 모든 요소를 선택
+                let suspensionPeriodId = row.find(".suspensionPeriod"); // .suspensionPeriod 클래스를 가진 모든 요소를 선택
+
+                statusId.html(status); // 서버에서 받은 응답을 업데이트
+                suspensionPeriodId.html(suspensionPeriod); // 서버에서 받은 응답을 업데이트
+                
+                // storedPage를 사용하여 필요한 작업 수행 (예: 페이지 리다이렉션)
+                if (storedPage) {
+                    window.location.href = storedPage;
+                }
+
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX request failed: " + error);
+            }
+        });
+
+        // 모달을 닫습니다.
+        closeModal();
     }
     
 </script>
