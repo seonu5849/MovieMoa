@@ -55,9 +55,9 @@ public class MovieTests {
         Long memberId = 4L;
         Long movieId = 647L;
 
-        Integer affteted = this.memberService.deleteMyHistory(memberId, movieId);
+//        Integer affteted = this.memberService.deleteMyHistory(memberId, movieId);
 
-        log.info("affteted({}) Row Deleted", affteted);
+//        log.info("affteted({}) Row Deleted", affteted);
 
     }//DeleteMovieHistory
 

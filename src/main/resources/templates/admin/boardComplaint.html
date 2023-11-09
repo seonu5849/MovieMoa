@@ -146,6 +146,79 @@ td {
     background-color: #007BFF;
     color: #fff;
 }
+
+/* 모달 스타일 */
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    width: 80%;
+    max-width: 500px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* 모달 내용 스타일 */
+.modal-content {
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+}
+
+/* 닫기 버튼 스타일 */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    color: #888;
+}
+
+.close:hover {
+    color: #333;
+}
+
+/* 입력 필드 스타일 */
+label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+input[type="text"], select {
+    width: 95%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* 확인 및 취소 버튼 스타일 */
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* 다른 스타일을 필요에 따라 추가할 수 있습니다 */
+
 </style>
 </head>
 
@@ -177,14 +250,14 @@ td {
                     <tbody>
                     <!-- 예시 데이터 -->
                     <tr th:each="reportBoard : ${reportBoards} ">
-                        <input type="hidden" class="boardWriterId" th:value="${reportBoard.boardWriterId}">
+                        <input type="hidden" class="writerId" th:value="${reportBoard.boardWriterId}">
                         <input type="hidden" class="boardId" th:value="${reportBoard.boardId}">
                         <input type="hidden" class="completeState" th:value="${reportBoard.complete}">
-                        <td th:text="${reportBoard.id}">번호</td>
+                        <td th:text="${reportBoard.id}" class="reportId">번호</td>
                         <td th:text="${reportBoard.categoryName}">카테고리</td>
                         <td><a th:href="@{'/board/detailBoard/'+${reportBoard.boardId}}" th:text="${reportBoard.title}">제목</a></td>
-                        <td th:text="${reportBoard.boardWriter}">작성자</td>
-                        <td th:text="${reportBoard.content != null ? (#strings.length(reportBoard.content) > 8 ? #strings.substring(reportBoard.content, 0, 8) + '...' : reportBoard.content) : ''}">
+                        <td th:text="${reportBoard.boardWriter}" class="boardWriter">작성자</td>
+                        <td class="content" th:text="${reportBoard.content != null ? (#strings.length(reportBoard.content) > 8 ? #strings.substring(reportBoard.content, 0, 8) + '...' : reportBoard.content) : ''}">
                                 신고사유</td>
                         <td th:text="${reportBoard.reporterName}">신고자</td>
                         <td th:text="${#dates.format(reportBoard.reportDate, 'yyyy-MM-dd HH:mm')}">신고날짜</td>
@@ -192,7 +265,8 @@ td {
                         <td th:text="${#dates.format(reportBoard.suspensionPeriod, 'yyyy-MM-dd')}" class="suspensionPeriod">정지마감날짜</td>
                         <td>
                             <div th:if="${reportBoard.complete == 'completed'}">
-                                <span th:text="${reportBoard.result}">처리완료</span>
+                                <span th:text="${reportBoard.result}" class="result">처리완료</span>
+                                <button class="modify" onclick="selectedOptionModify(this)">수정</button>
                             </div>
                             <div th:unless="${reportBoard.complete == 'completed'}">
                                 <select name="reportStatus" class="reportStatus" onchange="handleSelectChange(this)">
@@ -203,6 +277,7 @@ td {
                                     <option value="30일추가">30일추가</option>
                                 </select>
                                 <div class="completionMessage" style="display: none;">처리완료</div>
+                                <button class="modify" style="display: none;" onclick="selectedOptionModify(this)">수정</button>
                             </div>
                         </td>
                     </tr>
@@ -255,6 +330,34 @@ td {
         </div>
     </div>
 </main>
+<!-- 모달 창 -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <input type="hidden" id="reportId">
+        <input type="hidden" id="writerId">
+        <input type="hidden" id="boardId">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <label for="name">작성자:</label>
+        <input type="text" id="name" readonly>
+        <label for="reason">신고사유:</label>
+        <input type="text" id="reason" readonly>
+        <label for="previousAction">이전 조치:</label>
+        <input type="text" id="previousAction" readonly>
+        <label for="newAction">변경 조치:</label>
+        <select name="reportStatus" id="reportStatus">
+            <option selected>항목선택</option>
+            <option value="활동">활동</option>
+            <option value="1일추가">1일추가</option>
+            <option value="7일추가">7일추가</option>
+            <option value="30일추가">30일추가</option>
+        </select>
+        <label for="changeReason">변경 사유:</label>
+        <input type="text" id="changeReason">
+        <button id="confirm" onclick="confirmChanges()">확인</button>
+        <button id="cancel" onclick="closeModal()">취소</button>
+    </div>
+</div>
+
 <footer th:replace="footer.html" />
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -268,15 +371,17 @@ function handleSelectChange(selectElement) {
         // 선택한 select 요소의 부모 tr을 찾기
         let row = $(selectElement).closest("tr");
 
-        // 선택한 행에서 .boardWriterId 클래스를 가진 hidden input 요소를 찾기
-        let boardWriterIdInput = row.find(".boardWriterId");
+        // 선택한 행에서 .writerId 클래스를 가진 hidden input 요소를 찾기
+        let writerIdInput = row.find(".writerId");
         let boardIdInput = row.find(".boardId");
         let completeStateInput = row.find(".completeState"); // complete 상태를 나타내는 hidden input
 
         // hidden input 요소의 값을 가져오기
-        let boardWriterId = boardWriterIdInput.val();
+        let writerId = writerIdInput.val();
         let boardId = boardIdInput.val();
         let completeState = completeStateInput.val(); // complete 상태 값
+
+        console.log(writerId);
 
         let statusId = row.find(".status");
         let suspensionPeriodId = row.find(".suspensionPeriod");
@@ -287,15 +392,21 @@ function handleSelectChange(selectElement) {
 
         // 선택한 행에서 "처리완료" 메시지를 표시
         let completionMessage = $(selectElement).siblings(".completionMessage");
+        // 선택한 행에서 "수정" 버튼을 찾아서 보이도록 설정
+        let modifyButton = row.find(".modify");
 
         if (selectedOption === "1일추가") {
             completionMessage.text("1일정지");
+            modifyButton.show();
         } else if (selectedOption === "7일추가") {
             completionMessage.text("7일정지");
-        } else if (selectedOption === "활동") {
-            completionMessage.text("활동처리");
+            modifyButton.show();
+        } else if (selectedOption === "30일추가") {
+            completionMessage.text("30일정지");
+            modifyButton.show();
         } else {
-            completionMessage.text("처리완료");
+            completionMessage.text("활동처리");
+            modifyButton.show();
         }
 
         completionMessage.show();
@@ -305,7 +416,7 @@ function handleSelectChange(selectElement) {
             url: "/admin/boardComplaint", // 서버의 엔드포인트 URL
             data: { 
                 option: selectedOption,
-                boardWriterId: boardWriterId,
+                writerId: writerId,
                 boardId : boardId
             }, // 선택된 옵션을 서버로 전달
             success: function(response) {
@@ -319,6 +430,93 @@ function handleSelectChange(selectElement) {
                 console.error("AJAX request failed: " + error);
             }
         });
+    }
+
+    function selectedOptionModify(button){
+        // 모달 열기
+        var modal = document.getElementById("myModal");
+        modal.style.display = "block";
+
+        // 선택한 행에서 데이터 가져오기
+        var row = button.closest("tr");
+        var reportId = row.querySelector(".reportId").textContent;
+        var writerId = row.querySelector(".writerId").value;
+        var boardId = row.querySelector(".boardId").value;
+        var writer = row.querySelector(".boardWriter").textContent;
+        var reason = row.querySelector(".content").textContent;
+        var result = row.querySelector(".result").textContent;
+
+        // 모달 내부의 입력 필드에 데이터 설정
+        document.getElementById("reportId").value = reportId;
+        document.getElementById("writerId").value = writerId;
+        document.getElementById("boardId").value = boardId;
+        document.getElementById("name").value = writer;
+        document.getElementById("reason").value = reason;
+        document.getElementById("previousAction").value = result;
+    }
+
+    // 모달을 닫는 함수
+    function closeModal() {
+        // 모달 요소를 가져옵니다.
+        var modal = document.getElementById("myModal");
+        
+        // 모달을 숨깁니다.
+        modal.style.display = "none";
+    }
+
+    // 확인 버튼을 눌렀을 때의 처리 함수
+    function confirmChanges() {
+        // 입력된 값을 가져옵니다.
+        var reportId = $("#reportId").val();
+        var writerId = $("#writerId").val();
+        var boardId = $("#boardId").val();
+        var name = $("#name").val();
+        var reason = $("#reason").val();
+        var previousAction = $("#previousAction").val();
+        var newAction = $("#reportStatus").val();
+        var changeReason = $("#changeReason").val();
+
+        if (newAction === "활동") {
+                // 처리가 "활동"으로 선택되었을 때 처리 완료 부분을 업데이트합니다.
+                // 여기에서 .result 엘리먼트를 찾아서 텍스트를 변경하실 수 있습니다.
+                $(".result").text("활동처리");
+            } else if (newAction === "1일추가") {
+                $(".result").text("1일정지");
+            } else if (newAction === "7일추가") {
+                $(".result").text("7일정지");
+            } else if (newAction === "30일추가") {
+                $(".result").text("30일정지");
+            }
+
+        $.ajax({
+            type: "POST", // 또는 "GET" 등 적절한 HTTP 메서드 사용
+            url: "/admin/boardComplaint/modal", // 서버의 엔드포인트 URL
+            data: { 
+                reportId: reportId,
+                writerId: writerId,
+                boardId : boardId,
+                newAction : newAction,
+                changeReason : changeReason
+            }, // 선택된 옵션을 서버로 전달
+            success: function(response) {
+                let status = response.status;
+                let suspensionPeriod = response.suspensionPeriod;
+
+                // 서버에서 받은 응답을 업데이트
+                let statusId = $(".status"); // .status 클래스를 가진 모든 요소를 선택
+                let suspensionPeriodId = $(".suspensionPeriod"); // .suspensionPeriod 클래스를 가진 모든 요소를 선택
+
+                statusId.html(status); // 서버에서 받은 응답을 업데이트
+                suspensionPeriodId.html(suspensionPeriod); // 서버에서 받은 응답을 업데이트
+
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX request failed: " + error);
+            }
+        });
+
+        // 모달을 닫습니다.
+        closeModal();
     }
     
 </script>

@@ -131,6 +131,7 @@
         JOIN board b ON rb.board_id = b.id
         JOIN member m1 ON b.member_id = m1.id
         JOIN report_kategories rk ON rb.menu = rk.id -- report_kategories 테이블을 조인
+        ORDER BY rb.id DESC
         OFFSET #{offset} ROW FETCH NEXT #{perPage} ROW ONLY
     </select>
 
@@ -180,6 +181,33 @@
             result = #{result}
         WHERE reply_id = (select id from board_reply where member_id = #{memberId} AND id = #{replyId});
     </update>
+
+    <update id="updateReportBoardResult">
+        UPDATE reportboards
+        SET
+            result = #{result},
+            reason_for_change = #{reasonForChange}
+        WHERE id = #{reportId}
+    </update>
+
+    <select id="selectReportedBoardsResult" resultType="org.zerock.myapp.domain.ReportBoardsVO">
+        SELECT
+        rb.*,
+        b.title,
+        m.name as "reporterName", -- 리포터의 이름을 'reporterName'으로 별칭 설정
+        m1.status,
+        m1.suspension_period as "suspensionPeriod", -- 정지 기간을 'suspensionPeriod'로 별칭 설정
+        m1.id as "boardWriterId",
+        m1.name as "boardWriter",
+        rk.name as "categoryName" -- 신고 카테고리 이름을 'categoryName'으로 별칭 설정
+        FROM
+        reportBoards rb
+        JOIN member m ON rb.reporter_id = m.id
+        JOIN board b ON rb.board_id = b.id
+        JOIN member m1 ON b.member_id = m1.id
+        JOIN report_kategories rk ON rb.menu = rk.id -- report_kategories 테이블을 조인
+        WHERE rb.id = #{reportId} AND m1.id= #{writerId};
+    </select>
     
 <!--    =======================================================================================-->
     

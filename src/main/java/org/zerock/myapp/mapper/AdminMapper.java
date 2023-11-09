@@ -70,6 +70,15 @@ public interface AdminMapper {
                                                       @Param("replyId") Long replyId,
                                                       @Param("result") String status);
 
+    // 신고게시글의 처분을 변경하기 위한 ReportBoards 업데이트
+    public abstract Integer updateReportBoardResult(@Param("reportId") Long reportId,
+                                                    @Param("reasonForChange") String reasonForChange,
+                                                    @Param("result") String result);
+
+    // 신고게시글의 처분을 수정하기 위한 select 쿼리
+    public abstract ReportBoardsVO selectReportedBoardsResult(@Param("reportId") Long reportId,
+                                                                    @Param("writerId") Long writerId);
+
 //    ============================================================================================
 
     // 페이징 처리된 멤버의 게시글 출력
