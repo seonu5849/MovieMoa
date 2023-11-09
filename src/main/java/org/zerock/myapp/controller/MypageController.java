@@ -3,6 +3,8 @@ package org.zerock.myapp.controller;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,6 +18,7 @@ import org.zerock.myapp.domain.MovieVO;
 import org.zerock.myapp.service.MemberService;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 @Log4j2
@@ -251,7 +254,7 @@ public class MypageController {
     } // SearchListDelete
 
     @DeleteMapping("/searchList")
-    public String SearchListDeleteAll(){
+    public ResponseEntity<?> SearchListDeleteAll(){
         // 현재 인증된 사용자의 정보를 가져옵니다.
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         // 인증된 사용자의 이름(여기서는 사용자 ID로 사용)을 가져옵니다.
@@ -259,9 +262,19 @@ public class MypageController {
         // 사용자 이름(아이디)를 Long 타입으로 변환합니다.
         Long id = Long.valueOf(username);
 
-        this.memberService.deleteMyAllHistories(id);
+        Integer deleteHistories = this.memberService.deleteMyAllHistories(id);
+        log.info("deleteHistories({})",deleteHistories);
 
-        return "redirect:/mypage/searchList";
+        if (deleteHistories > 0) {
+            return ResponseEntity.ok().body(new HashMap<String, Object>() {{
+                put("redirectUrl", "/mypage/searchList");
+            }});
+        } else {
+            // 삭제가 실패하면 적절한 오류 메시지와 함께 상태 코드를 반환합니다.
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HashMap<String, Object>() {{
+                put("errorMessage", "Event could not be deleted.");
+            }});
+        }
     } //SearchListDeleteAll
 
 //    @PostMapping("/ask")
