@@ -20,6 +20,7 @@ import org.zerock.myapp.service.MemberService;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -237,45 +238,26 @@ public class MypageController {
         return "mypage/searchList";
     } // mypageSearchList
 
-    @PostMapping("/searchList") // 회원 선택(일괄) 삭제
-    public String SearchListDelete(@RequestParam("selectedMovies") Long[] selectedMovies){
-        log.trace("SearchListDelete({}) invoked.", Arrays.toString(selectedMovies));
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        // 인증된 사용자의 이름(여기서는 사용자 ID로 사용)을 가져옵니다.
-        String username = authentication.getName();
-        // 사용자 이름(아이디)를 Long 타입으로 변환합니다.
-        Long id = Long.valueOf(username);
-
-        this.memberService.deleteMyHistory(id, selectedMovies);
-
-        return "redirect:/mypage/searchList";
-
-    } // SearchListDelete
-
     @DeleteMapping("/searchList")
-    public ResponseEntity<?> SearchListDeleteAll(){
+    public ResponseEntity<?> SearchListDeleteMovies(@RequestBody List<Long> ids){
         // 현재 인증된 사용자의 정보를 가져옵니다.
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         // 인증된 사용자의 이름(여기서는 사용자 ID로 사용)을 가져옵니다.
         String username = authentication.getName();
         // 사용자 이름(아이디)를 Long 타입으로 변환합니다.
-        Long id = Long.valueOf(username);
+        Long memberId = Long.valueOf(username);
 
-        Integer deleteHistories = this.memberService.deleteMyAllHistories(id);
-        log.info("deleteHistories({})",deleteHistories);
+        // ids를 사용하여 데이터 삭제 로직 구현
+        Integer deletedHistory = this.memberService.deleteHistory(memberId, ids);
+        log.info("\t+ deletedHistory: {}", deletedHistory);
 
-        if (deleteHistories > 0) {
-            return ResponseEntity.ok().body(new HashMap<String, Object>() {{
-                put("redirectUrl", "/mypage/searchList");
-            }});
-        } else {
-            // 삭제가 실패하면 적절한 오류 메시지와 함께 상태 코드를 반환합니다.
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HashMap<String, Object>() {{
-                put("errorMessage", "Event could not be deleted.");
-            }});
-        }
-    } //SearchListDeleteAll
+        // 삭제된 영화 ID 목록을 JSON 형식으로 반환합니다.
+        Map<String, Object> response = new HashMap<>();
+        response.put("deletedIds", ids);
+        response.put("deletedCount", deletedHistory);
+
+        return ResponseEntity.ok(response); // 이제 response 객체를 JSON으로 변환하여 반환합니다.
+    } // SearchListDeleteMovies
 
 //    @PostMapping("/ask")
 //    public String mypageAsk() {

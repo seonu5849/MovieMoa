@@ -77,271 +77,169 @@
             opacity: 1; /* 호버 시 가상 요소의 불투명도를 증가시켜 어둡게 만듭니다. */
         }
 
-        /* 더보기 버튼 스타일 */
-        .more-button {
-            display: block;
-            margin: 20px auto;
-            padding: 10px 30px;
+        /* 버튼 컨테이너 */
+        .button-container {
+            display: flex;
+            justify-content: flex-start; /* 버튼들을 왼쪽 정렬 */
+            align-items: center; /* 버튼들을 세로 중앙 정렬 */
+            flex-wrap: wrap; /* 버튼들이 너무 많아 한 줄에 다 표시되지 않을 경우 다음 줄로 넘기도록 설정 */
+            margin-bottom: 20px; /* 버튼과 영화 목록 간 간격 조정 */
+        }
+
+        .my-btn {
+            background-color: #f2f2f2; /* 배경색 */
+            color: #333; /* 글자색 */
+            border: 1px solid #ddd; /* 테두리 */
+            padding: 10px 20px; /* 패딩 */
+            margin: 5px; /* 마진 */
+            border-radius: 5px; /* 둥근 모서리 */
+            cursor: pointer; /* 마우스 오버 시 커서 변경 */
+            display: inline-block; /* 인라인 블록 요소로 표시 */
+            text-decoration: none; /* 밑줄 제거 */
+        }
+
+        #deleteSelected, #cancelSelectMode, #selectAll {
+            display: none; /* CSS 내에서 기본적으로 숨김 처리 */
             background-color: #007BFF;
             color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
         }
 
-        .more-button:hover {
-            background-color: #0056b3;
+        /* 선택된 영화 항목 스타일 */
+        .movie-item.selected {
+            border: 2px solid #f00; /* 선택된 항목에 빨간색 테두리 추가 */
         }
-
-        /* Top Button Styles */
-        #topButton {
-            display: none;
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 99;
-            font-size: 18px;
-            border: none;
-            outline: none;
-            background-color: #00c3ff;
-            color: white;
-            cursor: pointer;
-            padding: 10px 20px;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-
-        #topButton:hover {
-            background-color: #0056b3;
-        }
-
-        .selectedCheckbox {
-            opacity: 0;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-        }
-
-    /* 체크박스 체크 시 article 배경 변경 */
-    .movie-item .selectedCheckbox:checked~ .movie-link::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5) !important; /* !important 추가 */
-        opacity: 0;
-        transition: opacity 0.3s ease-in-out;
-        z-index : 99;
-    }
-
 
     </style>
 </head>
 <body>
-<header th:replace="nav.html" />
-<main>
-    <aside th:replace="mypageSide.html" />
-    <div class="main">
-        <div class="title">
-            <h1>검색기록</h1>
-        </div>
+    <header th:replace="nav.html"></header>
+    <main>
+        <aside th:replace="mypageSide.html"></aside>
 
-        <button id="deleteButton" class="btn btn-primary btn">삭제하기</button>
-        <button id="cancelButton" class="btn btn-primary btn" style="display: none;">삭제취소</button>
-    <!-- 영화 목록 -->
-        <form action="/mypage/searchList" method="post" onsubmit="return deleteValidateForm()", id="member" >
-
-
-            <div class="em-70">
-                <button id="AlldeleteButton" class="btn btn-primary btn-delete" style="display: none;" th:data-url="@{'/mypage/searchList'}">전체삭제</button>
-                <input id="SelectDeleteButton" class="btnflex" type="submit" value="선택삭제" style="display: none;";>
+        <div class="main">
+            <div class="title">
+                <h1>검색기록</h1>
             </div>
-        <section class="movie-list" id="movieList">
-        <article class="movie-item" th:each="movie : ${movies}">
-            <a th:href="@{'/movie/movieDetail?movieId=' + ${movie.id}}" class="movie-link">
-                <img class="movieImg" th:src="@{'https://image.tmdb.org/t/p/original'+${movie.posterPath}}" alt="${movie.title}">
-            </a>
-            <h3 th:text="${movie.title}">영화제목</h3>
-            <h4 th:text="${movie.originalTitle}">원제</h4>
-            <p
-                    th:text="${movie.overview != null ? (#strings.length(movie.overview) > 20 ? #strings.substring(movie.overview, 0, 20) + '...' : movie.overview) : ''}">
-                영화 설명 또는 요약...
-            </p>
-            <input type="checkbox" class="selectedCheckbox" name="selectedMovies" style="display: none;" th:value="${movie.id}">
-        </article>
-    </section>
-        </form>
+            <!-- 버튼 컨테이너 추가 -->
+            <div class="button-container">
+                <!-- 선택 삭제 모드 진입 버튼 -->
+                <button id="enterSelectMode" class="my-btn">선택 삭제</button>
+                <!-- 전체 선택 버튼, 선택 삭제 모드 진입 시 표시될 예정 -->
+                <button id="selectAll" class="my-btn" style="display: none;">전체 선택</button>
+                <!-- 삭제 취소 버튼, 기본적으로 숨겨져 있음 -->
+                <button id="cancelSelectMode" class="my-btn" style="display: none;">삭제 취소</button>
+                <!-- 삭제하기 버튼, 기본적으로 숨겨져 있음 -->
+                <button id="deleteSelected" class="my-btn" style="display: none;">삭제하기</button>
+            </div>
 
+            <!-- 영화 목록 -->
+            <form action="/mypage/searchList" method="post" id="member" >
 
-        <button class="more-button" id="loadMore">더보기</button>
-    <button id="topButton">TOP</button>
+                <section class="movie-list" id="movieList">
+                    <article class="movie-item" th:each="movie : ${movies}" th:data-id="${movie.id}">
+                        <a th:href="@{'/movie/movieDetail?movieId=' + ${movie.id}}" class="movie-link">
+                            <img class="movieImg" th:src="@{'https://image.tmdb.org/t/p/original'+${movie.posterPath}}" alt="Movie Poster" th:alt="${movie.title}">
+                        </a>
+                        <h3 th:text="${movie.title}">영화제목</h3>
+                        <h4 th:text="${movie.originalTitle}">원제</h4>
+                        <p th:text="${movie.overview != null ? (#strings.length(movie.overview) > 20 ? #strings.substring(movie.overview, 0, 20) + '...' : movie.overview) : ''}">
+                            영화 설명 또는 요약...
+                        </p>
+                    </article>
+                </section>
 
-    </div>
-</main>
-<footer th:replace="footer.html" />
+            </form>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script th:inline="javascript">
+        </div>
+    </main>
+    <footer th:replace="footer.html"></footer>
 
-
-<!--삭제하기 버튼 클릭 시 전체삭제, 선택삭제, 체크박스 활성화-->
-    document.addEventListener("DOMContentLoaded", function () {
-    const deleteButton = document.getElementById('deleteButton');
-    const cancelButton = document.getElementById('cancelButton');
-    const checkboxes = document.querySelectorAll('.selectedCheckbox');
-    const SelectDeleteButton = document.getElementById('SelectDeleteButton');
-    const AlldeleteButton = document.getElementById('AlldeleteButton');
-
-    deleteButton.addEventListener('click', handleDeleteButtonClick);
-    cancelButton.addEventListener('click', handleCancelButtonClick);
-
-    function handleDeleteButtonClick() {
-        console.log('Delete button clicked!');
-        toggleButtons(true);
-        toggleCheckboxes(true);
-    }
-
-    function handleCancelButtonClick() {
-        toggleButtons(false);
-        toggleCheckboxes(false);
-    }
-
-    function toggleButtons(isDeleteClicked) {
-        cancelButton.style.display = isDeleteClicked ? 'inline-block' : 'none';
-        deleteButton.style.display = isDeleteClicked ? 'none' : 'inline-block';
-        SelectDeleteButton.style.display = isDeleteClicked ? 'inline-block' : 'none';
-        AlldeleteButton.style.display = isDeleteClicked ? 'inline-block' : 'none';
-    }
-
-    function toggleCheckboxes(isDeleteClicked) {
-        const displayStyle = isDeleteClicked ? 'inline-block' : 'none';
-        checkboxes.forEach(function (checkbox) {
-            checkbox.style.display = displayStyle;
-            checkbox.disabled = !isDeleteClicked;
-        });
-    }
-});
-
-// 처음 페이지 로딩 시 모든 영화 항목을 가져옴
-const movieItems = document.querySelectorAll('.movie-item');
-
-if (movieItems.length  <= 4 || movieItems.length === 0) {
-    document.getElementById('loadMore').style.display = 'none';
-}
-
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    // 처음에는 4개의 영화 항목만 보여주기 위해 나머지를 숨김
-    for (let i = 4; i < movieItems.length; i++) {
-        movieItems[i].style.display = 'none';
-    }
-
-    document.getElementById('loadMore').addEventListener('click', function () {
-        // 현재 표시된 영화 항목 수를 확인
-        let countShown = 0;
-        movieItems.forEach(movie => {
-            if (movie.style.display !== 'none') {
-                countShown++;
-            }
-        });
-
-        // 다음 4개의 영화 항목을 보여줌
-        for (let i = countShown; i < countShown + 4; i++) {
-            if (movieItems[i]) {
-                movieItems[i].style.display = 'flex';
-            }
-        }
-
-        // 모든 영화 항목이 보여질 경우 더보기 버튼을 숨김
-            // 모든 영화 항목이 보여질 경우 더보기 버튼을 숨김
-        if (countShown + 4 >= movieItems.length || countShown === 0) {
-            this.style.display = 'none';
-        }
-    });
-});
-
-$('.selectedCheckbox').on('change', function() {
-    if ($(this).prop('checked')) {
-        $('.movie-item').css('background-color', 'rgba(169, 169, 169, 0.5)');
-        $('.movieImg').css('background-color', 'rgba(169, 169, 169, 0.5)');
-    } else {
-        // 체크가 해제될 때의 동작 (원하는 동작을 여기에 추가)
-        $('.movie-item').css('background-color', ''); // 기본 색상으로 변경
-        $('.movieImg').css('background-color', ''); // 기본 색상으로 변경
-    }
-});
-
-
-window.onscroll = function () { scrollFunction() };
-
-function scrollFunction() {
-    const topButton = document.getElementById("topButton");
-    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-        topButton.style.display = "block";
-    } else {
-        topButton.style.display = "none";
-    }
-}
-
-document.getElementById('topButton').addEventListener('click', function () {
-    document.body.scrollTop = 0;
-    document.documentElement.scrollTop = 0;
-});
-
-
-function deleteValidateForm() {
-    const selectedCheckboxes = document.querySelectorAll('input.selectedCheckbox:checked');
-
-    if(selectedCheckboxes.length === 0){
-        alert("선택된 회원이 없습니다.");
-        return false;
-    }
-
-    const confirmation = confirm("선택된 회원을 삭제하시겠습니까?");
-
-    if (confirmation) {
-        // 사용자가 확인을 선택한 경우에만 삭제 수행
-        // AJAX 요청 또는 HTML Form 제출 등을 여기에서 수행
-        return true;
-    } else {
-        return false; // 사용자가 취소를 선택한 경우
-    }
-}
-
-$(document).ready(function() {
-    $('.btn-delete').on('click', function(e) {
-        e.preventDefault(); // 기본 액션을 막습니다.
-
-        if (confirm('정말 삭제하시겠습니까?')) {
-            var url = $(this).data('url'); // 버튼의 data-url 속성에서 URL을 가져옵니다.
-
-            // AJAX 요청을 설정합니다.
-            $.ajax({
-                url: url,
-                type: 'DELETE',
-                contentType: 'application/json', // contentType 추가
-                success: function(data) { // result 대신 data 사용
-                    alert('전체기록이 삭제되었습니다.'); // 사용자에게 성공 메시지 표시
-                    if (data && data.redirectUrl) { // 리다이렉트 URL을 확인합니다.
-                        window.location.href = data.redirectUrl;
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script th:inline="javascript">
+        $(document).ready(function() {
+            // 영화 아이템 선택 토글 기능
+            $('.movie-item').click(function(event) {
+                if ($('#enterSelectMode').is(':hidden')) { // '선택 삭제' 버튼이 숨겨져 있을 때만 실행
+                    event.preventDefault(); // 기본 이벤트를 막음
+                    $(this).toggleClass('selected'); // 'selected' 클래스를 토글
+                    // 선택된 항목이 있으면 삭제 버튼을 표시
+                    if ($('.selected').length > 0) {
+                        $('#deleteSelected').show();
                     } else {
-                        window.location.href = '/mypage/searchList'; // 기본 리다이렉트
+                        $('#deleteSelected').hide();
                     }
-                },
-                error: function(xhr, status, error) {
-                    alert("오류 발생: " + xhr.responseText); // 오류 메시지 변경
                 }
             });
-        }
-    });
-});
 
-</script>
+            // 선택 삭제 모드 버튼 클릭 이벤트
+            $('#enterSelectMode').click(function() {
+                $(this).hide(); // 선택삭제 버튼을 숨김
+                $('#cancelSelectMode').show(); // 삭제 취소 버튼을 표시
+                $('#selectAll').show(); // 전체 선택 버튼을 표시
+                $('.movie-item').addClass('selectable'); // 영화 아이템을 선택 가능하게 함
+            });
+
+            // 삭제 취소 버튼 클릭 이벤트
+            $('#cancelSelectMode').click(function() {
+                $(this).hide(); // 삭제 취소 버튼을 숨김
+                $('#enterSelectMode').show(); // 선택삭제 버튼을 표시
+                $('#selectAll').hide(); // 전체 선택 버튼을 숨김
+                $('#deleteSelected').hide(); // 선택 삭제 버튼을 숨김
+                $('.movie-item').removeClass('selected selectable'); // 'selected' 및 'selectable' 클래스 제거
+            });
+
+            // 전체 선택 / 전체 선택 해제 버튼 클릭 이벤트
+            $('#selectAll').click(function() {
+                if ($('.movie-item.selected').length === $('.movie-item').length) {
+                    // 모든 항목이 이미 선택되었다면 선택 해제
+                    $('.movie-item').removeClass('selected');
+                    $('#deleteSelected').hide(); // 선택 삭제 버튼을 숨김
+                } else {
+                    // 그렇지 않다면 모든 항목을 선택
+                    $('.movie-item').addClass('selected');
+                    $('#deleteSelected').show(); // 선택 삭제 버튼을 표시
+                }
+            });
+
+            // 선택 삭제 버튼 클릭 이벤트
+            $('#deleteSelected').click(function() {
+                var selectedMovies = $('.selected');
+                if (selectedMovies.length > 0 && confirm('정말 삭제하겠습니까?')) {
+                    // 수집된 ID를 저장할 배열
+                    var idsToDelete = [];
+
+                    // 선택된 모든 영화의 ID 수집
+                    selectedMovies.each(function() {
+                        idsToDelete.push($(this).data('id'));
+                    });
+
+                    // 서버에 DELETE 요청을 전송
+                    $.ajax({
+                        url: '/mypage/searchList', // 요청을 보낼 서버의 경로
+                        type: 'DELETE',     // HTTP 요청 방식
+                        data: JSON.stringify(idsToDelete), // 서버로 보낼 데이터
+                        contentType: 'application/json; charset=utf-8', // 요청의 Content-Type
+                        dataType: 'json', // 응답 데이터 형식
+                        traditional: true, // 깊이가 있는 객체를 전송할 때 서버에서 인식할 수 있는 방식으로 직렬화
+                        success: function(response) {
+                            // 서버 요청이 성공하면 DOM에서 항목 제거
+                            selectedMovies.each(function() {
+                                $(this).remove();
+                            });
+                            // 선택 모드와 관련된 요소들 리셋
+                            $('#deleteSelected').hide();
+                            $('#cancelSelectMode').click(); // 삭제 취소 버튼 클릭 이벤트를 트리거하여 초기 상태로 복귀
+                        },
+                        error: function(xhr, status, error) {
+                            // 오류 처리
+                            alert('삭제 중 오류가 발생했습니다: ' + error);
+                        }
+                    });
+                }
+            });
+
+        });
+    </script>
+
 </body>
 </html>

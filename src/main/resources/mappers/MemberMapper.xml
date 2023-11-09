@@ -184,15 +184,14 @@
         search_history.search_date desc
     </select>
 
+    <!-- 특정 멤버가 검색한 영화기록 선택 삭제 -->
     <delete id="deleteHistory">
-        DELETE FROM SEARCH_HISTORY
-        WHERE member_id = #{memberId} AND movie_id = #{movieId}
-    </delete>
-
-    <delete id="deleteAllHistory">
-        DELETE FROM SEARCH_HISTORY
+        DELETE FROM search_history
         WHERE member_id = #{memberId}
+        AND movie_id IN
+        <foreach item="movieId" collection="movieIds" open="(" separator="," close=")">
+            #{movieId}
+        </foreach>
     </delete>
-
 
 </mapper>

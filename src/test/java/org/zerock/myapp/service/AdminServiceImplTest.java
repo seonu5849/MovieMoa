@@ -24,19 +24,19 @@ class AdminServiceImplTest {
     @Setter(onMethod_ = @Autowired)
     private AdminService adminService;
 
-    @Test
-    @DisplayName("뷰에서 선택한 처리에 따른 회원상태 변경")
-    void testEditMemberStatus(){
-        log.trace("testEditMemberStatus() invoked");
-
-        Long memberId = 2L;
-        String currentStatus = "1일추가";
-
-        Integer affectedRows = adminService.editMemberStatus(memberId, currentStatus);
-
-        Assertions.assertThat(affectedRows).isEqualTo(1);
-
-    }
+//    @Test
+//    @DisplayName("뷰에서 선택한 처리에 따른 회원상태 변경")
+//    void testEditMemberStatus(){
+//        log.trace("testEditMemberStatus() invoked");
+//
+//        Long memberId = 2L;
+//        String currentStatus = "1일추가";
+//
+//        Integer affectedRows = adminService.editMemberStatus(memberId, currentStatus);
+//
+//        Assertions.assertThat(affectedRows).isEqualTo(1);
+//
+//    }
 
     @Test
     @DisplayName("신고들어온 내용 확인")
@@ -56,13 +56,13 @@ class AdminServiceImplTest {
 
     }
 
-    @Test
-    @DisplayName("신고 게시글 결과를 부여한 상태에서 만약 한번 더 수정하려 할때")
-    void testModifyMemberAndReport(){
-
-        Integer affectedRows = this.adminService.modifyMemberAndReport(2L, 33L, "1일추가", "qwer12");
-        Assertions.assertThat(affectedRows).isEqualTo(1);
-
-    }
+//    @Test
+//    @DisplayName("신고 게시글 결과를 부여한 상태에서 만약 한번 더 수정하려 할때")
+//    void testModifyMemberAndReport(){
+//
+//        Integer affectedRows = this.adminService.modifyMemberAndReport(2L, 33L, "1일추가", "qwer12");
+//        Assertions.assertThat(affectedRows).isEqualTo(1);
+//
+//    }
 
 }

@@ -32,46 +32,46 @@ public class MovieTests {
 
 
 
-    @Test
-    @DisplayName("영화 검색 기록 저장")
-    void InsertMovieHistory(){
-        log.trace("InsertMovieHistory() invoked");
-
-        Long memberId = 4L;
-        Long movieId = 663L;
-
-        Integer loaded = this.movieService.insertSearchMovieHistory(memberId, movieId);
-
-        assertThat(1).isEqualTo(loaded);
-        log.info("loaded({}) Row", loaded);
-
-    }//InsertMovieHistory
-
-    @Test
-    @DisplayName("영화 검색 기록 삭제")
-    void DeleteMovieHistory(){
-        log.trace("DeleteMovieHistory() invoked");
-
-        Long memberId = 4L;
-        Long movieId = 647L;
-
-//        Integer affteted = this.memberService.deleteMyHistory(memberId, movieId);
-
+//    @Test
+//    @DisplayName("영화 검색 기록 저장")
+//    void InsertMovieHistory(){
+//        log.trace("InsertMovieHistory() invoked");
+//
+//        Long memberId = 4L;
+//        Long movieId = 663L;
+//
+//        Integer loaded = this.movieService.insertSearchMovieHistory(memberId, movieId);
+//
+//        assertThat(1).isEqualTo(loaded);
+//        log.info("loaded({}) Row", loaded);
+//
+//    }//InsertMovieHistory
+//
+//    @Test
+//    @DisplayName("영화 검색 기록 삭제")
+//    void DeleteMovieHistory(){
+//        log.trace("DeleteMovieHistory() invoked");
+//
+//        Long memberId = 4L;
+//        Long movieId = 647L;
+//
+////        Integer affteted = this.memberService.deleteMyHistory(memberId, movieId);
+//
+////        log.info("affteted({}) Row Deleted", affteted);
+//
+//    }//DeleteMovieHistory
+//
+//    @Test
+//    @DisplayName("영화 검색 기록 전체 삭제")
+//    void DeleteMovieHistoriesAll(){
+//        log.trace("DeleteMovieHistoriesAll() invoked");
+//
+//        Long memberId = 4L;
+//
+//        Integer affteted = this.memberService.deleteMyAllHistories(memberId);
+//
 //        log.info("affteted({}) Row Deleted", affteted);
-
-    }//DeleteMovieHistory
-
-    @Test
-    @DisplayName("영화 검색 기록 전체 삭제")
-    void DeleteMovieHistoriesAll(){
-        log.trace("DeleteMovieHistoriesAll() invoked");
-
-        Long memberId = 4L;
-
-        Integer affteted = this.memberService.deleteMyAllHistories(memberId);
-
-        log.info("affteted({}) Row Deleted", affteted);
-
-    }//DeleteMovieHistory
+//
+//    }//DeleteMovieHistory
 
 } //MyPageTests

@@ -175,17 +175,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Integer deleteMyHistory(Long memberId, Long[] selectedMovies) {
-        Integer affectedRows = null;
-        for(Long movieId : selectedMovies){
-            affectedRows = this.memberMapper.deleteHistory(memberId, movieId);
-        }
-        return affectedRows;
-    }
-
-    @Override
-    public Integer deleteMyAllHistories(Long memberId) {
-        return this.memberMapper.deleteAllHistory(memberId);
+    public Integer deleteHistory(Long memberId, List<Long> movieIds) {
+        return memberMapper.deleteHistory(memberId, movieIds);
     }
 
 

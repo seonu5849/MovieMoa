@@ -79,11 +79,7 @@ public interface MovieMapper {
     public abstract Integer addWishlist(@Param("movieId") Long movieId, @Param("memberId") Long memberId);
 
     // 검색기록 추가
-    public abstract Integer insertSearchHistory(@Param("memberId")Long memberId, @Param("movieId")Long movieId);
-
-    public abstract Integer updateSearchHistory(@Param("memberId")Long memberId, @Param("movieId")Long movieId);
-
-    public abstract Integer checkDupleSearchHistory(@Param("memberId")Long memberId, @Param("movieId")Long movieId);
+    public abstract Integer upsertSearchHistory(@Param("memberId")Long memberId, @Param("movieId")Long movieId);
 
 
 } // end interface

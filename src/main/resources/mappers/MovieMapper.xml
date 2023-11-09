@@ -146,25 +146,22 @@
         INSERT INTO wishlist (movie_id, member_id) VALUES (#{movieId}, #{memberId})
     </insert>
 
-    <!-- 검색기록 추가 -->
-    <insert id="insertSearchHistory">
-        INSERT INTO SEARCH_HISTORY(MEMBER_ID, MOVIE_ID, SEARCH_DATE)
-        VALUES (#{memberId}, #{movieId}, current_timestamp);
-    </insert>
-
-    <!-- 검색기록 시간 업데이트 -->
-    <update id="updateSearchHistory">
-        UPDATE SEARCH_HISTORY
-        SET SEARCH_DATE = CURRENT_TIMESTAMP
-        WHERE MEMBER_ID = #{memberId} AND MOVIE_ID = #{movieId}
+    <!-- 검색기록 추가, 추가되어있을 경우 검색 시간 업데이트(H2) -->
+    <update id="upsertSearchHistory">
+        MERGE INTO search_history (member_id, movie_id, search_date) KEY (member_id, movie_id)
+        VALUES (#{memberId}, #{movieId}, CURRENT_TIMESTAMP)
     </update>
 
-    <!-- 검색기록 중복 확인 -->
-    <select id="checkDupleSearchHistory" resultType="integer">
-        SELECT COUNT(*)
-        FROM SEARCH_HISTORY
-        WHERE MEMBER_ID = #{memberId} AND MOVIE_ID = #{movieId}
-    </select>
-
+    <!-- 검색기록 추가, 추가되어있을 경우 검색 시간 업데이트(OracleDB) -->
+    <!--<update id="upsertSearchHistory">
+        MERGE INTO search_history sh
+        USING (SELECT 1 FROM DUAL) AS tmp
+        ON (sh.member_id = #{memberId} AND sh.movie_id = #{movieId})
+        WHEN MATCHED THEN
+        UPDATE SET sh.search_date = CURRENT_TIMESTAMP
+        WHEN NOT MATCHED THEN
+        INSERT (sh.member_id, sh.movie_id, sh.search_date)
+        VALUES (#{memberId}, #{movieId}, CURRENT_TIMESTAMP)
+    </update>-->
 
 </mapper>
