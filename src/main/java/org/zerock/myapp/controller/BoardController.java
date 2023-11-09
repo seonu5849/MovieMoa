@@ -109,7 +109,7 @@ public class BoardController {
             Integer posted = this.boardService.postWriting(title, content, kategorieId, null, memberId);
         }
 
-        return "redirect:/board/boards/1";
+        return "redirect:/board/boards";
     } // writeBoard
 
     @GetMapping("/updateBoard/{id}")

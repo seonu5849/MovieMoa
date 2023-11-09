@@ -127,12 +127,12 @@
                     </a>
                     </td>
                     <td th:text="${event.nickname}">등록자</td>
-                    <td th:text="${event.startAt}">시작일자</td>
-                    <td th:text="${event.endAt}">종료일자</td>
-                    <td th:text="${event.createdAt}">등록일자</td>
-                    <td th:text="${event.updatedAt}">수정일자</td>
+                    <td th:text="${event.startAt != null ? #dates.format(event.startAt, 'yyyy-MM-dd') : ''}">시작일자</td>
+                    <td th:text="${event.endAt != null ? #dates.format(event.endAt, 'yyyy-MM-dd') : ''}">종료일자</td>
+                    <td th:text="${event.createdAt != null ? #dates.format(event.createdAt, 'yyyy-MM-dd') : ''}">등록일자</td>
+                    <td th:text="${event.updatedAt != null ? #dates.format(event.updatedAt, 'yyyy-MM-dd') : ''}">수정일자</td>
                     <td>
-                        <a th:href="@{'/event/eventUpdate?id='+${event.id}}" class="modify">수정</a>
+                        <a th:href="@{'/admin/eventUpdate/'+${event.id}}" class="modify">수정</a>
                     </td>
                 </tr>
                 </tbody>

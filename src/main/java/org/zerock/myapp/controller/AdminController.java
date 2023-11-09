@@ -471,8 +471,17 @@ public class AdminController {
     } // eventUpdateView
 
     @PutMapping("/eventUpdate/{id}")
-    public String eventUpdate(Model model, @PathVariable("id") Long id) {
-        log.trace("eventUpdate({}) invoked.", id);
+    public String eventUpdate(Model model, @PathVariable("id") Long id, EventsVO event) {
+        log.trace("eventUpdate({}, {}) invoked.", id, event);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // 인증된 사용자의 이름(여기서는 사용자 ID로 사용)을 가져옵니다.
+        String username = authentication.getName();
+        // 사용자 이름(아이디)를 Long 타입으로 변환합니다.
+        Long adminId = Long.valueOf(username);
+
+        Integer updateEvent = this.eventService.updateEvent(adminId, event);
+        log.info("\t+ updateEvent: {}", updateEvent);
 
         return "redirect:/event/detailEvent/"+ id;
     } // eventUpdate

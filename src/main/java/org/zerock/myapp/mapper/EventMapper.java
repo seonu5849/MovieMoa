@@ -17,7 +17,7 @@ public interface EventMapper {
     public abstract Integer insertEvent(@Param("event") EventsVO event);
 
     // 이벤트 수정: 기존 이벤트 정보를 업데이트
-    public abstract Integer updateEvent(@Param("event") EventsVO event);
+    public abstract Integer updateEvent(@Param("adminId")Long adminId, @Param("event") EventsVO event);
 
     // 이벤트 삭제: 특정 이벤트 정보를 데이터베이스에서 삭제
     public abstract Integer deleteEvent(@Param("id") Long id);

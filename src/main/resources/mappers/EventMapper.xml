@@ -54,14 +54,14 @@
     <update id="updateEvent">
         UPDATE events
         SET
-        admin_id = #{event.adminId},
+        admin_id = #{adminId},
         title = #{event.title},
         thumbnail_path = #{event.thumbnailPath},
         start_at = #{event.startAt},
         end_at = #{event.endAt},
         updated_at = CURRENT_TIMESTAMP,
         contents_path = #{event.contentsPath}
-        WHERE id = #{id}
+        WHERE id = #{event.id}
     </update>
 
     <!-- 이벤트 삭제: 특정 이벤트를 event 테이블에서 삭제 -->

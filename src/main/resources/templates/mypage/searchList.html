@@ -3,64 +3,125 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 <title>MOVIE MOA</title>
     <style>
-        .main{
+        .main {
             grid-area: main;
-            justify-content: center;
-            align-items: center;
+            display: flex; /* 이미 display: flex; 로 설정되어 있다면 이 줄은 생략 가능 */
+            flex-direction: column; /* 자식 요소들을 세로 방향으로 배치 */
+            justify-content: center; /* 가로 방향으로 중앙 정렬 */
+            align-items: center; /* 세로 방향으로 중앙 정렬 */
             padding: 20px;
+            max-width: 100%; /* 최대 너비 설정 */
+            overflow-x: hidden; /* 가로 스크롤바 방지 */
+            font-family: 'Noto Sans KR', sans-serif;
         }
 
-        .title {
-            padding: 20px;
+        .movie-table {
+            width: 100%;
+            margin: 0 auto;
         }
 
-        /* 영화목록 스타일 */
+        .movie-summary {
+            max-width: 100%; /* 테이블 최대 너비 설정 */
+            width: 100%; /* 테이블 너비를 가능한 100%로 설정 */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-collapse: collapse;
+        }
+
+        .movie-summary-title {
+            background-color: #355c7d; /* 어두운 파란색으로 조정 */
+            color: #fff;
+            border-bottom: 2px solid #2a3f54; /* 테두리 색상 조정 */
+        }
+
+        .movie-list-wrapper {
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
         .movie-list {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            display: flex;
             gap: 20px;
+            padding: 20px 0;
+            justify-content: flex-start;
         }
 
         .movie-item {
-            background-color: #fff;
-            padding: 20px 10px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            padding: 10px;
             border: 1px solid #e0e0e0;
             border-radius: 5px;
             text-align: center;
-            display: flex; /* flexbox 레이아웃 사용 */
-            flex-direction: column; /* 아이템을 세로로 정렬 */
-            justify-content: flex-start; /* 컨텐츠를 컨테이너의 시작(위쪽)으로 정렬 */
-            position: relative;
+            margin-right: 20px;
+            flex: 0 0 auto;
         }
 
         .movie-item img {
-            max-width: 100%;
-            height: auto;
+            width: 100%;
+            height: 360px;
+            object-fit: cover;
         }
 
-        .movie-item h3,
-        .movie-item h4 {
-            margin-top: 10px;
+        .movie-item:last-child {
+            margin-right: 0;
         }
 
-        .movie-item p {
-            margin: 15px 0;
-            color: #666;
+        .scroll-buttons {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%; /* 부모 컨테이너의 너비에 맞춤 */
+            padding: 10px 0;
         }
 
-        /* 이미지 링크를 포함하고 있는 요소에 클래스를 추가합니다. 예를 들면, 'movie-link' */
+        .scroll-left, .scroll-right {
+            cursor: pointer;
+            margin: 0 10px;
+            background-color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .scroll-left:hover, .scroll-right:hover {
+            background-color: #ccc;
+        }
+
+        /* 스크롤바 전체의 스타일 */
+        ::-webkit-scrollbar {
+          height: 10px; /* 스크롤바의 너비 */
+        }
+
+        /* 스크롤바 트랙(바탕 부분)의 스타일 */
+        ::-webkit-scrollbar-track {
+          background: #81b3df;
+        }
+
+        /* 스크롤바 핸들(움직이는 부분)의 스타일 */
+        ::-webkit-scrollbar-thumb {
+          background: #355c7d;
+          border-radius: 5px;
+        }
+
+        /* 스크롤바 핸들에 호버할 때의 스타일 */
+        ::-webkit-scrollbar-thumb:hover {
+          background: #4a8acf;
+        }
+
+        /* 이미지 링크를 포함하고 있는 요소에 클래스를 추가 */
         .movie-link {
             position: relative;
             display: inline-block;
         }
 
         .movie-link:hover img {
-            opacity: 0.7; /* 호버 시 이미지의 불투명도를 줄여 어둡게 만듭니다. */
+            opacity: 0.7;
         }
 
-        /* 선택적으로 호버 시의 추가 효과를 위한 가상 요소를 사용할 수 있습니다. */
+        /* 선택적으로 호버 시의 추가 효과를 위한 가상 요소를 사용 */
         .movie-link::after {
             content: '';
             position: absolute;
@@ -74,16 +135,15 @@
         }
 
         .movie-link:hover::after {
-            opacity: 1; /* 호버 시 가상 요소의 불투명도를 증가시켜 어둡게 만듭니다. */
+            opacity: 1;
         }
 
         /* 버튼 컨테이너 */
         .button-container {
             display: flex;
-            justify-content: flex-start; /* 버튼들을 왼쪽 정렬 */
             align-items: center; /* 버튼들을 세로 중앙 정렬 */
             flex-wrap: wrap; /* 버튼들이 너무 많아 한 줄에 다 표시되지 않을 경우 다음 줄로 넘기도록 설정 */
-            margin-bottom: 20px; /* 버튼과 영화 목록 간 간격 조정 */
+            margin-top: 20px; /* 버튼과 영화 목록 간 간격 조정 */
         }
 
         .my-btn {
@@ -117,8 +177,35 @@
         <aside th:replace="mypageSide.html"></aside>
 
         <div class="main">
-            <div class="title">
-                <h1>검색기록</h1>
+
+            <div class="movie-table">
+
+                <table class="movie-summary">
+                    <tr class="movie-summary-title">
+                        <th>검색기록</th>
+                    </tr>
+                </table>
+                <div class="scroll-buttons">
+                    <button class="scroll-left"> &lt; </button>
+                    <div class="movie-list-wrapper">
+                        <!-- 영화 목록 -->
+                        <form action="/mypage/searchList" method="post" id="member" >
+
+                            <section class="movie-list" id="movieList">
+                                <article class="movie-item" th:each="movie : ${movies}" th:data-id="${movie.id}">
+                                    <a th:href="@{'/movie/movieDetail?movieId=' + ${movie.id}}" class="movie-link">
+                                        <img class="movieImg" th:src="@{'https://image.tmdb.org/t/p/original'+${movie.posterPath}}" alt="Movie Poster" th:alt="${movie.title}">
+                                    </a>
+                                    <h4 th:text="${movie.title}">영화제목</h4>
+                                    <h6 th:text="${movie.originalTitle}">원제</h6>
+                                </article>
+                            </section>
+
+                        </form>
+                    </div>
+
+                    <button class="scroll-right"> &gt; </button>
+                </div>
             </div>
             <!-- 버튼 컨테이너 추가 -->
             <div class="button-container">
@@ -132,42 +219,48 @@
                 <button id="deleteSelected" class="my-btn" style="display: none;">삭제하기</button>
             </div>
 
-            <!-- 영화 목록 -->
-            <form action="/mypage/searchList" method="post" id="member" >
-
-                <section class="movie-list" id="movieList">
-                    <article class="movie-item" th:each="movie : ${movies}" th:data-id="${movie.id}">
-                        <a th:href="@{'/movie/movieDetail?movieId=' + ${movie.id}}" class="movie-link">
-                            <img class="movieImg" th:src="@{'https://image.tmdb.org/t/p/original'+${movie.posterPath}}" alt="Movie Poster" th:alt="${movie.title}">
-                        </a>
-                        <h3 th:text="${movie.title}">영화제목</h3>
-                        <h4 th:text="${movie.originalTitle}">원제</h4>
-                        <p th:text="${movie.overview != null ? (#strings.length(movie.overview) > 20 ? #strings.substring(movie.overview, 0, 20) + '...' : movie.overview) : ''}">
-                            영화 설명 또는 요약...
-                        </p>
-                    </article>
-                </section>
-
-            </form>
-
         </div>
     </main>
     <footer th:replace="footer.html"></footer>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            // 스크롤 버튼 요소를 찾습니다.
+            var scrollLeftButton = document.querySelector('.scroll-left');
+            var scrollRightButton = document.querySelector('.scroll-right');
+            var movieList = document.querySelector('.movie-list-wrapper');
+
+            // 왼쪽 스크롤 버튼에 클릭 이벤트 리스너를 추가합니다.
+            scrollLeftButton.addEventListener('click', function() {
+                // 왼쪽으로 300px 이동합니다.
+                movieList.scrollBy({ left: -300, behavior: 'smooth' });
+            });
+
+            // 오른쪽 스크롤 버튼에 클릭 이벤트 리스너를 추가합니다.
+            scrollRightButton.addEventListener('click', function() {
+                // 오른쪽으로 300px 이동합니다.
+                movieList.scrollBy({ left: 300, behavior: 'smooth' });
+            });
+        });
+
         $(document).ready(function() {
+            // 선택된 영화 개수를 기반으로 삭제하기 버튼의 텍스트를 업데이트하는 함수
+            function updateDeleteButtonText() {
+                var selectedCount = $('.selected').length;
+                if (selectedCount > 0) {
+                    $('#deleteSelected').text('삭제하기 (' + selectedCount + ')').show();
+                } else {
+                    $('#deleteSelected').text('삭제하기').hide();
+                }
+            }
+
             // 영화 아이템 선택 토글 기능
             $('.movie-item').click(function(event) {
                 if ($('#enterSelectMode').is(':hidden')) { // '선택 삭제' 버튼이 숨겨져 있을 때만 실행
                     event.preventDefault(); // 기본 이벤트를 막음
                     $(this).toggleClass('selected'); // 'selected' 클래스를 토글
-                    // 선택된 항목이 있으면 삭제 버튼을 표시
-                    if ($('.selected').length > 0) {
-                        $('#deleteSelected').show();
-                    } else {
-                        $('#deleteSelected').hide();
-                    }
+                    updateDeleteButtonText(); // 선택된 항목 개수 업데이트
                 }
             });
 
@@ -177,6 +270,7 @@
                 $('#cancelSelectMode').show(); // 삭제 취소 버튼을 표시
                 $('#selectAll').show(); // 전체 선택 버튼을 표시
                 $('.movie-item').addClass('selectable'); // 영화 아이템을 선택 가능하게 함
+                updateDeleteButtonText(); // 선택된 항목 개수 업데이트
             });
 
             // 삭제 취소 버튼 클릭 이벤트
@@ -184,8 +278,9 @@
                 $(this).hide(); // 삭제 취소 버튼을 숨김
                 $('#enterSelectMode').show(); // 선택삭제 버튼을 표시
                 $('#selectAll').hide(); // 전체 선택 버튼을 숨김
-                $('#deleteSelected').hide(); // 선택 삭제 버튼을 숨김
+                $('#deleteSelected').hide(); // 삭제하기 버튼을 숨김
                 $('.movie-item').removeClass('selected selectable'); // 'selected' 및 'selectable' 클래스 제거
+                updateDeleteButtonText(); // 선택된 항목 개수 업데이트
             });
 
             // 전체 선택 / 전체 선택 해제 버튼 클릭 이벤트
@@ -193,11 +288,11 @@
                 if ($('.movie-item.selected').length === $('.movie-item').length) {
                     // 모든 항목이 이미 선택되었다면 선택 해제
                     $('.movie-item').removeClass('selected');
-                    $('#deleteSelected').hide(); // 선택 삭제 버튼을 숨김
+                    updateDeleteButtonText(); // 선택된 항목 개수 업데이트
                 } else {
                     // 그렇지 않다면 모든 항목을 선택
                     $('.movie-item').addClass('selected');
-                    $('#deleteSelected').show(); // 선택 삭제 버튼을 표시
+                    updateDeleteButtonText(); // 선택된 항목 개수 업데이트
                 }
             });
 
@@ -216,7 +311,7 @@
                     // 서버에 DELETE 요청을 전송
                     $.ajax({
                         url: '/mypage/searchList', // 요청을 보낼 서버의 경로
-                        type: 'DELETE',     // HTTP 요청 방식
+                        type: 'DELETE', // HTTP 요청 방식
                         data: JSON.stringify(idsToDelete), // 서버로 보낼 데이터
                         contentType: 'application/json; charset=utf-8', // 요청의 Content-Type
                         dataType: 'json', // 응답 데이터 형식
@@ -227,7 +322,6 @@
                                 $(this).remove();
                             });
                             // 선택 모드와 관련된 요소들 리셋
-                            $('#deleteSelected').hide();
                             $('#cancelSelectMode').click(); // 삭제 취소 버튼 클릭 이벤트를 트리거하여 초기 상태로 복귀
                         },
                         error: function(xhr, status, error) {
@@ -237,7 +331,6 @@
                     });
                 }
             });
-
         });
     </script>
 

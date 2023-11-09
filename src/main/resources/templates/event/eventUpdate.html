@@ -79,7 +79,7 @@
             <form id="eventForm" th:action="@{'/admin/eventUpdate/'+${event.id}}" method="post" name="event">
                 <input type="hidden" name="_method" value="PUT">
 
-                <input type="hidden" id="adminId" name="adminId" th:value="${adminId}">
+                <input type="hidden" id="id" name="id" th:value="${event.id}">
 
                 <div class="form-group">
                     <label for="title">이벤트 제목:</label>

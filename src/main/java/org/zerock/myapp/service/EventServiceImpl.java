@@ -41,10 +41,10 @@ public class EventServiceImpl implements EventService {
     } // addEvent
 
     @Override
-    public Integer updateEvent(EventsVO event) {
-        log.trace("updateEvent: {}", event);
+    public Integer updateEvent(Long adminId, EventsVO event) {
+        log.trace("updateEvent: {}, {}", adminId, event);
 
-        return this.eventMapper.updateEvent(event);
+        return this.eventMapper.updateEvent(adminId, event);
     } // updateEvent
 
     @Override

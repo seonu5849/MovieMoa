@@ -22,7 +22,7 @@ public class EventController {
 
     private final EventService eventService;
 
-// "pageNum" 요청 매개변수를 통해 현재 페이지 번호를 받고, "proceedingYn"을 통해 진행중인 이벤트 여부를 받음
+    // "pageNum" 요청 매개변수를 통해 현재 페이지 번호를 받고, "proceedingYn"을 통해 진행중인 이벤트 여부를 받음
     @GetMapping("/currentEvents")
     public String currentEventView(
             @RequestParam(value="pageNum", required = false, defaultValue="1") Integer pageNum,
@@ -50,7 +50,7 @@ public class EventController {
         return "/event/endedEvents";
     } // endedEvents
 
-// "id" 경로 변수를 통해 조회할 이벤트의 ID를 받음
+    // "id" 경로 변수를 통해 조회할 이벤트의 ID를 받음
     @GetMapping("/detailEvent/{id}")
     public String detailEventView(@PathVariable Long id, Model model) {
         log.trace("detailEventView({}) invoked.", id);
