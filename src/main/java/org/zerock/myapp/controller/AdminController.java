@@ -10,10 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.myapp.domain.*;
-import org.zerock.myapp.service.AdminService;
-import org.zerock.myapp.service.EventService;
-import org.zerock.myapp.service.MovieJsonService;
-import org.zerock.myapp.service.MovieService;
+import org.zerock.myapp.service.*;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -30,6 +27,7 @@ public class AdminController {
     private final MovieService movieService;
     private final MovieJsonService movieJsonService;
     private final EventService eventService;
+    private final ProductService productService;
 
     // 회원목록 및 검색을 위한 메소드
     @GetMapping("/memberList/{pageNum}")
@@ -492,17 +490,28 @@ public class AdminController {
     } // eventUpdate
 
     @GetMapping("/writeProduct")
-    public String writeProductView() {
+    public String writeProductView(Model model) {
         log.trace("writeProductView() invoked.");
+
+        List<StoreKategoriesVO> kategories = this.productService.findKategorieList();
+
+        model.addAttribute("kategories", kategories);
 
         return "/store/writeProduct";
     } // writeProductView
 
     @PostMapping("/writeProduct")
-    public String writeProduct() {
-        log.trace("writeProduct() invoked.");
+    public String writeProduct(StoreDTO store) {
+        log.trace("writeProduct({}) invoked.", store);
 
-        return "redirect:/store/detailProduct";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Long adminId = Long.valueOf(username);
+
+        Integer affectedRows = this.productService.createProduct(adminId, store);
+        StoreVO product = this.productService.findProductId(adminId, store.getTitle());
+
+        return "redirect:/store/detailProduct/"+product.getId();
     } // writeProduct
 
     @GetMapping("/updateProduct")
