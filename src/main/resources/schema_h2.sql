@@ -260,6 +260,19 @@ CREATE TABLE wishlist (
 	FOREIGN KEY (movie_id) REFERENCES Movies(id) ON DELETE CASCADE
 );
 
+CREATE TABLE photo_review(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    product_id BIGINT NOT NULL,
+    member_id BIGINT NOT NULL,
+    content varchar(255) NOT NULL,
+    photo_path varchar(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES store(id) ON DELETE CASCADE,
+    FOREIGN KEY (member_id) REFERENCES member(id) ON DELETE CASCADE
+);
+
+
 INSERT INTO Member (EMAIL, NAME, NICKNAME, PASSWORD, PHONE_NUM)
 VALUES('admin1@admin.com','adminName1','adminNickname1','admin1','010-1111-0001'),
 ('user1@user.com','userName1','userNickname1','user1','010-0000-0001'),

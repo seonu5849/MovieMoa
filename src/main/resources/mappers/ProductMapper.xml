@@ -90,8 +90,13 @@
             updated_at = CURRENT_TIMESTAMP
         </set>
         WHERE
-        id = #{product.id};
+        id = #{product.id}
     </update>
+
+    <insert id="insertPhotoReview">
+        INSERT INTO photo_review (product_id, member_id, content, photo_path)
+        VALUES (#{review.productId}, #{review.memberId}, #{review.content}, #{review.photoPath})
+    </insert>
 
     <!-- 제품 삭제: 지정된 제품 ID에 해당하는 제품을 store 테이블에서 삭제 -->
     <delete id="deleteProduct">

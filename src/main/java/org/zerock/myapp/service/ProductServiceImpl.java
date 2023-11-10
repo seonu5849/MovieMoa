@@ -4,6 +4,7 @@ package org.zerock.myapp.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.zerock.myapp.domain.PhotoReviewDTO;
 import org.zerock.myapp.domain.StoreDTO;
 import org.zerock.myapp.domain.StoreKategoriesVO;
 import org.zerock.myapp.domain.StoreVO;
@@ -54,6 +55,14 @@ public class ProductServiceImpl implements ProductService{
         product.setAdminId(adminId);
 
         return productMapper.updateProduct(product);
+    }
+
+    @Override
+    public Integer writePhotoReview(Long memberId, PhotoReviewDTO review) {
+        log.trace("writePhotoReview({}, {}) invoked.", memberId, review);
+
+        review.setMemberId(memberId);
+        return this.productMapper.insertPhotoReview(review);
     }
 
     @Override

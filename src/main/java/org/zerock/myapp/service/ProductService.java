@@ -1,5 +1,6 @@
 package org.zerock.myapp.service;
 
+import org.zerock.myapp.domain.PhotoReviewDTO;
 import org.zerock.myapp.domain.StoreDTO;
 import org.zerock.myapp.domain.StoreKategoriesVO;
 import org.zerock.myapp.domain.StoreVO;
@@ -25,6 +26,9 @@ public interface ProductService {
 
     // 기존 제품 정보 업데이트
     public abstract Integer updateProduct(Long adminId, StoreDTO product);
+
+    // 포토 리뷰 작성
+    public abstract Integer writePhotoReview(Long memberId, PhotoReviewDTO review);
 
     // 특정 제품 삭제
     public abstract Integer deleteProduct(Long id);

@@ -2,6 +2,7 @@ package org.zerock.myapp.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.zerock.myapp.domain.PhotoReviewDTO;
 import org.zerock.myapp.domain.StoreDTO;
 import org.zerock.myapp.domain.StoreKategoriesVO;
 import org.zerock.myapp.domain.StoreVO;
@@ -30,6 +31,9 @@ public interface ProductMapper {
 
     // 기존 제품 정보 업데이트
     public abstract Integer updateProduct(@Param("product") StoreDTO product);
+
+    // 포토 리뷰 추가
+    public abstract Integer insertPhotoReview(@Param("review")PhotoReviewDTO review);
 
     // 특정 제품 삭제
     public abstract Integer deleteProduct(@Param("id") Long id);
