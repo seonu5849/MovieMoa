@@ -218,10 +218,15 @@ public class AdminController {
     } // inquiryAnswerView
 
     @PostMapping("/inquiryAnswer")
-    public String inquiryAnswerWrite(Long inquiryId, Long memberId,  @RequestParam("inquiryResponsesContent") String responseContent){ // 문의 답변
-        log.trace("inquiryAnswerWrite({}, {}, {}) invoked.",inquiryId, memberId, responseContent);
+    public String inquiryAnswerWrite(Long inquirieId,
+                                     @RequestParam("responsesContent") String responsesContent){ // 문의 답변
+        log.trace("inquiryAnswerWrite({}, {}) invoked.",inquirieId, responsesContent);
 
-        Integer affectedRows = this.adminService.addInquiriesResponse(inquiryId, memberId, responseContent);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Long adminId = Long.valueOf(username);
+
+        Integer affectedRows = this.adminService.addInquiriesResponse(inquirieId, adminId, responsesContent);
 
         return "redirect:inquiry/1";
     } // inquiryAnswerWrite

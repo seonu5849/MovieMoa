@@ -197,7 +197,7 @@
                 <h1>ADMIN</h1>
                 <form action="/admin/inquiryAnswer" method="post" onsubmit="return saveButton()">
                     <p class="em-70" th:text="${inquirie.name}+'님의 문의입니다.'">• 특정회원의 문의입니다.</p>
-                    <input type="hidden" name="id" th:value="${inquirie.id}">
+                    <input type="hidden" name="inquirieId" th:value="${inquirie.id}">
                     <input type="hidden" name="memberId" th:value="${inquirie.memberId}">
                     <div class="form-group">
                         <label for="questionDate">문의일자</label>

@@ -459,12 +459,12 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Integer addInquiriesResponse(Long id, Long adminId, String inquiryResponsesContent) {
-        log.trace("addInquiriesResponse({}, {}, {}) invoked.", id, adminId, inquiryResponsesContent);
+    public Integer addInquiriesResponse(Long inquirieId, Long adminId, String inquiryResponsesContent) {
+        log.trace("addInquiriesResponse({}, {}, {}) invoked.", inquirieId, adminId, inquiryResponsesContent);
 
 
         InquiryResponsesDTO dto = new InquiryResponsesDTO();
-        dto.setId(id);
+        dto.setId(inquirieId);
         dto.setAdminId(adminId);
         dto.setResponsesContent(inquiryResponsesContent);
 

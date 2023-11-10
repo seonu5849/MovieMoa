@@ -13,6 +13,7 @@ import org.zerock.myapp.domain.ReportReplyVO;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Log4j2
@@ -64,5 +65,18 @@ class AdminServiceImplTest {
 //        Assertions.assertThat(affectedRows).isEqualTo(1);
 //
 //    }
+
+    @Test
+    @DisplayName("문의답변 테스트")
+    void testAddInquiriesResponse(){
+
+        Long inquirieId = 5L;
+        Long adminId = 1L;
+        String responsesContent = "테스트답변";
+
+        Integer affectedRows = this.adminService.addInquiriesResponse(inquirieId, adminId, responsesContent);
+        assertThat(affectedRows).isEqualTo(1);
+
+    }
 
 }
