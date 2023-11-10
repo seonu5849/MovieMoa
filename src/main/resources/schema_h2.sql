@@ -139,7 +139,7 @@ CREATE TABLE store_kategories (
 CREATE TABLE store (
 	id BIGINT AUTO_INCREMENT PRIMARY KEY,
 	admin_id BIGINT,
-	title VARCHAR(50) NOT NULL,
+	title VARCHAR(255) NOT NULL,
 	content VARCHAR(255),
 	price VARCHAR(100),
 	usage_location VARCHAR(255) NOT NULL,
@@ -150,6 +150,9 @@ CREATE TABLE store (
 	FOREIGN KEY (admin_id) REFERENCES Member(id),
 	FOREIGN KEY (kategorie_id) REFERENCES store_kategories(id)
 );
+
+/*ALTER TABLE store
+ALTER COLUMN title TYPE VARCHAR(255);*/
 
 CREATE TABLE inquiries (
 	id BIGINT AUTO_INCREMENT PRIMARY KEY,

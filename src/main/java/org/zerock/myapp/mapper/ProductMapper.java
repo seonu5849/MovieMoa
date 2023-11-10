@@ -29,7 +29,7 @@ public interface ProductMapper {
     public abstract Integer insertProduct(@Param("product") StoreDTO product);
 
     // 기존 제품 정보 업데이트
-    public abstract Integer updateProduct(@Param("product") StoreVO product);
+    public abstract Integer updateProduct(@Param("product") StoreDTO product);
 
     // 특정 제품 삭제
     public abstract Integer deleteProduct(@Param("id") Long id);

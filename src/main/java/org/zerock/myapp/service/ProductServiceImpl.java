@@ -50,7 +50,9 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Integer updateProduct(StoreVO product) {
+    public Integer updateProduct(Long adminId, StoreDTO product) {
+        product.setAdminId(adminId);
+
         return productMapper.updateProduct(product);
     }
 

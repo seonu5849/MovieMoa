@@ -24,7 +24,7 @@ public interface ProductService {
     public abstract Integer createProduct(Long adminId, StoreDTO product);
 
     // 기존 제품 정보 업데이트
-    public abstract Integer updateProduct(StoreVO product);
+    public abstract Integer updateProduct(Long adminId, StoreDTO product);
 
     // 특정 제품 삭제
     public abstract Integer deleteProduct(Long id);

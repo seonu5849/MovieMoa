@@ -59,30 +59,34 @@
     <article class="main-content">
         <div class="product-form">
             <h2>상품 정보 수정</h2>
-            <form action="/update-product" method="post">
+            <form action="/admin/updateProduct" method="post">
+                <input type="hidden" name="_method" value="PUT">
+                <input type="hidden" name="id" th:value="${product.id}">
                 <div class="form-group">
-                    <label for="admin-id">관리자 ID</label>
-                    <input type="text" id="admin-id" name="adminId" required>
+                    <label for="title">상품명:</label>
+                    <input type="text" id="title" name="title" th:value="${product.title}" required>
                 </div>
                 <div class="form-group">
-                    <label for="title">제목</label>
-                    <input type="text" id="title" name="title" required>
+                    <label for="content">상품 설명:</label>
+                    <textarea id="content" name="content" th:field="${product.content}" required></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="content">내용 (선택적)</label>
-                    <textarea id="content" name="content"></textarea>
+                    <label for="price">가격:</label>
+                    <input type="number" id="price" name="price" th:value="${product.price}" required>
                 </div>
                 <div class="form-group">
-                    <label for="price">가격 (선택적)</label>
-                    <input type="number" id="price" name="price">
+                    <label for="kategorieId">카테고리 ID:</label>
+                    <select name="kategorieId" id="kategorieId">
+                        <option th:each="kategorie : ${kategories}" th:value="${kategorie.id}" th:text="${kategorie.name}">카테고리이름</option>
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label for="kategorie-id">카테고리 ID</label>
-                    <input type="text" id="kategorie-id" name="kategorieId" required>
+                    <label for="usageLocation">사용 장소:</label>
+                    <input type="text" id="usageLocation" name="usageLocation" th:value="${product.usageLocation}" required>
                 </div>
                 <div class="form-group">
-                    <label for="usage-location">사용 위치</label>
-                    <input type="text" id="usage-location" name="usagelocation" required>
+                    <label for="posterPath">이미지경로</label>
+                    <input type="text" name="posterPath" id="posterPath" th:value="${product.posterPath}" required>
                 </div>
                 <div class="form-group">
                     <input type="submit" value="업데이트">

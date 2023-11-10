@@ -85,7 +85,8 @@
                 price = #{product.price},
             </if>
             kategorie_id = #{product.kategorieId},
-            usage_location = #{product.usagelocation},
+            usage_location = #{product.usageLocation},
+            poster_path = #{product.posterPath},
             updated_at = CURRENT_TIMESTAMP
         </set>
         WHERE

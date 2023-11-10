@@ -50,14 +50,14 @@ public class StoreController {
         return "/store/detailProduct";
     } //detailProductView
 
-    @DeleteMapping("/detailProduct")
+    @DeleteMapping("/product")
     public String detailProductDelete() {
         log.trace("detailProductDelete() invoked.");
 
+
+
         return "redirect:/store/tickets";
     } // detailProductDelete
-
-
 
     @GetMapping("/photoReply")
     public String photoReplyView(){

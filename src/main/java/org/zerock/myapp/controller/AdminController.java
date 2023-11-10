@@ -514,18 +514,31 @@ public class AdminController {
         return "redirect:/store/detailProduct/"+product.getId();
     } // writeProduct
 
-    @GetMapping("/updateProduct")
-    public String updateProductView() {
+    @GetMapping("/updateProduct/{id}")
+    public String updateProductView(Model model, @PathVariable("id") Long id) {
         log.trace("updateProductView() invoked.");
+
+        StoreVO product = this.productService.findProduct(id);
+        List<StoreKategoriesVO> kategories = this.productService.findKategorieList();
+
+        model.addAttribute("kategories", kategories);
+        model.addAttribute("product", product);
 
         return "/store/updateProduct";
     } // eventUpdateView
 
     @PutMapping("/updateProduct")
-    public String updateProduct() {
-        log.trace("updateProduct() invoked.");
+    public String updateProduct(StoreDTO product) {
+        log.trace("updateProduct({}) invoked.", product);
 
-        return "redirect:/store/detailProduct";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Long adminId = Long.valueOf(username);
+
+        Integer affectedRows = this.productService.updateProduct(adminId, product);
+        StoreVO affterProduct = this.productService.findProductId(adminId, product.getTitle());
+
+        return "redirect:/store/detailProduct/"+affterProduct.getId();
     } // eventUpdateView
 
 } // end class
