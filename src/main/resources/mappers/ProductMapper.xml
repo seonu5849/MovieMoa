@@ -121,4 +121,12 @@
         store
     </select>
 
+    <select id="selectPhotoReviewsByStoreId" resultType="org.zerock.myapp.domain.PhotoReviewVO">
+        SELECT pr.id, pr.product_id, pr.member_id, pr.content, pr.photo_path, pr.created_at, pr.updated_at, m.nickname
+        FROM photo_review pr
+        INNER JOIN store s ON pr.product_id = s.id
+        INNER JOIN Member m ON pr.member_id = m.id
+        WHERE s.id = #{id}
+    </select>
+
 </mapper>

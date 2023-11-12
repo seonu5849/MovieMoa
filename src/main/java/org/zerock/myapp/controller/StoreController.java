@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.zerock.myapp.domain.PhotoReviewDTO;
+import org.zerock.myapp.domain.PhotoReviewVO;
 import org.zerock.myapp.domain.StoreKategoriesVO;
 import org.zerock.myapp.domain.StoreVO;
 import org.zerock.myapp.service.ProductService;
@@ -45,10 +46,15 @@ public class StoreController {
     public String detailProductView(@PathVariable(value = "id") Long id,Model model) {
         log.trace("detailProductView({}) invoked.", id);
 
+        List<StoreKategoriesVO> kategorieList = this.productService.findKategorieList();
+
         // 제품 ID에 해당하는 제품의 상세 정보를 조회
         StoreVO product = this.productService.findProduct(id);
+        List<PhotoReviewVO> reviews = this.productService.selectPhotoReviewsByStoreId(id);
 
+        model.addAttribute("kategorieList", kategorieList);
         model.addAttribute("product", product);
+        model.addAttribute("reviews", reviews);
 
         return "/store/detailProduct";
     } //detailProductView

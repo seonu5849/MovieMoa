@@ -1,9 +1,6 @@
 package org.zerock.myapp.service;
 
-import org.zerock.myapp.domain.PhotoReviewDTO;
-import org.zerock.myapp.domain.StoreDTO;
-import org.zerock.myapp.domain.StoreKategoriesVO;
-import org.zerock.myapp.domain.StoreVO;
+import org.zerock.myapp.domain.*;
 
 import java.util.List;
 
@@ -32,5 +29,8 @@ public interface ProductService {
 
     // 특정 제품 삭제
     public abstract Integer deleteProduct(Long id);
+
+    // 특정 제품의 포토리뷰 조회
+    public abstract List<PhotoReviewVO> selectPhotoReviewsByStoreId(Long id);
 
 } // end interface

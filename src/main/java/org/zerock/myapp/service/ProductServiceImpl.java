@@ -4,10 +4,7 @@ package org.zerock.myapp.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-import org.zerock.myapp.domain.PhotoReviewDTO;
-import org.zerock.myapp.domain.StoreDTO;
-import org.zerock.myapp.domain.StoreKategoriesVO;
-import org.zerock.myapp.domain.StoreVO;
+import org.zerock.myapp.domain.*;
 import org.zerock.myapp.mapper.ProductMapper;
 
 import java.util.List;
@@ -68,6 +65,11 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public Integer deleteProduct(Long id) {
         return productMapper.deleteProduct(id);
+    }
+
+    @Override
+    public List<PhotoReviewVO> selectPhotoReviewsByStoreId(Long id) {
+        return productMapper.selectPhotoReviewsByStoreId(id);
     }
 
 } // end class

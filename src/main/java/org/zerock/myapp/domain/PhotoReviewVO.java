@@ -16,6 +16,6 @@ public class PhotoReviewVO {
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
-    private String memberName;
+    private String memberNickname;
 
 }

@@ -19,30 +19,53 @@
         }
 
         .product-thumbnail {
+            /* 이미지 아래 여백 제거 */
+            margin-bottom: 0;
             max-width: 300px;
             height: auto;
-            margin-bottom: 20px; /* 이미지 아래의 여백 조정 */
+            flex: 1; /* 콘텐츠에 따라 크기 조정 */
+        }
+
+        .product-thumbnail img {
+            /* 이미지 비율 유지 */
+            width: 100%;
+            height: auto;
+            border-radius: 4px; /* 이미지 모서리 둥글게 */
         }
 
         .product-details {
-            width: 100%;
+            /* 배경 및 그림자 스타일 변경 */
+            background: #ffffff;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-left: 20px; /* 이미지와의 간격 */
+            flex: 1.5; /* 너비가 더 큰 공간을 차지하도록 설정 */
+            padding: 20px;
+            display: flex;
+            flex-direction: column; /* 요소들을 세로로 정렬 */
+            justify-content: center;
         }
 
         .product-detail {
-            font-size: 1.2em;
+            /* 줄 간격 조정 */
+            line-height: 1.6;
             color: #333;
-            margin-bottom: 10px;
+            font-size: 0.95em; /* 글꼴 크기 조정 */
+            margin-bottom: 5px;
         }
 
         .first-detail {
+            /* 상품명 스타일 변경 */
             font-weight: bold;
-            margin-top: 0;
+            color: #DA291C;
+            font-size: 1.5em;
+            margin-bottom: 15px;
         }
 
         /* 버튼 스타일 */
         a#btn-modal {
             display: inline-block;
             background-color: #007BFF;
+            margin-top: 20px; /* 버튼 위의 간격 */
             color: white;
             border: none;
             padding: 10px 20px;
@@ -74,6 +97,42 @@
             left: 50%;
             transform: translate(-70%, -50%);
         }
+
+        /* 포토리뷰 섹션 스타일 */
+        .reviews-section {
+            width: 100%;
+            margin-top: 30px;
+            overflow-x: auto; /* 가로 스크롤 활성화 */
+        }
+
+        .reviews-container {
+            display: flex; /* Flex 컨테이너 설정 */
+            flex-direction: row; /* 가로 방향으로 아이템 배치 */
+        }
+
+        .review-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-right: 10px; /* 각 리뷰 아이템 사이의 간격 */
+            flex: 0 0 auto; /* 가로 스크롤을 위한 설정 */
+        }
+
+        .review-photo {
+            max-width: 100px;
+            height: auto;
+            margin-right: 15px;
+        }
+
+        .review-content {
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .review-meta {
+            font-size: 0.8em;
+            color: #777;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -81,14 +140,38 @@
 <main>
     <aside th:replace="storeSide.html" />
     <div class="main-content">
+
+        <div class="product-thumbnail">
+            <img th:src="${product.posterPath}" alt="상품 이미지" />
+        </div>
+
         <input type="hidden" th:value="${product.id}" id="productId">
-        <img th:src="${product.posterPath}" class="product-thumbnail" />
+
+        <!-- 상품 상세 정보 -->
         <div class="product-details">
             <div class="product-detail first-detail" th:text="'상품명 | ' + ${product.title}"></div>
             <div class="product-detail" th:text="'상품 구성 | ' + ${product.content}"></div>
             <div class="product-detail" th:text="'가격 | ' + ${product.price}"></div>
             <div class="product-detail" th:text="'상품 분류 | ' + ${product.name}"></div>
-            <a sec:authorize="hasAnyRole('MEMBER', 'ADMIN')" id="btn-modal">포토후기</a>
+            <a sec:authorize="hasAnyRole('MEMBER', 'ADMIN')" id="btn-modal">포토리뷰 작성</a>
+        </div>
+
+        <!-- 포토리뷰 섹션 -->
+        <div class="reviews-section">
+            <h3>포토리뷰</h3>
+            <div class="reviews-container">
+                <div th:each="review : ${reviews}" class="review-item">
+                    <img th:src="${review.photoPath}" class="review-photo" th:if="${review.photoPath != null}" />
+                    <div>
+                        <div class="review-content" th:text="${review.content}"></div>
+                        <div class="review-meta">
+                            <span th:text="${review.memberNickname}"></span> |
+                            <span th:text="${#dates.format(review.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+                            <span th:if="${review.updatedAt != null}" th:text="'수정됨: ' + ${#dates.format(review.updatedAt, 'yyyy-MM-dd HH:mm')}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
