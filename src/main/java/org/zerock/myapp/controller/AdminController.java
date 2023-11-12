@@ -10,10 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.myapp.domain.*;
-import org.zerock.myapp.service.AdminService;
-import org.zerock.myapp.service.EventService;
-import org.zerock.myapp.service.MovieJsonService;
-import org.zerock.myapp.service.MovieService;
+import org.zerock.myapp.service.*;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -30,6 +27,7 @@ public class AdminController {
     private final MovieService movieService;
     private final MovieJsonService movieJsonService;
     private final EventService eventService;
+    private final ProductService productService;
 
     // 회원목록 및 검색을 위한 메소드
     @GetMapping("/memberList/{pageNum}")
@@ -218,10 +216,15 @@ public class AdminController {
     } // inquiryAnswerView
 
     @PostMapping("/inquiryAnswer")
-    public String inquiryAnswerWrite(Long inquiryId, Long memberId,  @RequestParam("inquiryResponsesContent") String responseContent){ // 문의 답변
-        log.trace("inquiryAnswerWrite({}, {}, {}) invoked.",inquiryId, memberId, responseContent);
+    public String inquiryAnswerWrite(Long inquirieId,
+                                     @RequestParam("responsesContent") String responsesContent){ // 문의 답변
+        log.trace("inquiryAnswerWrite({}, {}) invoked.",inquirieId, responsesContent);
 
-        Integer affectedRows = this.adminService.addInquiriesResponse(inquiryId, memberId, responseContent);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Long adminId = Long.valueOf(username);
+
+        Integer affectedRows = this.adminService.addInquiriesResponse(inquirieId, adminId, responsesContent);
 
         return "redirect:inquiry/1";
     } // inquiryAnswerWrite
@@ -487,31 +490,55 @@ public class AdminController {
     } // eventUpdate
 
     @GetMapping("/writeProduct")
-    public String writeProductView() {
+    public String writeProductView(Model model) {
         log.trace("writeProductView() invoked.");
+
+        List<StoreKategoriesVO> kategories = this.productService.findKategorieList();
+
+        model.addAttribute("kategories", kategories);
 
         return "/store/writeProduct";
     } // writeProductView
 
     @PostMapping("/writeProduct")
-    public String writeProduct() {
-        log.trace("writeProduct() invoked.");
+    public String writeProduct(StoreDTO store) {
+        log.trace("writeProduct({}) invoked.", store);
 
-        return "redirect:/store/detailProduct";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Long adminId = Long.valueOf(username);
+
+        Integer affectedRows = this.productService.createProduct(adminId, store);
+        StoreVO product = this.productService.findProductId(adminId, store.getTitle());
+
+        return "redirect:/store/detailProduct/"+product.getId();
     } // writeProduct
 
-    @GetMapping("/updateProduct")
-    public String updateProductView() {
+    @GetMapping("/updateProduct/{id}")
+    public String updateProductView(Model model, @PathVariable("id") Long id) {
         log.trace("updateProductView() invoked.");
+
+        StoreVO product = this.productService.findProduct(id);
+        List<StoreKategoriesVO> kategories = this.productService.findKategorieList();
+
+        model.addAttribute("kategories", kategories);
+        model.addAttribute("product", product);
 
         return "/store/updateProduct";
     } // eventUpdateView
 
     @PutMapping("/updateProduct")
-    public String updateProduct() {
-        log.trace("updateProduct() invoked.");
+    public String updateProduct(StoreDTO product) {
+        log.trace("updateProduct({}) invoked.", product);
 
-        return "redirect:/store/detailProduct";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Long adminId = Long.valueOf(username);
+
+        Integer affectedRows = this.productService.updateProduct(adminId, product);
+        StoreVO affterProduct = this.productService.findProductId(adminId, product.getTitle());
+
+        return "redirect:/store/detailProduct/"+affterProduct.getId();
     } // eventUpdateView
 
 } // end class

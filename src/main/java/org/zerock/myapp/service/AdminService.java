@@ -105,6 +105,6 @@ public interface AdminService {
     public abstract InquiriesVO findByMemberInquiries(Long id);
 
     // 문의에 대한 답변 추가
-    public abstract Integer addInquiriesResponse(Long id, Long adminId, String inquiryResponsesContent);
+    public abstract Integer addInquiriesResponse(Long inquirieId, Long adminId, String inquiryResponsesContent);
 
 } // end interface

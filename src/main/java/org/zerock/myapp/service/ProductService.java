@@ -1,5 +1,7 @@
 package org.zerock.myapp.service;
 
+import org.zerock.myapp.domain.PhotoReviewDTO;
+import org.zerock.myapp.domain.StoreDTO;
 import org.zerock.myapp.domain.StoreKategoriesVO;
 import org.zerock.myapp.domain.StoreVO;
 
@@ -16,11 +18,17 @@ public interface ProductService {
     // 특정 제품 상세 정보 조회
     public abstract StoreVO findProduct(Long id);
 
+    // 특정 제품의 번호 조회
+    public abstract StoreVO findProductId(Long adminId, String title);
+
     // 새로운 제품 추가
-    public abstract Integer insertProduct(StoreVO product);
+    public abstract Integer createProduct(Long adminId, StoreDTO product);
 
     // 기존 제품 정보 업데이트
-    public abstract Integer updateProduct(StoreVO product);
+    public abstract Integer updateProduct(Long adminId, StoreDTO product);
+
+    // 포토 리뷰 작성
+    public abstract Integer writePhotoReview(Long memberId, PhotoReviewDTO review);
 
     // 특정 제품 삭제
     public abstract Integer deleteProduct(Long id);

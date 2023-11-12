@@ -139,7 +139,7 @@ CREATE TABLE store_kategories (
 CREATE TABLE store (
 	id BIGINT AUTO_INCREMENT PRIMARY KEY,
 	admin_id BIGINT,
-	title VARCHAR(50) NOT NULL,
+	title VARCHAR(255) NOT NULL,
 	content VARCHAR(255),
 	price VARCHAR(100),
 	usage_location VARCHAR(255) NOT NULL,
@@ -150,6 +150,9 @@ CREATE TABLE store (
 	FOREIGN KEY (admin_id) REFERENCES Member(id),
 	FOREIGN KEY (kategorie_id) REFERENCES store_kategories(id)
 );
+
+/*ALTER TABLE store
+ALTER COLUMN title TYPE VARCHAR(255);*/
 
 CREATE TABLE inquiries (
 	id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -256,6 +259,19 @@ CREATE TABLE wishlist (
 	FOREIGN KEY (member_id) REFERENCES Member(id) ON DELETE CASCADE,
 	FOREIGN KEY (movie_id) REFERENCES Movies(id) ON DELETE CASCADE
 );
+
+CREATE TABLE photo_review(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    product_id BIGINT NOT NULL,
+    member_id BIGINT NOT NULL,
+    content varchar(255) NOT NULL,
+    photo_path varchar(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES store(id) ON DELETE CASCADE,
+    FOREIGN KEY (member_id) REFERENCES member(id) ON DELETE CASCADE
+);
+
 
 INSERT INTO Member (EMAIL, NAME, NICKNAME, PASSWORD, PHONE_NUM)
 VALUES('admin1@admin.com','adminName1','adminNickname1','admin1','010-1111-0001'),

@@ -39,6 +39,17 @@
         store.id = #{id}
     </select>
 
+    <select id="selectProductId" resultType="org.zerock.myapp.domain.StoreVO">
+        SELECT
+        store.*,
+        store_kategories.name
+        FROM
+        store
+        LEFT OUTER JOIN store_kategories ON store.kategorie_id = store_kategories.id
+        WHERE
+        store.admin_id = #{adminId} AND store.title = #{title}
+    </select>
+
     <!-- 제품 추가: 새로운 제품 정보를 store 테이블에 추가 -->
     <insert id="insertProduct">
         INSERT INTO store (
@@ -47,7 +58,8 @@
         content,
         price,
         kategorie_id,
-        usage_location
+        usage_location,
+        poster_path
         )
         values (
         #{product.adminId},
@@ -55,7 +67,8 @@
         #{product.content},
         #{product.price},
         #{product.kategorieId},
-        #{product.usageLocation}
+        #{product.usageLocation},
+        #{product.posterPath}
         )
     </insert>
 
@@ -72,12 +85,18 @@
                 price = #{product.price},
             </if>
             kategorie_id = #{product.kategorieId},
-            usage_location = #{product.usagelocation},
+            usage_location = #{product.usageLocation},
+            poster_path = #{product.posterPath},
             updated_at = CURRENT_TIMESTAMP
         </set>
         WHERE
-        id = #{product.id};
+        id = #{product.id}
     </update>
+
+    <insert id="insertPhotoReview">
+        INSERT INTO photo_review (product_id, member_id, content, photo_path)
+        VALUES (#{review.productId}, #{review.memberId}, #{review.content}, #{review.photoPath})
+    </insert>
 
     <!-- 제품 삭제: 지정된 제품 ID에 해당하는 제품을 store 테이블에서 삭제 -->
     <delete id="deleteProduct">

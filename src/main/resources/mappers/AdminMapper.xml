@@ -390,15 +390,20 @@
     </select>
 
     <!-- 문의사항에 대한 응답을 추가하거나, 기존 응답을 업데이트 -->
-    <insert id="insertInquiriesResponse">
-        MERGE INTO inquiry_responses dest
+    <update id="insertInquiriesResponse">
+        <!--   H2 버전     -->
+        MERGE INTO inquiry_responses (id, admin_id, responses_content) KEY(id)
+        VALUES(#{dto.id},  #{dto.adminId}, #{dto.responsesContent})
+
+        <!--    Oracle 버전    -->
+        <!--MERGE INTO inquiry_responses dest
         USING (SELECT #{dto.id} AS id, #{dto.adminId} AS admin_id FROM DUAL) src
         ON (dest.id = src.id AND dest.admin_id = src.admin_id)
         WHEN MATCHED THEN
         UPDATE SET dest.responses_content = #{dto.responsesContent}
         WHEN NOT MATCHED THEN
         INSERT (dest.id, dest.admin_id, dest.responses_content)
-        VALUES (src.id, src.admin_id, #{dto.responsesContent})
-    </insert>
+        VALUES (src.id, src.admin_id, #{dto.responsesContent})-->
+    </update>
 
 </mapper>

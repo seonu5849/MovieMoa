@@ -42,8 +42,15 @@
 
         .form-group input[type="text"],
         .form-group input[type="number"],
-        .form-group textarea {
+        .form-group textarea{
             width: 95%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        select {
+            width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
@@ -77,11 +84,7 @@
     <article class="main-content">
         <div class="product-form-container">
             <h1>상품 등록</h1>
-            <form id="productForm" action="/submit-product" method="post">
-                <div class="form-group">
-                    <label for="adminId">관리자 ID:</label>
-                    <input type="text" id="adminId" name="adminId" required>
-                </div>
+            <form id="productForm" action="/admin/writeProduct" method="post">
                 <div class="form-group">
                     <label for="title">상품명:</label>
                     <input type="text" id="title" name="title" required>
@@ -96,11 +99,17 @@
                 </div>
                 <div class="form-group">
                     <label for="kategorieId">카테고리 ID:</label>
-                    <input type="text" id="kategorieId" name="kategorieId" required>
+                    <select name="kategorieId" id="kategorieId">
+                        <option th:each="kategorie : ${kategories}" th:value="${kategorie.id}" th:text="${kategorie.name}">카테고리이름</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="usageLocation">사용 장소:</label>
                     <input type="text" id="usageLocation" name="usageLocation" required>
+                </div>
+                <div class="form-group">
+                    <label for="posterPath">이미지경로</label>
+                    <input type="text" name="posterPath" id="posterPath" required>
                 </div>
                 <div class="form-group">
                     <button type="submit">상품 등록</button>

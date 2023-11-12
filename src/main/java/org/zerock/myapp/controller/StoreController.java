@@ -2,9 +2,12 @@ package org.zerock.myapp.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.zerock.myapp.domain.PhotoReviewDTO;
 import org.zerock.myapp.domain.StoreKategoriesVO;
 import org.zerock.myapp.domain.StoreVO;
 import org.zerock.myapp.service.ProductService;
@@ -40,7 +43,7 @@ public class StoreController {
 // "id" 경로 변수를 통해 조회할 제품의 ID를 받음
     @GetMapping("/detailProduct/{id}")
     public String detailProductView(@PathVariable(value = "id") Long id,Model model) {
-        log.trace("detailProductView() invoked.");
+        log.trace("detailProductView({}) invoked.", id);
 
         // 제품 ID에 해당하는 제품의 상세 정보를 조회
         StoreVO product = this.productService.findProduct(id);
@@ -50,37 +53,42 @@ public class StoreController {
         return "/store/detailProduct";
     } //detailProductView
 
-    @DeleteMapping("/detailProduct")
+    @DeleteMapping("/product")
     public String detailProductDelete() {
         log.trace("detailProductDelete() invoked.");
 
         return "redirect:/store/tickets";
     } // detailProductDelete
 
+    @GetMapping("/photoReview")
+    public String photoReplyView(Long id, Model model){
+        log.trace("photoReplyView({}) invoked.", id);
 
-
-    @GetMapping("/photoReply")
-    public String photoReplyView(){
-        log.trace("photoReplyView() invoked.");
-
+        model.addAttribute("productId", id);
         return "/store/photoReply";
     } // photoReplyView
 
-    @PostMapping("/photoReply")
-    public String photoReplyWrite(){
-        log.trace("photoReplyWrite() invoked.");
+    @PostMapping("/photoReview")
+    public String photoReplyWrite(PhotoReviewDTO review){
+        log.trace("photoReplyWrite({}) invoked.", review);
 
-        return "redirect:/store/detailProduct";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Long memberId = Long.valueOf(username);
+
+        this.productService.writePhotoReview(memberId, review);
+
+        return "redirect:/store/detailProduct/"+review.getProductId();
     } // photoReplyWrite
 
-    @PutMapping("/photoReply")
+    @PutMapping("/photoReview")
     public String photoReplyUpdate(){
         log.trace("photoReplyUpdate() invoked.");
 
         return "redirect:/store/detailProduct";
     } // photoReplyUpdate
 
-    @DeleteMapping("/photoReply")
+    @DeleteMapping("/photoReview")
     public String photoReplyDelete(){
         log.trace("photoReplyDelete() invoked.");
 

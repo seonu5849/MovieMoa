@@ -11,6 +11,30 @@
         font-family: 'Noto Sans KR', sans-serif; /* 한글 폰트 적용 */
     }
 
+    .admin-container ul {
+        list-style: none;
+        justify-content: center;
+        margin: 20px 0;
+        text-align: center;
+    }
+
+    .admin-container .flex {
+        display: flex;
+        justify-content: center;
+    }
+
+    .admin-container li {
+        padding: 10px;
+        display: inline-block;
+    }
+
+    .admin-container a {
+        text-decoration: none;
+        color: #007BFF;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
     h1, h2 {
         text-align: center;
         margin-top: 30px;
@@ -99,7 +123,7 @@
 
             <form action="/admin/product" method="post" id="product" onsubmit="return deleteValidateForm();">
               <div class="em-70">
-                <a class="btn-small " th:href="@{/admin/eventWrite}">등록</a>
+                <a class="btn-small " th:href="@{/admin/writeProduct}">등록</a>
               </div>
                 <table>
                     <thead>
@@ -127,7 +151,7 @@
                         <td th:text="${product.usageLocation}">사용처</td>
                         <td th:text="${product.price}">가격</td>
                         <td>
-                            <a th:href="@{'/store/updateProduct?id='+${product.id}}" class="modify">수정</a>
+                            <a th:href="@{'/admin/updateProduct/'+${product.id}}" class="modify">수정</a>
                         </td>
                     </tr>
                     </tbody>
