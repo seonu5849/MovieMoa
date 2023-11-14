@@ -68,8 +68,22 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public List<PhotoReviewVO> selectPhotoReviewsByStoreId(Long id) {
+    public List<PhotoReviewVO> findPhotoReviewsByStoreId(Long id) {
         return productMapper.selectPhotoReviewsByStoreId(id);
+    }
+
+    @Override
+    public PhotoReviewVO findPhotoReview(Long productId, Long reviewId, Long memberId) {
+        return productMapper.selectPhotoReview(productId, reviewId, memberId);
+    }
+
+    @Override
+    public Integer modifyPhotoReview(Long memberId, PhotoReviewDTO review) {
+        log.trace("modifyPhotoReview({}, {}) invoked.", memberId, review);
+
+        review.setMemberId(memberId);
+
+        return this.productMapper.updatePhotoReview(review);
     }
 
 } // end class

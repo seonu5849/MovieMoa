@@ -3,6 +3,7 @@ package org.zerock.myapp.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,11 +47,20 @@ public class StoreController {
     public String detailProductView(@PathVariable(value = "id") Long id,Model model) {
         log.trace("detailProductView({}) invoked.", id);
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if(authentication != null && authentication.isAuthenticated() &&
+                !authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ANONYMOUS"))) {
+            String username = authentication.getName();
+            Long memberId = Long.valueOf(username);
+            model.addAttribute("currentUserId", memberId);
+        }
+
         List<StoreKategoriesVO> kategorieList = this.productService.findKategorieList();
 
         // 제품 ID에 해당하는 제품의 상세 정보를 조회
         StoreVO product = this.productService.findProduct(id);
-        List<PhotoReviewVO> reviews = this.productService.selectPhotoReviewsByStoreId(id);
+        List<PhotoReviewVO> reviews = this.productService.findPhotoReviewsByStoreId(id);
 
         model.addAttribute("kategorieList", kategorieList);
         model.addAttribute("product", product);
@@ -87,11 +97,33 @@ public class StoreController {
         return "redirect:/store/detailProduct/"+review.getProductId();
     } // photoReplyWrite
 
-    @PutMapping("/photoReview")
-    public String photoReplyUpdate(){
-        log.trace("photoReplyUpdate() invoked.");
+    @GetMapping("/modify/photoReview")
+    public String photoReplyUpdateView(@RequestParam("id") Long productId,
+                                       @RequestParam("rid") Long reviewId, Model model){
+        log.trace("photoReplyUpdateView({}, {}) invoked.", productId, reviewId);
 
-        return "redirect:/store/detailProduct";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Long memberId = Long.valueOf(username);
+
+        PhotoReviewVO photoReview = this.productService.findPhotoReview(productId, reviewId, memberId);
+
+        model.addAttribute("review", photoReview);
+
+        return "/store/updatePhotoReply";
+    }
+
+    @PutMapping("/photoReview")
+    public String photoReplyUpdate(PhotoReviewDTO review){
+        log.trace("photoReplyUpdate({}) invoked.", review);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Long memberId = Long.valueOf(username);
+
+        this.productService.modifyPhotoReview(memberId, review);
+
+        return "redirect:/store/detailProduct/"+review.getProductId();
     } // photoReplyUpdate
 
     @DeleteMapping("/photoReview")

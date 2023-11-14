@@ -1,5 +1,6 @@
 package org.zerock.myapp.service;
 
+import org.apache.ibatis.annotations.Param;
 import org.zerock.myapp.domain.*;
 
 import java.util.List;
@@ -31,6 +32,12 @@ public interface ProductService {
     public abstract Integer deleteProduct(Long id);
 
     // 특정 제품의 포토리뷰 조회
-    public abstract List<PhotoReviewVO> selectPhotoReviewsByStoreId(Long id);
+    public abstract List<PhotoReviewVO> findPhotoReviewsByStoreId(Long id);
+
+    // 특정 포토리뷰 조회
+    public abstract PhotoReviewVO findPhotoReview(Long productId, Long reviewId, Long memberId);
+
+    // 특정 포토리뷰 수정
+    public abstract Integer modifyPhotoReview(Long memberId, PhotoReviewDTO review);
 
 } // end interface

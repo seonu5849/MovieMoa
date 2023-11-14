@@ -121,12 +121,33 @@
         store
     </select>
 
+    <!--  해당 상품에 해당하는 포토리뷰를 조회  -->
     <select id="selectPhotoReviewsByStoreId" resultType="org.zerock.myapp.domain.PhotoReviewVO">
         SELECT pr.id, pr.product_id, pr.member_id, pr.content, pr.photo_path, pr.created_at, pr.updated_at, m.nickname
         FROM photo_review pr
         INNER JOIN store s ON pr.product_id = s.id
         INNER JOIN Member m ON pr.member_id = m.id
-        WHERE s.id = #{id}
+        WHERE s.id = #{productId}
     </select>
+
+    <select id="selectPhotoReview" resultType="org.zerock.myapp.domain.PhotoReviewVO">
+        SELECT pr.id, pr.product_id, pr.member_id, pr.content, pr.photo_path, pr.created_at, pr.updated_at, m.nickname
+        FROM photo_review pr
+        INNER JOIN store s ON pr.product_id = s.id
+        INNER JOIN Member m ON pr.member_id = m.id
+        WHERE s.id = #{productId} AND pr.id = #{reviewId}
+        AND m.id = #{memberId}
+    </select>
+
+    <update id="updatePhotoReview">
+        UPDATE photo_review
+        SET
+            content = #{review.content},
+            photo_path = #{review.photoPath},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE product_id = #{review.productId}
+        AND id = #{review.id}
+        AND member_id = #{review.memberId}
+    </update>
 
 </mapper>

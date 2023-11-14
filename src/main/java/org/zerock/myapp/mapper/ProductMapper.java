@@ -36,6 +36,14 @@ public interface ProductMapper {
     public abstract Integer deleteProduct(@Param("id") Long id);
 
     // 특정 제품의 포토리뷰 조회
-    public abstract List<PhotoReviewVO> selectPhotoReviewsByStoreId(@Param("id") Long id);
+    public abstract List<PhotoReviewVO> selectPhotoReviewsByStoreId(@Param("productId") Long id);
+
+    // 특정 포토리뷰 조회
+    public abstract PhotoReviewVO selectPhotoReview(@Param("productId") Long productId,
+                                                    @Param("reviewId") Long reviewId,
+                                                    @Param("memberId") Long memberId);
+
+    // 특정 포토리뷰 업데이트
+    public abstract Integer updatePhotoReview(@Param("review") PhotoReviewDTO review);
 
 } // end interface

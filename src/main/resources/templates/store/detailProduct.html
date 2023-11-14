@@ -115,6 +115,37 @@
             padding: 10px;
             margin-right: 10px; /* 각 리뷰 아이템 사이의 간격 */
             flex: 0 0 auto; /* 가로 스크롤을 위한 설정 */
+            position: relative;
+        }
+
+        .review-content-container {
+            position: relative;
+        }
+
+        .review-btn-contatiner {
+          position: absolute;
+          top: 0;
+          right: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+        }
+
+        .review-btn-contatiner > .review-btn {
+          background-color: #007BFF;
+          color: white;
+          border: none;
+          padding: 5px 10px;
+          text-align: center;
+          text-transform: uppercase;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: background-color 0.3s;
+          margin-bottom: 5px;
+        }
+
+        .review-btn:hover{
+          background-color: #0056b3; /* 호버 시 배경색 변경 */
         }
 
         .review-photo {
@@ -161,7 +192,14 @@
             <h3>포토리뷰</h3>
             <div class="reviews-container">
                 <div th:each="review : ${reviews}" class="review-item">
-                    <img th:src="${review.photoPath}" class="review-photo" th:if="${review.photoPath != null}" />
+                    <input type="hidden" class="reviewId" name="reviewId" th:value="${review.id}">
+                    <div class="review-content-container">
+                      <img th:src="${review.photoPath}" class="review-photo" th:if="${review.photoPath != null}" />
+                      <div class="review-btn-contatiner">
+                        <button class="review-btn" th:if="${review.memberId == currentUserId}" onclick="modifyPhotoReview(this)">수정</button>
+                        <button class="review-btn" th:if="${review.memberId == currentUserId}" onclick="deletePhotoReview(this)">삭제</button>
+                      </div>
+                    </div>
                     <div>
                         <div class="review-content" th:text="${review.content}"></div>
                         <div class="review-meta">
@@ -182,6 +220,7 @@
     </div>
 </main>
 <footer th:replace="footer.html" />
+
 <script>
 
     const modalContent = document.getElementById("modal-content");
@@ -207,6 +246,24 @@
             modal.style.display = "none";
         }
     });
+
+    function modifyPhotoReview(button) {
+
+      let reviewItem = button.closest(".review-item");
+
+      let reviewId = reviewItem.querySelector(".reviewId").value;
+      
+      fetch('/store/modify/photoReview?id='+productId+'&rid='+reviewId) // 실제 경로로 대체
+            .then(response => response.text())
+            .then(html => {
+                // 가져온 내용을 모달 컨텐츠에 삽입합니다.
+                modalContent.innerHTML = html;
+                modal.style.display = "flex";
+            })
+            .catch(error => console.error('포토 리뷰 페이지 가져오기 오류:', error));
+
+    }
+
 </script>
 
 </body>
