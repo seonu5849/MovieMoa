@@ -184,7 +184,8 @@
             <div class="product-detail" th:text="'상품 구성 | ' + ${product.content}"></div>
             <div class="product-detail" th:text="'가격 | ' + ${product.price}"></div>
             <div class="product-detail" th:text="'상품 분류 | ' + ${product.name}"></div>
-            <a sec:authorize="hasAnyRole('MEMBER', 'ADMIN')" id="btn-modal">포토리뷰 작성</a>
+            <a sec:authorize="isAuthenticated()" id="btn-modal">포토리뷰 작성</a>
+            <a sec:authorize="!isAuthenticated()" href="/login" id="btn-modal">로그인 하고 포토리뷰 작성하기!</a>
         </div>
 
         <!-- 포토리뷰 섹션 -->
