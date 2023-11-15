@@ -253,7 +253,7 @@
 
       let reviewId = reviewItem.querySelector(".reviewId").value;
       
-      fetch('/store/modify/photoReview?id='+productId+'&rid='+reviewId) // 실제 경로로 대체
+      fetch(`/store/photoReview/${productId}/${reviewId}`) // 실제 경로로 대체
             .then(response => response.text())
             .then(html => {
                 // 가져온 내용을 모달 컨텐츠에 삽입합니다.
@@ -262,6 +262,36 @@
             })
             .catch(error => console.error('포토 리뷰 페이지 가져오기 오류:', error));
 
+    }
+
+    function deletePhotoReview(button){
+        let reviewItem = button.closest(".review-item");
+        let reviewId = reviewItem.querySelector(".reviewId").value;
+
+        fetch('/store/photoReview/'+productId+'/'+reviewId, {
+            method : 'DELETE',
+            headers : {
+                'Content-Type' : 'application/json'
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json(); // 또는 response.json() 등을 사용하면 됨
+        })
+        .then(data => {
+            console.log(data);
+            console.log("data.result : " + data.result);
+        if (data.result === 1) {
+            alert('삭제가 완료되었습니다.');
+            window.location.href = '/store/detailProduct/'+productId; // 리다이렉트할 URL
+        } else {
+            alert('삭제 오류가 발생했습니다.');
+        }
+        })
+        .catch(error => console.error('포토 리뷰 삭제 오류:', error));
+        
     }
 
 </script>

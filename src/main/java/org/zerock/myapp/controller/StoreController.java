@@ -2,19 +2,23 @@ package org.zerock.myapp.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.myapp.domain.PhotoReviewDTO;
 import org.zerock.myapp.domain.PhotoReviewVO;
 import org.zerock.myapp.domain.StoreKategoriesVO;
 import org.zerock.myapp.domain.StoreVO;
 import org.zerock.myapp.service.ProductService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -44,7 +48,7 @@ public class StoreController {
 
 // "id" 경로 변수를 통해 조회할 제품의 ID를 받음
     @GetMapping("/detailProduct/{id}")
-    public String detailProductView(@PathVariable(value = "id") Long id,Model model) {
+    public String detailProductView(@PathVariable(value = "id") Long id, Model model) {
         log.trace("detailProductView({}) invoked.", id);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -69,12 +73,12 @@ public class StoreController {
         return "/store/detailProduct";
     } //detailProductView
 
-    @DeleteMapping("/product")
-    public String detailProductDelete() {
-        log.trace("detailProductDelete() invoked.");
-
-        return "redirect:/store/tickets";
-    } // detailProductDelete
+//    @DeleteMapping("/product")
+//    public String detailProductDelete() {
+//        log.trace("detailProductDelete() invoked.");
+//
+//        return "redirect:/store/tickets";
+//    } // detailProductDelete
 
     @GetMapping("/photoReview")
     public String photoReplyView(Long id, Model model){
@@ -126,11 +130,24 @@ public class StoreController {
         return "redirect:/store/detailProduct/"+review.getProductId();
     } // photoReplyUpdate
 
-    @DeleteMapping("/photoReview")
-    public String photoReplyDelete(){
-        log.trace("photoReplyDelete() invoked.");
+    @DeleteMapping("/photoReview/{productId}/{reviewId}")
+    public ResponseEntity<String> photoReplyDelete(@PathVariable Long productId, @PathVariable Long reviewId) {
+        log.trace("photoReplyDelete({}, {}) invoked.", productId, reviewId);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        return "redirect:/store/tickets";
+        if (authentication != null && authentication.isAuthenticated() &&
+                !authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ANONYMOUS"))) {
+            Integer affectedRows = this.productService.deletePhotoReview(reviewId);
+            String responseJson;
+            if (affectedRows == 1) {
+                responseJson = "{\"result\": 1}";
+            } else {
+                responseJson = "{\"result\": 0}";
+            }
+            return ResponseEntity.ok(responseJson);
+        }
+
+        return ResponseEntity.status(401).build();
     } // photoReplyDelete
 
 } // end class

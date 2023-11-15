@@ -40,4 +40,7 @@ public interface ProductService {
     // 특정 포토리뷰 수정
     public abstract Integer modifyPhotoReview(Long memberId, PhotoReviewDTO review);
 
+    // 특정 포토리뷰 삭제
+    public abstract Integer deletePhotoReview(Long reviewId);
+
 } // end interface

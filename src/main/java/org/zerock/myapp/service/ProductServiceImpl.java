@@ -86,4 +86,9 @@ public class ProductServiceImpl implements ProductService{
         return this.productMapper.updatePhotoReview(review);
     }
 
+    @Override
+    public Integer deletePhotoReview(Long reviewId) {
+        return this.productMapper.deletePhotoReview(reviewId);
+    }
+
 } // end class

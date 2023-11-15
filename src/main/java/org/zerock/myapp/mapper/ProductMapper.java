@@ -46,4 +46,7 @@ public interface ProductMapper {
     // 특정 포토리뷰 업데이트
     public abstract Integer updatePhotoReview(@Param("review") PhotoReviewDTO review);
 
+    // 특정 포토리뷰 삭제
+    public abstract Integer deletePhotoReview(@Param("reviewId") Long reviewId);
+
 } // end interface

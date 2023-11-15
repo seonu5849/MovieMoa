@@ -150,4 +150,9 @@
         AND member_id = #{review.memberId}
     </update>
 
+    <delete id="deletePhotoReview">
+        DELETE FROM photo_review
+        WHERE id = #{reviewId}
+    </delete>
+
 </mapper>
