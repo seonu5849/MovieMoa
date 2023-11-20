@@ -179,5 +179,15 @@ public class MemberServiceImpl implements MemberService {
         return memberMapper.deleteHistory(memberId, movieIds);
     }
 
+    @Override
+    public List<MovieVO> findWishList(Long memberId) {
+        return memberMapper.findWishList(memberId);
+    }
+
+    @Override
+    public Integer deleteWishList(Long memberId, List<Long> movieIds) {
+        return memberMapper.deleteWishList(memberId, movieIds);
+    }
+
 
 } // end class

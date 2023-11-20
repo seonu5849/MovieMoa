@@ -62,6 +62,11 @@ public interface MemberMapper {
 
     // 특정 회원 영화 검색 기록 삭제
     public abstract Integer deleteHistory(@Param("memberId") Long memberId, @Param("movieIds") List<Long> movieIds);
-    
+
+    // 특정 회원 위시리스트 조회
+    public abstract List<MovieVO> findWishList(@Param("memberId") Long memberId);
+
+    // 특정 회원 위시리스트 삭제
+    public abstract Integer deleteWishList(@Param("memberId") Long memberId, @Param("movieIds") List<Long> movieIds);
 
 }// end interface

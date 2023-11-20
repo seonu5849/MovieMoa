@@ -259,6 +259,46 @@ public class MypageController {
         return ResponseEntity.ok(response); // 이제 response 객체를 JSON으로 변환하여 반환합니다.
     } // SearchListDeleteMovies
 
+    @GetMapping("/wishList")
+    public String mypageWishList(Model model) {
+        log.trace("mypageWishList({}) invoked.");
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // 인증된 사용자의 이름(여기서는 사용자 ID로 사용)을 가져옵니다.
+        String username = authentication.getName();
+        // 사용자 이름(아이디)를 Long 타입으로 변환합니다.
+        Long id = Long.valueOf(username);
+
+        List<MovieVO> searchMovie = this.memberService.findWishList(id);
+        log.info("\t+ searchMovie: {}", searchMovie);
+
+        model.addAttribute("movies", searchMovie);
+
+        return "mypage/wishList";
+    } // mypageWishList
+
+    @DeleteMapping("/wishList")
+    public ResponseEntity<?> wishListDeleteMovies(@RequestBody List<Long> ids){
+        // 현재 인증된 사용자의 정보를 가져옵니다.
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // 인증된 사용자의 이름(여기서는 사용자 ID로 사용)을 가져옵니다.
+        String username = authentication.getName();
+        // 사용자 이름(아이디)를 Long 타입으로 변환합니다.
+        Long memberId = Long.valueOf(username);
+
+        // ids를 사용하여 데이터 삭제 로직 구현
+        Integer deleteWishList = this.memberService.deleteWishList(memberId, ids);
+        log.info("\t+ deleteWishList: {}", deleteWishList);
+
+        // 삭제된 영화 ID 목록을 JSON 형식으로 반환합니다.
+        Map<String, Object> response = new HashMap<>();
+        response.put("deletedIds", ids);
+        response.put("deletedCount", deleteWishList);
+
+        return ResponseEntity.ok(response); // 이제 response 객체를 JSON으로 변환하여 반환합니다.
+    } // wishListDeleteMovies
+
+
 //    @PostMapping("/ask")
 //    public String mypageAsk() {
 //        log.trace("mypageAsk() invoked.");
