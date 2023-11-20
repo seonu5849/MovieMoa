@@ -186,7 +186,36 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Integer deleteWishList(Long memberId, List<Long> movieIds) {
-        return memberMapper.deleteWishList(memberId, movieIds);
+        return this.memberMapper.deleteWishList(memberId, movieIds);
+    }
+
+    @Override
+    public List<InquiriesVO> findInquiriesList(Long memberId, Integer pageNum) {
+        log.trace("findInquiriesList({}, {}) invoked.", memberId,pageNum);
+        Integer offset = offset(pageNum);
+
+        return this.memberMapper.findInquiriesList(memberId, offset, perPage);
+
+    }
+
+    @Override
+    public Integer totalMyInquiriesCount(Long memberId) {
+        log.trace("totalMyInquiriesCount({}) invoked.", memberId);
+
+        Integer totalPages = this.memberMapper.totalMyInquiriesCount(memberId) / perPage;
+
+        if(this.memberMapper.totalMyInquiriesCount(memberId) % perPage != 0){
+            totalPages++;
+        }
+
+        return totalPages;
+    }
+
+    @Override
+    public InquiriesVO findInquiry(Long id) {
+        log.trace("findInquiry({}) invoked.", id);
+
+        return this.memberMapper.findInquiry(id);
     }
 
 

@@ -69,4 +69,13 @@ public interface MemberMapper {
     // 특정 회원 위시리스트 삭제
     public abstract Integer deleteWishList(@Param("memberId") Long memberId, @Param("movieIds") List<Long> movieIds);
 
+    public abstract List<InquiriesVO> findInquiriesList(@Param("memberId") Long memberId,
+                                                  @Param("offset") Integer offset,
+                                                  @Param("perPage") Integer perPage);
+
+    // 특정 회원 문의내역 수
+    public abstract Integer totalMyInquiriesCount(@Param("memberId") Long memberId);
+
+    public abstract InquiriesVO findInquiry(@Param("id") Long id);
+
 }// end interface

@@ -78,7 +78,7 @@ footer {
                 <li class="gnb-item"><a class="reset-link" th:href="@{'/board/boards'}">게시판</a></li>
                 <li class="gnb-item" sec:authorize="!isAuthenticated()"><a class="reset-link" th:href="@{'/registration'}">회원가입</a></li>
                 <li class="gnb-item" sec:authorize="!isAuthenticated()"><a class="reset-link" th:href="@{'/login'}">로그인</a></li>
-                <li class="gnb-item" sec:authorize="isAuthenticated()"><a class="reset-link" th:href="@{'/mypage/menu/myInfo'}">마이페이지</a></li>
+                <li class="gnb-item" sec:authorize="isAuthenticated()"><a class="reset-link" th:href="@{'/mypage/myInfo'}">마이페이지</a></li>
                 <li class="gnb-item" sec:authorize="isAuthenticated()"><a class="reset-link" th:href="@{'/logout'}">로그아웃</a></li>
             </ul>
         </div>

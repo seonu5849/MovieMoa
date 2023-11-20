@@ -1,30 +1,107 @@
-<!DOCTYPE html>
-<html lang="ko">
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>inquiryDetail</title>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>MOVIE MOA</title>
+    <style>
+        .board-details, .comments-section {
+            width: 80%;
+            margin: 30px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .board-header {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .board-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .board-info {
+            color: #888;
+            font-size: 14px;
+        }
+        .board-content-border {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        .board-content {
+            white-space: pre-wrap;
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+        .board-meta, .comment-meta {
+            font-size: 14px;
+            color: #666;
+        }
+        .board-meta span, .comment-meta span {
+            margin-right: 10px;
+        }
+        .comment-meta-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .comment-meta {
+            border-top: 1px dashed #ddd;
+            padding-top: 10px;
+            flex-grow: 1; /* 메타 정보가 공간을 채우도록 함 */
+        }
+        .comment-form {
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+        .comment-form textarea {
+            width: 98%;
+            height: 100px;
+            padding: 10px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .comment-form button {
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .comment-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .comment-content {
+            margin-bottom: 10px;
+        }
+    </style>
+
 </head>
 <body>
-    <h4>/templates/mypage/inquiryDetail.html</h4>
-    <hr>
-    
-    <h1>문의 상세 내역</h1>
-    
-    <table>
-        <tr>
-            <td>문의 등록 날짜</td>
-            <td>날짜1</td>
-        </tr>
-        <tr>
-            <td>문의 제목</td>
-            <td>제목1</td>
-        </tr>
-        <tr>
-            <td>문의 내용</td>
-            <td>내용1</td>
-        </tr>
-    </table>    
+<header th:replace="nav.html" />
+<main>
+    <input type="hidden" name="id" th:value="${id}">
+    <div class="board-details">
+        <div class="board-header">
+            <div class="board-title" th:text="${inquiry.title}">문의 제목</div>
+            <div class="board-meta">
+                <span>작성일: <span th:text="${#dates.format(inquiry.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2023-01-01 12:00:00</span></span>
+            </div>
+        </div>
+        <div class="board-content-border">
+            <div class="board-content" th:text="${inquiry.content}">문의 내용</div>
+        </div>
+        <div class="board-content-border">
+            <div class="board-title" th:text="${inquiry.title}">답변</div>
+            <div class="board-content" th:text="${inquiry.responsesContent}">문의 답변 입니다.</div>
+        </div>
+    </div>
 </body>
 </html>
 

@@ -64,6 +64,14 @@ public interface MemberService {
     // 특정 회원 영화 위시리스트 삭제
     public abstract Integer deleteWishList(Long memberId, List<Long> movieIds);
 
-    
+    // 특정 회원 문의내용 조회
+    public abstract List<InquiriesVO> findInquiriesList(Long memberId, Integer pageNum);
+
+    // 페이징을 위한 특정 회원의 문의내역 총 레코드 수 조회
+    public abstract Integer totalMyInquiriesCount(Long memberId);
+
+    // 특정 회원 상세 문의내용 조회
+    public abstract InquiriesVO findInquiry(@Param("id") Long id);
+
 
 } // end interface

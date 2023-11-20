@@ -6,15 +6,13 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.zerock.myapp.domain.BoardReplyVO;
-import org.zerock.myapp.domain.BoardVO;
-import org.zerock.myapp.domain.MemberVO;
-import org.zerock.myapp.domain.MovieVO;
+import org.zerock.myapp.domain.*;
 import org.zerock.myapp.service.MemberService;
 
 import java.util.Arrays;
@@ -33,7 +31,7 @@ public class MypageController {
 
     private final MemberService memberService;
 
-    @GetMapping("/menu/myInfo")
+    @GetMapping("/myInfo")
     public String myInfoView(Model model) {
         log.trace("myInfoView() invoked.");
 
@@ -177,7 +175,7 @@ public class MypageController {
 
     } // DeleteMypageUser
 
-    @GetMapping("/menu/myBoard/{pageNum}")
+    @GetMapping("/myBoard/{pageNum}")
     public String mypageBoardView(Model model, @PathVariable("pageNum") Integer pageNum) {
         log.trace("mypageBoardView() invoked.");
 
@@ -199,7 +197,7 @@ public class MypageController {
     } // mypageBoardView
 //
 
-    @GetMapping("/menu/myReply/{pageNum}")
+    @GetMapping("/myReply/{pageNum}")
     public String MypageMyReply(Model model, @PathVariable("pageNum") Integer pageNum) {
         log.trace("MypageMyReply() invoked.");
 
@@ -298,6 +296,47 @@ public class MypageController {
         return ResponseEntity.ok(response); // 이제 response 객체를 JSON으로 변환하여 반환합니다.
     } // wishListDeleteMovies
 
+    @GetMapping("/inquiryList/{pageNum}")
+    public String inquiryListView(Model model, @PathVariable("pageNum") Integer pageNum) {
+        log.trace("inquiryListView() invoked.");
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // 인증된 사용자의 이름(여기서는 사용자 ID로 사용)을 가져옵니다.
+        String username = authentication.getName();
+        // 사용자 이름(아이디)를 Long 타입으로 변환합니다.
+        Long id = Long.valueOf(username);
+
+        // 사용자 ID를 사용하여 회원 정보를 조회합니다.
+        List<InquiriesVO> inquiriesList = memberService.findInquiriesList(id, pageNum);
+        Integer totalPages = this.memberService.totalMyInquiriesCount(id);
+
+        model.addAttribute("inquiries", inquiriesList);
+        model.addAttribute("currentPage", pageNum);
+        model.addAttribute("totalPages", totalPages);
+
+        return "/mypage/inquiryList";
+    } // inquiryListView
+
+    @GetMapping("/inquiryDetail/{id}")
+    public String detailInquiryView(Model model, @PathVariable("id") Long id) {
+        log.trace("detailBoardView({}) invoked.", id);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated() &&
+                !authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ANONYMOUS"))) {
+            log.info("\t+ 인증된 사용자");
+            String username = authentication.getName();
+            Long memberId = Long.valueOf(username);
+            model.addAttribute("currentUserId", memberId);
+        }
+        InquiriesVO inquiry = this.memberService.findInquiry(id);
+
+        model.addAttribute("inquiry", inquiry);
+
+        return "/mypage/inquiryDetail";
+
+    } // detailInquiryView
 
 //    @PostMapping("/ask")
 //    public String mypageAsk() {

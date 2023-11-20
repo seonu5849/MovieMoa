@@ -218,4 +218,42 @@
         </foreach>
     </delete>
 
+    <!-- 특정 멤버의 문의내역 조회 -->
+    <select id="findInquiriesList" resultType="org.zerock.myapp.domain.InquiriesVO">
+        SELECT
+            i.*,
+            ir.responses_content,
+            m.name
+        FROM
+            inquiries i
+        JOIN member m ON i.member_id = m.id
+        LEFT JOIN inquiry_responses ir ON i.id = ir.id
+        WHERE
+            i.member_Id = #{memberId}
+        ORDER BY
+        i.CREATED_AT desc
+        OFFSET #{offset} ROW FETCH NEXT #{perPage} ROW ONLY
+
+    </select>
+
+    <!-- 특정 멤버가 작성한 게시글의 총 수를 반환 -->
+    <select id="totalMyInquiriesCount" resultType="Integer">
+        SELECT COUNT(id)
+        FROM INQUIRIES
+        WHERE member_id = #{memberId}
+    </select>
+    <!-- 특정 멤버의 문의내역 조회 -->
+    <select id="findInquiry" resultType="org.zerock.myapp.domain.InquiriesVO">
+    SELECT
+    i.*,
+    ir.responses_content,
+    m.name
+    FROM
+    inquiries i
+    JOIN member m ON i.member_id = m.id
+    LEFT JOIN inquiry_responses ir ON i.id = ir.id
+    WHERE
+    i.id = #{id}
+    </select>
+
 </mapper>
