@@ -8,12 +8,12 @@
 제작기간 : 2023.10 - 2023.11
 
 개발환경 :
-Spring Boot 3.1.4
-Oracle DB (ojdbc 8)
-MyBatis(ibatis) 3.0.2
-Spring Security
-Jackson
-JUnit 5
-Thymeleaf
+Spring Boot 3.1.4\n
+Oracle DB (ojdbc 8)\n
+MyBatis(ibatis) 3.0.2\n
+Spring Security\n
+Jackson\n
+JUnit 5\n
+Thymeleaf\n
 
 
