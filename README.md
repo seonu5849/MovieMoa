@@ -15,5 +15,7 @@ Spring Security<br/>
 Jackson<br/>
 JUnit 5<br/>
 Thymeleaf<br/>
+HTML/CSS<br/>
+Javascript / JQuery / Ajax<br/>
 
 
